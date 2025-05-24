@@ -6,15 +6,15 @@ export default function Fase1Screen({ navigation }) {
     <View style={styles.container}>
       <Text style={styles.title}>Welke zekering heeft je 1-fase aansluiting?</Text>
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('16A')}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Persoonsgegevens')}>
         <Text style={styles.buttonText}>16A</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('25A')}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Persoonsgegevens')}>
         <Text style={styles.buttonText}>25A</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('32A')}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Persoonsgegevens')}>
         <Text style={styles.buttonText}>32A</Text>
       </TouchableOpacity>
     </View>

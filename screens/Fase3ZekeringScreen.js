@@ -6,15 +6,15 @@ export default function Fase3ZekeringScreen({ navigation }) {
     <View style={styles.container}>
       <Text style={styles.title}>Welke zekering heeft je 3-fase aansluiting?</Text>
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('3F 16A')}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Persoonsgegevens')}>
         <Text style={styles.buttonText}>16A</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('3F 25A')}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Persoonsgegevens')}>
         <Text style={styles.buttonText}>25A</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('3F 32A')}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Persoonsgegevens')}>
         <Text style={styles.buttonText}>32A</Text>
       </TouchableOpacity>
     </View>
