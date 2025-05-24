@@ -1,23 +1,21 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-export default function Step2Screen({ navigation }) {
+export default function Fase3ZekeringScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Stap 2: Ben je particulier of zakelijk?</Text>
+      <Text style={styles.title}>Welke zekering heeft je 3-fase aansluiting?</Text>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Particulier')}
-      >
-        <Text style={styles.buttonText}>Particulier</Text>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('3F 16A')}>
+        <Text style={styles.buttonText}>16A</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Zakelijk')}
-      >
-        <Text style={styles.buttonText}>Zakelijk</Text>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('3F 25A')}>
+        <Text style={styles.buttonText}>25A</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('3F 32A')}>
+        <Text style={styles.buttonText}>32A</Text>
       </TouchableOpacity>
     </View>
   );
