@@ -12,6 +12,14 @@ export default function ParticulierScreen({ navigation }) {
       >
         <Text style={styles.buttonText}>1-fase aansluiting</Text>
       </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('Fase 1', { aansluiting: '1-fase' })}>
+ 
+</TouchableOpacity>
+
+<TouchableOpacity onPress={() => navigation.navigate('Fase 3', { aansluiting: '3-fase' })}>
+
+</TouchableOpacity>
+
 
       <TouchableOpacity
         style={styles.button}
@@ -20,6 +28,7 @@ export default function ParticulierScreen({ navigation }) {
         <Text style={styles.buttonText}>3-fase aansluiting</Text>
       </TouchableOpacity>
     </View>
+    
   );
 }
 

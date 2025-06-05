@@ -15,7 +15,7 @@ onPress={() => navigation.navigate('Particulier')}
 
       <TouchableOpacity
         style={styles.button}
-onPress={() => navigation.navigate('Fase 1')}
+onPress={() => navigation.navigate('ZakelijkDoel')}
       >
         <Text style={styles.buttonText}>Zakelijk</Text>
       </TouchableOpacity>

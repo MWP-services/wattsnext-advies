@@ -1,51 +1,40 @@
+// screens/ZakelijkOpslagScreen.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, ScrollView } from 'react-native';
 
-export default function PersoonsgegevensScreen({ navigation }) {
-  const route = useRoute();
-  const aansluiting = route.params?.aansluiting;
-
-  const [verbruik, setVerbruik] = useState('');
-  const [vermogenWp, setVermogenWp] = useState('');
-  const [aantalPanelen, setAantalPanelen] = useState('');
+export default function ZakelijkOpslagScreen({ navigation }) {
+  const [pvOpwek, setPvOpwek] = useState('');
+  const [buffer, setBuffer] = useState('');
 
   const doorgaan = () => {
-    navigation.navigate('Advies', {
-      verbruik,
-      vermogenWp,
-      aantalPanelen,
-      aansluiting
-    });
+    const bufferDecimaal = parseFloat(buffer) / 100;
+    const autonomie = 1;
+    const efficientie = 0.9;
+
+    const benodigdKwh1 = (parseFloat(pvOpwek) * bufferDecimaal * autonomie) / efficientie;
+
+   navigation.navigate('NoodstroomVraag', { kwh2: benodigdKwh1 });
   };
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>Vul je gegevens in</Text>
+        <Text style={styles.title}>Opslag van PV-opwek optimaliseren</Text>
 
-        <Text style={styles.label}>Jaarlijks stroomverbruik (kWh)</Text>
+        <Text style={styles.label}>Dagelijkse PV-opwek (kWh)</Text>
         <TextInput
           style={styles.input}
           keyboardType="numeric"
-          value={verbruik}
-          onChangeText={setVerbruik}
+          value={pvOpwek}
+          onChangeText={setPvOpwek}
         />
 
-        <Text style={styles.label}>Vermogen per zonnepaneel (Wp)</Text>
+        <Text style={styles.label}>Gewenste buffer (%)</Text>
         <TextInput
           style={styles.input}
           keyboardType="numeric"
-          value={vermogenWp}
-          onChangeText={setVermogenWp}
-        />
-
-        <Text style={styles.label}>Aantal zonnepanelen</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={aantalPanelen}
-          onChangeText={setAantalPanelen}
+          value={buffer}
+          onChangeText={setBuffer}
         />
 
         <TouchableOpacity style={styles.button} onPress={doorgaan}>
@@ -68,7 +57,8 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     color: '#3eaf4f',
-    marginBottom: 30
+    marginBottom: 30,
+    textAlign: 'center'
   },
   label: {
     fontSize: 16,
