@@ -1,38 +1,31 @@
-// screens/NoodstroomGegevensScreen.js
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  KeyboardAvoidingView,
-  ScrollView,
-  Platform,
-} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 
-export default function NoodstroomGegevensScreen({ navigation, route }) {
-  const { kwh2 } = route.params || {};
 
+export default function NoodstroomVraagScreen({ navigation, route }) {
+  const { kwh1 } = route.params;
   const [kritischVerbruik, setKritischVerbruik] = useState('');
   const [backupTijd, setBackupTijd] = useState('');
 
-  const doorgaan = () => {
-    if (!kritischVerbruik || !backupTijd) return;
-
-    const kwh1 = (parseFloat(kritischVerbruik) * parseFloat(backupTijd)) / 0.9;
-
-    navigation.navigate('EnergiehandelVraag', { kwh1, kwh2 });
+  const handleNext = () => {
+    const v = parseFloat(kritischVerbruik);
+    const t = parseFloat(backupTijd);
+    if (!isNaN(v) && !isNaN(t) && v > 0 && t > 0) {
+      const k2 = (v * t) / 0.9;
+      navigation.navigate('EnergiehandelVraag', { kwh1, kwh2: k2 });
+    } else {
+      alert("Vul geldige waarden in.");
+    }
   };
 
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+      keyboardVerticalOffset={80} // pas dit aan indien nodig
     >
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>Noodstroomvoorziening gegevens</Text>
+        <Text style={styles.title}>Noodstroomvoorziening</Text>
 
         <Text style={styles.label}>Kritisch verbruik (kW)</Text>
         <TextInput
@@ -40,6 +33,8 @@ export default function NoodstroomGegevensScreen({ navigation, route }) {
           keyboardType="numeric"
           value={kritischVerbruik}
           onChangeText={setKritischVerbruik}
+          placeholder="Bijv. 3.5"
+          placeholderTextColor="#aaa"
         />
 
         <Text style={styles.label}>Backuptijd (uren)</Text>
@@ -48,9 +43,11 @@ export default function NoodstroomGegevensScreen({ navigation, route }) {
           keyboardType="numeric"
           value={backupTijd}
           onChangeText={setBackupTijd}
+          placeholder="Bijv. 2"
+          placeholderTextColor="#aaa"
         />
 
-        <TouchableOpacity style={styles.button} onPress={doorgaan}>
+        <TouchableOpacity style={styles.button} onPress={handleNext}>
           <Text style={styles.buttonText}>Ga verder</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -61,41 +58,39 @@ export default function NoodstroomGegevensScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
     backgroundColor: '#fff',
+    padding: 24,
+    justifyContent: 'center',
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#3eaf4f',
-    marginBottom: 30,
     textAlign: 'center',
+    marginBottom: 30,
+    color: '#4CAF50', // groene kleur zoals de andere titels
   },
   label: {
     fontSize: 16,
-    alignSelf: 'flex-start',
-    marginBottom: 5,
+    marginBottom: 6,
   },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 10,
-    padding: 10,
+    borderRadius: 8,
+    padding: 12,
     marginBottom: 20,
-    width: '100%',
+    fontSize: 16,
   },
   button: {
-    backgroundColor: '#f7941e',
-    padding: 16,
+    backgroundColor: '#FF7F00', // oranje kleur zoals andere knoppen
+    padding: 14,
     borderRadius: 10,
-    width: '100%',
     alignItems: 'center',
     marginTop: 10,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

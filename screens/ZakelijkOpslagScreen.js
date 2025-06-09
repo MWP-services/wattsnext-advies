@@ -13,7 +13,7 @@ export default function ZakelijkOpslagScreen({ navigation }) {
 
     const benodigdKwh1 = (parseFloat(pvOpwek) * bufferDecimaal * autonomie) / efficientie;
 
-   navigation.navigate('NoodstroomVraag', { kwh2: benodigdKwh1 });
+   navigation.navigate('NoodstroomVraag', { kwh1: benodigdKwh1 });
   };
 
   return (

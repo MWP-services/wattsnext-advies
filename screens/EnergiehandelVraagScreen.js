@@ -1,51 +1,117 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform
+} from 'react-native';
 
-export default function EnergiehandelVraagScreen() {
-  const route = useRoute();
-  const navigation = useNavigation();
-  const { kwh2 } = route.params;
+export default function EnergiehandelVraagScreen({ navigation, route }) {
+  const { kwh1, kwh2 } = route.params;
+  const [pmarkt, setPmarkt] = useState('');
+  const [pnet, setPnet] = useState('');
+  const [activaties, setActivaties] = useState('');
 
-  const handleKeuze = (keuze) => {
-    navigation.navigate('OverzichtZakelijkAdvies', {
-      kwh2,
-      energiehandel: keuze
-    });
+  const handleNext = () => {
+    const markt = parseFloat(pmarkt);
+    const net = parseFloat(pnet);
+    const a = parseInt(activaties);
+    if (!isNaN(markt) && !isNaN(net) && !isNaN(a) && markt > 0 && net > 0 && a > 0) {
+      const minVermogen = Math.min(markt, net);
+      const kwh3 = (minVermogen * 2 * a) / 0.9;
+      navigation.navigate('ZakelijkAdvies', { kwh1, kwh2, kwh3 });
+    } else {
+      alert("Vul geldige waarden in.");
+    }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Wil je deelnemen aan energiehandel?</Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={80}
+    >
+      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+        <Text style={styles.title}>Energiehandel</Text>
 
-      <TouchableOpacity style={styles.button} onPress={() => handleKeuze('Ja')}>
-        <Text style={styles.buttonText}>Ja</Text>
-      </TouchableOpacity>
+        <Text style={styles.label}>Gewenst verhandelbaar vermogen (kW)</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          value={pmarkt}
+          onChangeText={setPmarkt}
+          placeholder="Bijv. 15"
+          placeholderTextColor="#aaa"
+        />
 
-      <TouchableOpacity style={styles.button} onPress={() => handleKeuze('Nee')}>
-        <Text style={styles.buttonText}>Nee</Text>
-      </TouchableOpacity>
-    </View>
+        <Text style={styles.label}>Maximaal netaansluitingsvermogen (kW)</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          value={pnet}
+          onChangeText={setPnet}
+          placeholder="Bijv. 20"
+          placeholderTextColor="#aaa"
+        />
+
+        <Text style={styles.label}>Aantal activaties per dag</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          value={activaties}
+          onChangeText={setActivaties}
+          placeholder="Bijv. 2"
+          placeholderTextColor="#aaa"
+        />
+
+        <TouchableOpacity style={styles.button} onPress={handleNext}>
+          <Text style={styles.buttonText}>Ga verder</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff', padding: 20
+    flexGrow: 1,
+    backgroundColor: '#fff',
+    padding: 24,
+    justifyContent: 'center',
   },
   title: {
-    fontSize: 22, fontWeight: 'bold', color: '#3eaf4f', marginBottom: 30, textAlign: 'center'
+    fontSize: 22,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 30,
+    color: '#4CAF50', // groene kleur voor titels
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 6,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 20,
+    fontSize: 16,
   },
   button: {
-    backgroundColor: '#f7941e',
-    padding: 16,
+    backgroundColor: '#FF7F00', // oranje kleur
+    padding: 14,
     borderRadius: 10,
-    marginVertical: 10,
-    width: '100%',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginTop: 10,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 18
-  }
+    fontSize: 16,
+    fontWeight: '600',
+  },
 });

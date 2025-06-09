@@ -1,57 +1,82 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import React from 'react';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 
-export default function ZakelijkAdviesScreen() {
-  const route = useRoute();
-  const navigation = useNavigation();
-  const { benodigdKWh1, noodstroom } = route.params;
+export default function ZakelijkAdviesScreen({ navigation, route }) {
+  const { kwh1, kwh2, kwh3 } = route.params;
+  console.log("kwh1:", kwh1, "kwh2:", kwh2, "kwh3:", kwh3);
+  const k0 = kwh1 + kwh2 + kwh3;
 
-  useEffect(() => {
-    const totaalKWh = parseFloat(benodigdKWh1) * (noodstroom ? 1.1 : 1); // +10% bij noodstroom
+  let advies = '';
+  let image = null;
 
-    // Zelfde matching als particulier (gebaseerd op opties)
-    const opties = [7.5, 10, 12.5, 15, 17.5, 20];
-    const gekozen = opties.find(optie => totaalKWh <= optie) || 20;
-
-    // Voor nu sturen we naar bestaande adviesschermen (kan later zakelijk-specifiek)
-    switch (gekozen) {
-      case 7.5:
-        navigation.replace('Advies 7.5 kWh Hoog');
-        break;
-      case 10:
-        navigation.replace('Advies 10 kWh Hoog');
-        break;
-      case 12.5:
-        navigation.replace('Advies 12.5 kWh Hoog');
-        break;
-      case 15:
-        navigation.replace('Advies 15 kWh Hoog');
-        break;
-      case 17.5:
-        navigation.replace('Advies 17.5 kWh Hoog');
-        break;
-      case 20:
-        navigation.replace('Advies 20 kWh Hoog');
-        break;
-      default:
-        navigation.replace('Advies 20 kWh Hoog');
-    }
-  }, []);
+  if (k0 <= 64) {
+    advies = '64 kWh batterij';
+    image = require('../assets/64-KWH-ZAKELIJK.png');
+  } else if (k0 <= 96) {
+    advies = '96 kWh batterij';
+    image = require('../assets/96-KWH-ZAKELIJK.png');
+  } else if (k0 <= 232) {
+    advies = '232 kWh batterij (modulair uitbreidbaar)';
+    image = require('../assets/232-KWH-ZAKELIJK.png');
+  } else if (k0 <= 2090) {
+    advies = '2.09 MWh batterij (modulair uitbreidbaar)';
+    image = require('../assets/2-MW-ZAKELIJK.png');
+  } else {
+    advies = '5.01 MWh batterij (modulair uitbreidbaar)';
+    image = require('../assets/5-MW-ZAKELIJK.png');
+  }
 
   return (
-    <View style={styles.container}>
-      <ActivityIndicator size="large" color="#f7941e" />
-      <Text style={styles.text}>Zakelijk advies wordt berekend...</Text>
-    </View>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>Advies op maat</Text>
+      <Text style={styles.text}>Benodigd vermogen: {k0.toFixed(2)} kWh</Text>
+      <Text style={styles.text}>Aanbevolen oplossing: {advies}</Text>
+
+      {image && <Image source={image} style={styles.image} resizeMode="contain" />}
+
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Specificaties')}>
+        <Text style={styles.buttonText}>Bekijk specificaties</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    padding: 24,
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+    color: '#4CAF50', // groene titel
   },
   text: {
-    marginTop: 20, fontSize: 16
-  }
+    fontSize: 18,
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  image: {
+    width: '100%',
+    height: 250,
+    marginVertical: 20,
+  },
+  button: {
+    backgroundColor: '#FF7F00', // oranje knop
+    padding: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+    width: '100%',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
 });
