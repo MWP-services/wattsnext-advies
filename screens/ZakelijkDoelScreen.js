@@ -10,14 +10,15 @@ export default function ZakelijkDoelScreen({ navigation }) {
     'Handel op energiemarkten'
   ];
 
-const handleKeuze = (doel) => {
-  if (doel === 'Opslag van PV-opwek optimaliseren') {
-    navigation.navigate('ZakelijkOpslag');
-  } else {
-    // andere opties kunnen later
-    console.log('Gekozen doel:', doel);
-  }
-};
+  const handleKeuze = (doel) => {
+    if (doel === 'Opslag van PV-opwek optimaliseren') {
+      navigation.navigate('ZakelijkOpslag');
+    } else if (doel === 'Peak shaving') {
+      navigation.navigate('PeakShaving');
+    } else {
+      console.log('Gekozen doel:', doel);
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
