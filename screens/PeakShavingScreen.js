@@ -38,7 +38,7 @@ export default function PeakShavingScreen({ navigation }) {
       return;
     }
 
-    navigation.navigate('NoodstroomVraag', { kwh1 });
+    navigation.navigate('PeakNoodstroomVraag', { kwh1 });
   };
 
   return (

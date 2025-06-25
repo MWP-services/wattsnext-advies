@@ -27,6 +27,9 @@ import NoodstroomGegevensScreen from './screens/NoodstroomGegevensScreen';
 import EnergiehandelVraagScreen from './screens/EnergiehandelVraagScreen';
 import OverzichtZakelijkAdviesScreen from './screens/OverzichtZakelijkAdviesScreen';
 import PeakShavingScreen from './screens/PeakShavingScreen';
+import PeakNoodstroomVraagScreen from './screens/PeakNoodstroomVraagScreen';
+import PeakEnergieHandelVraagScreen from './screens/PeakEnergieHandelVraagScreen';
+import ZakelijkAdviesPeakScreen from './screens/ZakelijkAdviesPeakScreen';
 
 
 
@@ -62,6 +65,9 @@ export default function App() {
 <Stack.Screen name="EnergiehandelVraag" component={EnergiehandelVraagScreen} />
 <Stack.Screen name="OverzichtZakelijkAdvies" component={OverzichtZakelijkAdviesScreen} />
 <Stack.Screen name="PeakShaving" component={PeakShavingScreen} />
+<Stack.Screen name="PeakNoodstroomVraag" component={PeakNoodstroomVraagScreen} />
+<Stack.Screen name="PeakEnergieHandelVraag" component={PeakEnergieHandelVraagScreen} />
+<Stack.Screen name="ZakelijkAdviesPeak" component={ZakelijkAdviesPeakScreen} />
 
 
 
