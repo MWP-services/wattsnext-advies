@@ -6,7 +6,7 @@ export default function ZakelijkDoelScreen({ navigation }) {
     'Opslag van PV-opwek optimaliseren',
     'Peak shaving',
     'Netcongestie',
-    'Noodstroomoorziening',
+    'Noodstroomvoorziening',
     'Energie-inkoop optimaliseren',
     'Handel op energiemarkten'
   ];
