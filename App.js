@@ -30,6 +30,10 @@ import PeakShavingScreen from './screens/PeakShavingScreen';
 import PeakNoodstroomVraagScreen from './screens/PeakNoodstroomVraagScreen';
 import PeakEnergieHandelVraagScreen from './screens/PeakEnergieHandelVraagScreen';
 import ZakelijkAdviesPeakScreen from './screens/ZakelijkAdviesPeakScreen';
+import NetcongestieVraagScreen from './screens/NetcongestieVraagScreen';
+import NetcongestieNoodstroomVraag from './screens/NetcongestieNoodstroomVraag';
+import NetcongestieEnergiehandelVraag from './screens/NetcongestieEnergiehandelVraag';
+import ZakelijkAdviesNetcongestie from './screens/ZakelijkAdviesNetcongestie';
 
 
 
@@ -68,6 +72,10 @@ export default function App() {
 <Stack.Screen name="PeakNoodstroomVraag" component={PeakNoodstroomVraagScreen} />
 <Stack.Screen name="PeakEnergieHandelVraag" component={PeakEnergieHandelVraagScreen} />
 <Stack.Screen name="ZakelijkAdviesPeak" component={ZakelijkAdviesPeakScreen} />
+<Stack.Screen name="NetcongestieVraagScreen" component={NetcongestieVraagScreen} />
+<Stack.Screen name="NetcongestieNoodstroomVraag" component={NetcongestieNoodstroomVraag} />
+<Stack.Screen name="NetcongestieEnergiehandelVraag" component={NetcongestieEnergiehandelVraag} />
+<Stack.Screen name="ZakelijkAdviesNetcongestie" component={ZakelijkAdviesNetcongestie} />
 
 
 

@@ -11,14 +11,17 @@ export default function ZakelijkDoelScreen({ navigation }) {
   ];
 
   const handleKeuze = (doel) => {
-    if (doel === 'Opslag van PV-opwek optimaliseren') {
-      navigation.navigate('ZakelijkOpslag');
-    } else if (doel === 'Peak shaving') {
-      navigation.navigate('PeakShaving');
-    } else {
-      console.log('Gekozen doel:', doel);
-    }
-  };
+  if (doel === 'Opslag van PV-opwek optimaliseren') {
+    navigation.navigate('ZakelijkOpslag');
+  } else if (doel === 'Peak shaving') {
+    navigation.navigate('PeakShaving');
+  } else if (doel === 'Netcongestie') {
+    navigation.navigate('NetcongestieVraagScreen');
+  } else {
+    console.log('Gekozen doel:', doel);
+  }
+};
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
