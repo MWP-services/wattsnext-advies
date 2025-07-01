@@ -22,6 +22,9 @@ export default function ZakelijkDoelScreen({ navigation }) {
   navigation.navigate('Noodstroomcoorziening');
  } else if (doel === 'Energie-inkoop optimaliseren') {
   navigation.navigate('LoadShiftingVraagScreen'); 
+  } else if (doel === 'Handel op energiemarkten') {
+  navigation.navigate('HandelEnergieHandelVraagScreen');
+
 }
 
 };

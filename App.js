@@ -40,9 +40,12 @@ import ZakelijkAdviesNoodstroom from './screens/ZakelijkAdviesNoodstroom';
 import LoadShiftingVraagScreen from './screens/LoadShiftingVraagScreen';
 import LoadShiftingNoodstroomVraagScreen from './screens/LoadShiftingNoodstroomVraagScreen';
 import LoadShiftingEnergiehandelVraagScreen from './screens/LoadShiftingEnergiehandelVraagScreen';
-import ZakelijkAdviesLoadShiftingScreen from './screens/ZakelijkAdviesLoadShiftingScreen';`
+import ZakelijkAdviesLoadShiftingScreen from './screens/ZakelijkAdviesLoadShiftingScreen';
+import HandelEnergieHandelVraagScreen from './screens/HandelEnergieHandelVraagScreen';
+import HandelNoodstroomVraagScreen from './screens/HandelNoodstroomVraagScreen';
+import ZakelijkAdviesHandelScreen from './screens/ZakelijkAdviesHandelScreen';
 
-`
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -89,6 +92,9 @@ export default function App() {
 <Stack.Screen name="LoadShiftingNoodstroomVraag" component={LoadShiftingNoodstroomVraagScreen} />
 <Stack.Screen name="LoadShiftingEnergiehandelVraag" component={LoadShiftingEnergiehandelVraagScreen} />
 <Stack.Screen name="ZakelijkAdviesLoadShifting" component={ZakelijkAdviesLoadShiftingScreen} />
+<Stack.Screen name="HandelEnergieHandelVraag" component={HandelEnergieHandelVraagScreen} />
+<Stack.Screen name="HandelNoodstroomVraag" component={HandelNoodstroomVraagScreen} />
+<Stack.Screen name="ZakelijkAdviesHandel" component={ZakelijkAdviesHandelScreen} />
 
       </Stack.Navigator>
     </NavigationContainer>
