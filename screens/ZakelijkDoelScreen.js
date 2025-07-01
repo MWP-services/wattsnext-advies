@@ -6,6 +6,7 @@ export default function ZakelijkDoelScreen({ navigation }) {
     'Opslag van PV-opwek optimaliseren',
     'Peak shaving',
     'Netcongestie',
+    'Noodstroomoorziening',
     'Energie-inkoop optimaliseren',
     'Handel op energiemarkten'
   ];
@@ -17,9 +18,12 @@ export default function ZakelijkDoelScreen({ navigation }) {
     navigation.navigate('PeakShaving');
   } else if (doel === 'Netcongestie') {
     navigation.navigate('NetcongestieVraagScreen');
-  } else {
-    console.log('Gekozen doel:', doel);
-  }
+  } else if (doel === 'Noodstroomvoorziening') {
+  navigation.navigate('Noodstroomcoorziening');
+ } else if (doel === 'Energie-inkoop optimaliseren') {
+  navigation.navigate('LoadShiftingVraagScreen'); 
+}
+
 };
 
 

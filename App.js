@@ -34,9 +34,15 @@ import NetcongestieVraagScreen from './screens/NetcongestieVraagScreen';
 import NetcongestieNoodstroomVraag from './screens/NetcongestieNoodstroomVraag';
 import NetcongestieEnergiehandelVraag from './screens/NetcongestieEnergiehandelVraag';
 import ZakelijkAdviesNetcongestie from './screens/ZakelijkAdviesNetcongestie';
+import Noodstroomvoorziening from './screens/Noodstroomvoorziening';
+import NoodstroomEnergiehandelVraagScreen from './screens/NoodstroomEnergiehandelVraagScreen';
+import ZakelijkAdviesNoodstroom from './screens/ZakelijkAdviesNoodstroom';
+import LoadShiftingVraagScreen from './screens/LoadShiftingVraagScreen';
+import LoadShiftingNoodstroomVraagScreen from './screens/LoadShiftingNoodstroomVraagScreen';
+import LoadShiftingEnergiehandelVraagScreen from './screens/LoadShiftingEnergiehandelVraagScreen';
+import ZakelijkAdviesLoadShiftingScreen from './screens/ZakelijkAdviesLoadShiftingScreen';`
 
-
-
+`
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -76,9 +82,13 @@ export default function App() {
 <Stack.Screen name="NetcongestieNoodstroomVraag" component={NetcongestieNoodstroomVraag} />
 <Stack.Screen name="NetcongestieEnergiehandelVraag" component={NetcongestieEnergiehandelVraag} />
 <Stack.Screen name="ZakelijkAdviesNetcongestie" component={ZakelijkAdviesNetcongestie} />
-
-
-
+<Stack.Screen name="Noodstroomvoorziening" component={Noodstroomvoorziening} />
+<Stack.Screen name="NoodstroomEnergiehandelVraag" component={NoodstroomEnergiehandelVraagScreen} />
+<Stack.Screen name="ZakelijkAdviesNoodstroom" component={ZakelijkAdviesNoodstroom} />
+<Stack.Screen name="LoadShiftingVraagScreen" component={LoadShiftingVraagScreen} />
+<Stack.Screen name="LoadShiftingNoodstroomVraag" component={LoadShiftingNoodstroomVraagScreen} />
+<Stack.Screen name="LoadShiftingEnergiehandelVraag" component={LoadShiftingEnergiehandelVraagScreen} />
+<Stack.Screen name="ZakelijkAdviesLoadShifting" component={ZakelijkAdviesLoadShiftingScreen} />
 
       </Stack.Navigator>
     </NavigationContainer>
