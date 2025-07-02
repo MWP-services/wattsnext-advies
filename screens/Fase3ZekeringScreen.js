@@ -19,7 +19,7 @@ export default function Fase3ZekeringScreen({ navigation }) {
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Persoonsgegevens', { aansluiting })}>
-        <Text style={styles.buttonText}>32A</Text>
+        <Text style={styles.buttonText}>35A</Text>
       </TouchableOpacity>
     </View>
   );
