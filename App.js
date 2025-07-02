@@ -92,7 +92,7 @@ export default function App() {
 <Stack.Screen name="LoadShiftingNoodstroomVraag" component={LoadShiftingNoodstroomVraagScreen} />
 <Stack.Screen name="LoadShiftingEnergiehandelVraag" component={LoadShiftingEnergiehandelVraagScreen} />
 <Stack.Screen name="ZakelijkAdviesLoadShifting" component={ZakelijkAdviesLoadShiftingScreen} />
-<Stack.Screen name="HandelEnergieHandelVraag" component={HandelEnergieHandelVraagScreen} />
+<Stack.Screen name="HandelEnergieHandelVraagScreen" component={HandelEnergieHandelVraagScreen} />
 <Stack.Screen name="HandelNoodstroomVraag" component={HandelNoodstroomVraagScreen} />
 <Stack.Screen name="ZakelijkAdviesHandel" component={ZakelijkAdviesHandelScreen} />
 

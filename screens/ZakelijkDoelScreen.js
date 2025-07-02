@@ -19,7 +19,7 @@ export default function ZakelijkDoelScreen({ navigation }) {
   } else if (doel === 'Netcongestie') {
     navigation.navigate('NetcongestieVraagScreen');
   } else if (doel === 'Noodstroomvoorziening') {
-  navigation.navigate('Noodstroomcoorziening');
+  navigation.navigate('Noodstroomvoorziening');
  } else if (doel === 'Energie-inkoop optimaliseren') {
   navigation.navigate('LoadShiftingVraagScreen'); 
   } else if (doel === 'Handel op energiemarkten') {
