@@ -4,7 +4,6 @@
     "slug": "wattsnext-advies",
     "version": "1.0.0",
     "orientation": "portrait",
-    "privacy": "public",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
