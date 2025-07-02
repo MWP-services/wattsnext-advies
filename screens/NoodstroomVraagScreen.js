@@ -1,11 +1,25 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform
+} from 'react-native';
 
 export default function NoodstroomVraagScreen({ navigation, route }) {
   const { kwh1 } = route.params;
+  const [wilNoodstroom, setWilNoodstroom] = useState(null);
   const [kritischVerbruik, setKritischVerbruik] = useState('');
   const [backupTijd, setBackupTijd] = useState('');
+
+  const handleNee = () => {
+    setWilNoodstroom(false);
+    navigation.navigate('EnergiehandelVraag', { kwh1, kwh2: 0 });
+  };
 
   const handleNext = () => {
     const v = parseFloat(kritischVerbruik);
@@ -22,34 +36,53 @@ export default function NoodstroomVraagScreen({ navigation, route }) {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={80} // pas dit aan indien nodig
+      keyboardVerticalOffset={80}
     >
-      <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>Noodstroomvoorziening</Text>
+      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+        <Text style={styles.title}>Wilt u ruimte overhouden voor noodstroom?</Text>
 
-        <Text style={styles.label}>Kritisch verbruik (kW)</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={kritischVerbruik}
-          onChangeText={setKritischVerbruik}
-          placeholder="Bijv. 3.5"
-          placeholderTextColor="#aaa"
-        />
+        <View style={styles.toggleContainer}>
+          <TouchableOpacity
+            style={[styles.toggleButton, wilNoodstroom === true && styles.toggleSelected]}
+            onPress={() => setWilNoodstroom(true)}
+          >
+            <Text style={styles.toggleText}>Ja</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.toggleButton, wilNoodstroom === false && styles.toggleSelected]}
+            onPress={handleNee}
+          >
+            <Text style={styles.toggleText}>Nee</Text>
+          </TouchableOpacity>
+        </View>
 
-        <Text style={styles.label}>Backuptijd (uren)</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={backupTijd}
-          onChangeText={setBackupTijd}
-          placeholder="Bijv. 2"
-          placeholderTextColor="#aaa"
-        />
+        {wilNoodstroom === true && (
+          <>
+            <Text style={styles.label}>Kritisch verbruik (kW)</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={kritischVerbruik}
+              onChangeText={setKritischVerbruik}
+              placeholder="Bijv. 3.5"
+              placeholderTextColor="#aaa"
+            />
 
-        <TouchableOpacity style={styles.button} onPress={handleNext}>
-          <Text style={styles.buttonText}>Ga verder</Text>
-        </TouchableOpacity>
+            <Text style={styles.label}>Backuptijd (uren)</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={backupTijd}
+              onChangeText={setBackupTijd}
+              placeholder="Bijv. 2"
+              placeholderTextColor="#aaa"
+            />
+
+            <TouchableOpacity style={styles.button} onPress={handleNext}>
+              <Text style={styles.buttonText}>Ga verder</Text>
+            </TouchableOpacity>
+          </>
+        )}
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -66,8 +99,8 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 30,
-    color: '#4CAF50', // groene kleur zoals de andere titels
+    marginBottom: 20,
+    color: '#4CAF50',
   },
   label: {
     fontSize: 16,
@@ -82,7 +115,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#FF7F00', // oranje kleur zoals andere knoppen
+    backgroundColor: '#FF7F00',
     padding: 14,
     borderRadius: 10,
     alignItems: 'center',
@@ -92,5 +125,27 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  toggleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 30,
+  },
+  toggleButton: {
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    marginHorizontal: 10,
+    backgroundColor: '#f9f9f9',
+    minWidth: 100,
+    alignItems: 'center',
+  },
+  toggleSelected: {
+    backgroundColor: '#4CAF50',
+  },
+  toggleText: {
+    color: '#000',
+    fontSize: 16,
   },
 });

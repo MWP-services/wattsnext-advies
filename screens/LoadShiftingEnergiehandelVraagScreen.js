@@ -1,3 +1,4 @@
+// screens/LoadShiftingEnergiehandelVraagScreen.js
 import React, { useState } from 'react';
 import {
   View,
@@ -10,28 +11,30 @@ import {
   Platform
 } from 'react-native';
 
-export default function EnergiehandelVraagScreen({ navigation, route }) {
+export default function LoadShiftingEnergiehandelVraagScreen({ navigation, route }) {
   const { kwh1, kwh2 } = route.params;
+  const [wiltHandelen, setWiltHandelen] = useState(null);
   const [pmarkt, setPmarkt] = useState('');
   const [pnet, setPnet] = useState('');
   const [activaties, setActivaties] = useState('');
-  const [wiltHandelen, setWiltHandelen] = useState(null); // null, true of false
 
   const handleNext = () => {
     const markt = parseFloat(pmarkt);
     const net = parseFloat(pnet);
     const a = parseInt(activaties);
+
     if (!isNaN(markt) && !isNaN(net) && !isNaN(a) && markt > 0 && net > 0 && a > 0) {
       const minVermogen = Math.min(markt, net);
-      const kwh3 = (minVermogen * 2 * a) / 0.9;
-      navigation.navigate('ZakelijkAdvies', { kwh1, kwh2, kwh3 });
+      const kwh3 = (minVermogen * 2 * a) / 0.9; // 90% efficiëntie
+      console.log("LoadShifting kwh3:", kwh3);
+      navigation.navigate('ZakelijkAdviesLoadShifting', { kwh1, kwh2, kwh3 });
     } else {
       alert("Vul geldige waarden in.");
     }
   };
 
   const handleNee = () => {
-    navigation.navigate('ZakelijkAdvies', { kwh1, kwh2, kwh3: 0 });
+    navigation.navigate('ZakelijkAdviesLoadShifting', { kwh1, kwh2, kwh3: 0 });
   };
 
   return (
