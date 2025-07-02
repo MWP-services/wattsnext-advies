@@ -1,21 +1,16 @@
+// screens/NoodstroomEnergiehandelVraagScreen.js
 import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform
+  View, Text, TextInput, TouchableOpacity,
+  StyleSheet, ScrollView, KeyboardAvoidingView, Platform
 } from 'react-native';
 
-export default function EnergiehandelVraagScreen({ navigation, route }) {
-  const { kwh1, kwh2 } = route.params;
+export default function NoodstroomEnergiehandelVraag({ navigation, route }) {
+  const { kwh1 } = route.params;
+  const [wiltHandelen, setWiltHandelen] = useState(null);
   const [pmarkt, setPmarkt] = useState('');
   const [pnet, setPnet] = useState('');
   const [activaties, setActivaties] = useState('');
-  const [wiltHandelen, setWiltHandelen] = useState(null); // null, true of false
 
   const handleNext = () => {
     const markt = parseFloat(pmarkt);
@@ -23,15 +18,15 @@ export default function EnergiehandelVraagScreen({ navigation, route }) {
     const a = parseInt(activaties);
     if (!isNaN(markt) && !isNaN(net) && !isNaN(a) && markt > 0 && net > 0 && a > 0) {
       const minVermogen = Math.min(markt, net);
-      const kwh3 = (minVermogen * 2 * a) / 0.9;
-      navigation.navigate('ZakelijkAdvies', { kwh1, kwh2, kwh3 });
+      const kwh2 = (minVermogen * 2 * a) / 0.9;
+      navigation.navigate('ZakelijkAdviesNoodstroom', { kwh1, kwh2 });
     } else {
       alert("Vul geldige waarden in.");
     }
   };
 
   const handleNee = () => {
-    navigation.navigate('ZakelijkAdvies', { kwh1, kwh2, kwh3: 0 });
+    navigation.navigate('ZakelijkAdviesNoodstroom', { kwh1, kwh2: 0 });
   };
 
   return (

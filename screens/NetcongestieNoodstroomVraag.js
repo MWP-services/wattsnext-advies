@@ -1,3 +1,4 @@
+// screens/NetcongestieNoodstroomVraag.js
 import React, { useState } from 'react';
 import {
   View,
@@ -7,31 +8,28 @@ import {
   StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
-  Platform
+  Platform,
 } from 'react-native';
 
-export default function EnergiehandelVraagScreen({ navigation, route }) {
-  const { kwh1, kwh2 } = route.params;
-  const [pmarkt, setPmarkt] = useState('');
-  const [pnet, setPnet] = useState('');
-  const [activaties, setActivaties] = useState('');
-  const [wiltHandelen, setWiltHandelen] = useState(null); // null, true of false
-
-  const handleNext = () => {
-    const markt = parseFloat(pmarkt);
-    const net = parseFloat(pnet);
-    const a = parseInt(activaties);
-    if (!isNaN(markt) && !isNaN(net) && !isNaN(a) && markt > 0 && net > 0 && a > 0) {
-      const minVermogen = Math.min(markt, net);
-      const kwh3 = (minVermogen * 2 * a) / 0.9;
-      navigation.navigate('ZakelijkAdvies', { kwh1, kwh2, kwh3 });
-    } else {
-      alert("Vul geldige waarden in.");
-    }
-  };
+export default function NetcongestieNoodstroomVraag({ navigation, route }) {
+  const { kwh1 } = route.params;
+  const [wilNoodstroom, setWilNoodstroom] = useState(null);
+  const [kritischVerbruik, setKritischVerbruik] = useState('');
+  const [backupTijd, setBackupTijd] = useState('');
 
   const handleNee = () => {
-    navigation.navigate('ZakelijkAdvies', { kwh1, kwh2, kwh3: 0 });
+    navigation.navigate('NetcongestieEnergiehandelVraag', { kwh1, kwh2: 0 });
+  };
+
+  const handleNext = () => {
+    const v = parseFloat(kritischVerbruik);
+    const t = parseFloat(backupTijd);
+    if (!isNaN(v) && !isNaN(t) && v > 0 && t > 0) {
+      const kwh2 = (v * t) / 0.9;
+      navigation.navigate('NetcongestieEnergiehandelVraag', { kwh1, kwh2 });
+    } else {
+      alert('Vul geldige waarden in.');
+    }
   };
 
   return (
@@ -41,51 +39,41 @@ export default function EnergiehandelVraagScreen({ navigation, route }) {
       keyboardVerticalOffset={80}
     >
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <Text style={styles.title}>Wilt u handelen op de energiemarkt?</Text>
+        <Text style={styles.title}>Wilt u ruimte reserveren voor noodstroomvoorziening?</Text>
 
         <View style={styles.toggleContainer}>
           <TouchableOpacity
-            style={[styles.toggleButton, wiltHandelen === true && styles.toggleSelected]}
-            onPress={() => setWiltHandelen(true)}
+            style={[styles.toggleButton, wilNoodstroom === true && styles.toggleSelected]}
+            onPress={() => setWilNoodstroom(true)}
           >
             <Text style={styles.toggleText}>Ja</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.toggleButton, wiltHandelen === false && styles.toggleSelected]}
+            style={[styles.toggleButton, wilNoodstroom === false && styles.toggleSelected]}
             onPress={handleNee}
           >
             <Text style={styles.toggleText}>Nee</Text>
           </TouchableOpacity>
         </View>
 
-        {wiltHandelen === true && (
+        {wilNoodstroom === true && (
           <>
-            <Text style={styles.label}>Gewenst verhandelbaar vermogen (kW)</Text>
+            <Text style={styles.label}>Kritisch verbruik (kW)</Text>
             <TextInput
               style={styles.input}
               keyboardType="numeric"
-              value={pmarkt}
-              onChangeText={setPmarkt}
-              placeholder="Bijv. 15"
+              value={kritischVerbruik}
+              onChangeText={setKritischVerbruik}
+              placeholder="Bijv. 3.5"
               placeholderTextColor="#aaa"
             />
 
-            <Text style={styles.label}>Maximaal netaansluitingsvermogen (kW)</Text>
+            <Text style={styles.label}>Backuptijd (uren)</Text>
             <TextInput
               style={styles.input}
               keyboardType="numeric"
-              value={pnet}
-              onChangeText={setPnet}
-              placeholder="Bijv. 20"
-              placeholderTextColor="#aaa"
-            />
-
-            <Text style={styles.label}>Aantal activaties per dag</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={activaties}
-              onChangeText={setActivaties}
+              value={backupTijd}
+              onChangeText={setBackupTijd}
               placeholder="Bijv. 2"
               placeholderTextColor="#aaa"
             />

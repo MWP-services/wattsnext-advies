@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import {
   View,
@@ -7,31 +8,32 @@ import {
   StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
-  Platform
+  Platform,
 } from 'react-native';
 
-export default function EnergiehandelVraagScreen({ navigation, route }) {
-  const { kwh1, kwh2 } = route.params;
+export default function HandelEnergieHandelVraagScreen({ navigation }) {
   const [pmarkt, setPmarkt] = useState('');
   const [pnet, setPnet] = useState('');
   const [activaties, setActivaties] = useState('');
-  const [wiltHandelen, setWiltHandelen] = useState(null); // null, true of false
+  const [wiltNoodstroom, setWiltNoodstroom] = useState(null);
 
   const handleNext = () => {
     const markt = parseFloat(pmarkt);
     const net = parseFloat(pnet);
     const a = parseInt(activaties);
+
     if (!isNaN(markt) && !isNaN(net) && !isNaN(a) && markt > 0 && net > 0 && a > 0) {
       const minVermogen = Math.min(markt, net);
-      const kwh3 = (minVermogen * 2 * a) / 0.9;
-      navigation.navigate('ZakelijkAdvies', { kwh1, kwh2, kwh3 });
+      const kwh1 = (minVermogen * 2 * a) / 0.9;
+
+      if (wiltNoodstroom === true) {
+        navigation.navigate('HandelNoodstroomVraag', { kwh1 });
+      } else {
+        navigation.navigate('ZakelijkAdviesHandel', { kwh1, kwh2: 0 });
+      }
     } else {
       alert("Vul geldige waarden in.");
     }
-  };
-
-  const handleNee = () => {
-    navigation.navigate('ZakelijkAdvies', { kwh1, kwh2, kwh3: 0 });
   };
 
   return (
@@ -41,60 +43,57 @@ export default function EnergiehandelVraagScreen({ navigation, route }) {
       keyboardVerticalOffset={80}
     >
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <Text style={styles.title}>Wilt u handelen op de energiemarkt?</Text>
+        <Text style={styles.title}>Handel op de energiemarkt</Text>
 
+        <Text style={styles.label}>Gewenst verhandelbaar vermogen (kW)</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          value={pmarkt}
+          onChangeText={setPmarkt}
+          placeholder="Bijv. 15"
+          placeholderTextColor="#aaa"
+        />
+
+        <Text style={styles.label}>Maximaal netaansluitingsvermogen (kW)</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          value={pnet}
+          onChangeText={setPnet}
+          placeholder="Bijv. 20"
+          placeholderTextColor="#aaa"
+        />
+
+        <Text style={styles.label}>Aantal activaties per dag</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          value={activaties}
+          onChangeText={setActivaties}
+          placeholder="Bijv. 2"
+          placeholderTextColor="#aaa"
+        />
+
+        <Text style={styles.label}>Wilt u ruimte reserveren voor noodstroomvoorziening?</Text>
         <View style={styles.toggleContainer}>
           <TouchableOpacity
-            style={[styles.toggleButton, wiltHandelen === true && styles.toggleSelected]}
-            onPress={() => setWiltHandelen(true)}
+            style={[styles.toggleButton, wiltNoodstroom === true && styles.toggleSelected]}
+            onPress={() => setWiltNoodstroom(true)}
           >
             <Text style={styles.toggleText}>Ja</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.toggleButton, wiltHandelen === false && styles.toggleSelected]}
-            onPress={handleNee}
+            style={[styles.toggleButton, wiltNoodstroom === false && styles.toggleSelected]}
+            onPress={() => setWiltNoodstroom(false)}
           >
             <Text style={styles.toggleText}>Nee</Text>
           </TouchableOpacity>
         </View>
 
-        {wiltHandelen === true && (
-          <>
-            <Text style={styles.label}>Gewenst verhandelbaar vermogen (kW)</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={pmarkt}
-              onChangeText={setPmarkt}
-              placeholder="Bijv. 15"
-              placeholderTextColor="#aaa"
-            />
-
-            <Text style={styles.label}>Maximaal netaansluitingsvermogen (kW)</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={pnet}
-              onChangeText={setPnet}
-              placeholder="Bijv. 20"
-              placeholderTextColor="#aaa"
-            />
-
-            <Text style={styles.label}>Aantal activaties per dag</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={activaties}
-              onChangeText={setActivaties}
-              placeholder="Bijv. 2"
-              placeholderTextColor="#aaa"
-            />
-
-            <TouchableOpacity style={styles.button} onPress={handleNext}>
-              <Text style={styles.buttonText}>Ga verder</Text>
-            </TouchableOpacity>
-          </>
-        )}
+        <TouchableOpacity style={styles.button} onPress={handleNext}>
+          <Text style={styles.buttonText}>Ga verder</Text>
+        </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
   );

@@ -6,19 +6,29 @@ export default function ZakelijkDoelScreen({ navigation }) {
     'Opslag van PV-opwek optimaliseren',
     'Peak shaving',
     'Netcongestie',
+    'Noodstroomvoorziening',
     'Energie-inkoop optimaliseren',
     'Handel op energiemarkten'
   ];
 
   const handleKeuze = (doel) => {
-    if (doel === 'Opslag van PV-opwek optimaliseren') {
-      navigation.navigate('ZakelijkOpslag');
-    } else if (doel === 'Peak shaving') {
-      navigation.navigate('PeakShaving');
-    } else {
-      console.log('Gekozen doel:', doel);
-    }
-  };
+  if (doel === 'Opslag van PV-opwek optimaliseren') {
+    navigation.navigate('ZakelijkOpslag');
+  } else if (doel === 'Peak shaving') {
+    navigation.navigate('PeakShaving');
+  } else if (doel === 'Netcongestie') {
+    navigation.navigate('NetcongestieVraagScreen');
+  } else if (doel === 'Noodstroomvoorziening') {
+  navigation.navigate('Noodstroomcoorziening');
+ } else if (doel === 'Energie-inkoop optimaliseren') {
+  navigation.navigate('LoadShiftingVraagScreen'); 
+  } else if (doel === 'Handel op energiemarkten') {
+  navigation.navigate('HandelEnergieHandelVraagScreen');
+
+}
+
+};
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

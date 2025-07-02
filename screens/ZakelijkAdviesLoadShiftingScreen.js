@@ -1,12 +1,15 @@
+// screens/ZakelijkAdviesLoadShiftingScreen.js
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 
-export default function ZakelijkAdviesPeakScreen({ route, navigation }) {
-  const { kwh1, kwh2 = 0, kwh3 = 0 } = route.params;
+export default function ZakelijkAdviesLoadShiftingScreen({ route, navigation }) {
+  const { kwh1 = 0, kwh2 = 0, kwh3 = 0 } = route.params;
   const totaleBehoefte = kwh1 + kwh2 + kwh3;
+  console.log("LoadShifting Advies -> kwh1:", kwh1, "kwh2:", kwh2, "kwh3:", kwh3);
 
   let advies = '';
   let image = null;
+  let modules = 0;
 
   if (totaleBehoefte <= 64) {
     advies = '64 kWh batterij';
@@ -18,8 +21,8 @@ export default function ZakelijkAdviesPeakScreen({ route, navigation }) {
     advies = '232 kWh batterij';
     image = require('../assets/232-KWH-ZAKELIJK.png');
   } else if (totaleBehoefte <= 1160) {
-    const modules = Math.ceil(totaleBehoefte / 232);
-    advies = `232 kWh batterij met ${modules} module${modules > 1 ? 's' : ''}`;
+    modules = Math.ceil(totaleBehoefte / 232);
+    advies = `232 kWh batterij (${modules} modules)`;
     image = require('../assets/232-KWH-ZAKELIJK.png');
   } else if (totaleBehoefte <= 2090) {
     advies = '2.09 MWh batterij';
@@ -31,19 +34,16 @@ export default function ZakelijkAdviesPeakScreen({ route, navigation }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Advies op maat</Text>
+      <Text style={styles.title}>Advies Load Shifting</Text>
       <Text style={styles.info}>Totale energiebehoefte: {totaleBehoefte.toFixed(1)} kWh</Text>
-      <Text style={styles.advice}>{advies}</Text>
+      <Text style={styles.info}>Aanbevolen oplossing: {advies}</Text>
 
       {image && (
         <Image source={image} style={styles.image} resizeMode="contain" />
       )}
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Specificaties')}
-      >
-        <Text style={styles.buttonText}>Bekijk specificaties</Text>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ZakelijkDoel')}>
+        <Text style={styles.buttonText}>Terug naar Start</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -54,8 +54,8 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     backgroundColor: '#fff',
     padding: 24,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontSize: 22,
@@ -66,14 +66,7 @@ const styles = StyleSheet.create({
   },
   info: {
     fontSize: 18,
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  advice: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#f7941e',
-    marginBottom: 20,
+    marginBottom: 12,
     textAlign: 'center',
   },
   image: {
@@ -82,11 +75,12 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   button: {
-    backgroundColor: '#f7941e',
+    backgroundColor: '#FF7F00',
     padding: 14,
     borderRadius: 10,
     width: '100%',
     alignItems: 'center',
+    marginTop: 10,
   },
   buttonText: {
     color: '#fff',
