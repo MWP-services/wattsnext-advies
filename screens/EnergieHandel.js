@@ -45,7 +45,7 @@ export default function EnergieHandel({ navigation }) {
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <Text style={styles.title}>Handel op de energiemarkt</Text>
 
-        <Text style={styles.label}>Gewenst verhandelbaar vermogen (kW)</Text>
+        <Text style={styles.label}>Gewenste handels capaciteit (kWh)</Text>
         <TextInput
           style={styles.input}
           keyboardType="numeric"

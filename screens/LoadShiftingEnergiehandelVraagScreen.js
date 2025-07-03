@@ -63,7 +63,7 @@ export default function LoadShiftingEnergiehandelVraagScreen({ navigation, route
 
         {wiltHandelen === true && (
           <>
-            <Text style={styles.label}>Gewenst verhandelbaar vermogen (kW)</Text>
+            <Text style={styles.label}>Gewenste handels capaciteit (kWh)</Text>
             <TextInput
               style={styles.input}
               keyboardType="numeric"

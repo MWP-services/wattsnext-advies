@@ -65,7 +65,7 @@ navigation.navigate('ZakelijkAdviesNetcongestie', { kwh1, kwh2, kwh3 });
 
         {wiltHandelen === true && (
           <>
-            <Text style={styles.label}>Gewenst verhandelbaar vermogen (kW)</Text>
+            <Text style={styles.label}>Gewenste handels capaciteit (kWh)</Text>
             <TextInput
               style={styles.input}
               keyboardType="numeric"
