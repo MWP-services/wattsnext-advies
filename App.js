@@ -30,18 +30,18 @@ import PeakShavingScreen from './screens/PeakShavingScreen';
 import PeakNoodstroomVraagScreen from './screens/PeakNoodstroomVraagScreen';
 import PeakEnergieHandelVraagScreen from './screens/PeakEnergieHandelVraagScreen';
 import ZakelijkAdviesPeakScreen from './screens/ZakelijkAdviesPeakScreen';
-import NetcongestieVraagScreen from './screens/NetcongestieVraagScreen';
+import Netcongestie from './screens/Netcongestie';
 import NetcongestieNoodstroomVraag from './screens/NetcongestieNoodstroomVraag';
 import NetcongestieEnergiehandelVraag from './screens/NetcongestieEnergiehandelVraag';
 import ZakelijkAdviesNetcongestie from './screens/ZakelijkAdviesNetcongestie';
 import Noodstroomvoorziening from './screens/Noodstroomvoorziening';
 import NoodstroomEnergiehandelVraagScreen from './screens/NoodstroomEnergiehandelVraagScreen';
 import ZakelijkAdviesNoodstroom from './screens/ZakelijkAdviesNoodstroom';
-import LoadShiftingVraagScreen from './screens/LoadShiftingVraagScreen';
+import LoadShifting from './screens/LoadShifting';
 import LoadShiftingNoodstroomVraagScreen from './screens/LoadShiftingNoodstroomVraagScreen';
 import LoadShiftingEnergiehandelVraagScreen from './screens/LoadShiftingEnergiehandelVraagScreen';
 import ZakelijkAdviesLoadShiftingScreen from './screens/ZakelijkAdviesLoadShiftingScreen';
-import HandelEnergieHandelVraagScreen from './screens/HandelEnergieHandelVraagScreen';
+import EnergieHandel from './screens/EnergieHandel';
 import HandelNoodstroomVraagScreen from './screens/HandelNoodstroomVraagScreen';
 import ZakelijkAdviesHandelScreen from './screens/ZakelijkAdviesHandelScreen';
 
@@ -81,18 +81,18 @@ export default function App() {
 <Stack.Screen name="PeakNoodstroomVraag" component={PeakNoodstroomVraagScreen} />
 <Stack.Screen name="PeakEnergieHandelVraag" component={PeakEnergieHandelVraagScreen} />
 <Stack.Screen name="ZakelijkAdviesPeak" component={ZakelijkAdviesPeakScreen} />
-<Stack.Screen name="NetcongestieVraagScreen" component={NetcongestieVraagScreen} />
+<Stack.Screen name="Netcongestie" component={Netcongestie} />
 <Stack.Screen name="NetcongestieNoodstroomVraag" component={NetcongestieNoodstroomVraag} />
 <Stack.Screen name="NetcongestieEnergiehandelVraag" component={NetcongestieEnergiehandelVraag} />
 <Stack.Screen name="ZakelijkAdviesNetcongestie" component={ZakelijkAdviesNetcongestie} />
 <Stack.Screen name="Noodstroomvoorziening" component={Noodstroomvoorziening} />
 <Stack.Screen name="NoodstroomEnergiehandelVraag" component={NoodstroomEnergiehandelVraagScreen} />
 <Stack.Screen name="ZakelijkAdviesNoodstroom" component={ZakelijkAdviesNoodstroom} />
-<Stack.Screen name="LoadShiftingVraagScreen" component={LoadShiftingVraagScreen} />
+<Stack.Screen name="LoadShifting" component={LoadShifting} />
 <Stack.Screen name="LoadShiftingNoodstroomVraag" component={LoadShiftingNoodstroomVraagScreen} />
 <Stack.Screen name="LoadShiftingEnergiehandelVraag" component={LoadShiftingEnergiehandelVraagScreen} />
 <Stack.Screen name="ZakelijkAdviesLoadShifting" component={ZakelijkAdviesLoadShiftingScreen} />
-<Stack.Screen name="HandelEnergieHandelVraagScreen" component={HandelEnergieHandelVraagScreen} />
+<Stack.Screen name="EnergieHandel" component={EnergieHandel} />
 <Stack.Screen name="HandelNoodstroomVraag" component={HandelNoodstroomVraagScreen} />
 <Stack.Screen name="ZakelijkAdviesHandel" component={ZakelijkAdviesHandelScreen} />
 

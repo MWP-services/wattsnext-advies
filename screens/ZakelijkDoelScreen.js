@@ -7,7 +7,7 @@ export default function ZakelijkDoelScreen({ navigation }) {
     'Peak shaving',
     'Netcongestie',
     'Noodstroomvoorziening',
-    'Energie-inkoop optimaliseren',
+    'Load shifting',
     'Handel op energiemarkten'
   ];
 
@@ -17,10 +17,10 @@ export default function ZakelijkDoelScreen({ navigation }) {
   } else if (doel === 'Peak shaving') {
     navigation.navigate('PeakShaving');
   } else if (doel === 'Netcongestie') {
-    navigation.navigate('NetcongestieVraagScreen');
+    navigation.navigate('Netcongestie');
   } else if (doel === 'Noodstroomvoorziening') {
   navigation.navigate('Noodstroomvoorziening');
- } else if (doel === 'Energie-inkoop optimaliseren') {
+ } else if (doel === 'Load shifting') {
   navigation.navigate('LoadShiftingVraagScreen'); 
   } else if (doel === 'Handel op energiemarkten') {
   navigation.navigate('HandelEnergieHandelVraagScreen');

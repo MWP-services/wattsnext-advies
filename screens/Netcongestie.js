@@ -4,7 +4,7 @@ import {
   StyleSheet, ScrollView, KeyboardAvoidingView, Platform
 } from 'react-native';
 
-export default function NetcongestieVraagScreen({ navigation }) {
+export default function Netcongestie({ navigation }) {
   const [stroombelasting, setStroombelasting] = useState('');
   const [netaansluiting, setNetaansluiting] = useState('');
   const [duur, setDuur] = useState('');

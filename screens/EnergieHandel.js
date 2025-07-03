@@ -11,7 +11,7 @@ import {
   Platform,
 } from 'react-native';
 
-export default function HandelEnergieHandelVraagScreen({ navigation }) {
+export default function EnergieHandel({ navigation }) {
   const [pmarkt, setPmarkt] = useState('');
   const [pnet, setPnet] = useState('');
   const [activaties, setActivaties] = useState('');

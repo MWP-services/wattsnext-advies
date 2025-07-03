@@ -11,7 +11,7 @@ import {
   Platform,
 } from 'react-native';
 
-export default function LoadShiftingVraagScreen({ navigation }) {
+export default function LoadShifting({ navigation }) {
   const [vermogen, setVermogen] = useState('');
   const [duur, setDuur] = useState('');
 
