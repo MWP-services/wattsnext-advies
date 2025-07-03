@@ -6,7 +6,7 @@ export default function Advies7_5Hoog({ navigation }) {
     <View style={styles.container}>
       <Text style={styles.title}>Persoonlijk Advies</Text>
       <Text style={styles.text}>
-        Je hebt een 3-fase aansluiting. Op basis van je gegevens adviseren wij:
+        Op basis van uw gegevens adviseert WattsNext:
       </Text>
       <Text style={styles.advice}>7,5 kWh batterijopslag (Hoog Voltage)</Text>
 

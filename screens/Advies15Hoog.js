@@ -5,7 +5,7 @@ export default function Advies15Hoog({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Persoonlijk Advies</Text>
-      <Text style={styles.text}>Je hebt een 3-fase aansluiting. Op basis van je gegevens adviseren wij:</Text>
+      <Text style={styles.text}>Op basis van uw gegevens adviseert WattsNext:</Text>
       <Text style={styles.advice}>15 kWh batterijopslag (Hoog Voltage)</Text>
 
       <Image

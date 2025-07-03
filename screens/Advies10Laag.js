@@ -6,7 +6,7 @@ export default function Advies10Laag({ navigation }) {
     <View style={styles.container}>
       <Text style={styles.title}>Persoonlijk Advies</Text>
       <Text style={styles.text}>
-        Je hebt een 1-fase aansluiting. Op basis van je gegevens adviseren wij:
+        Op basis van uw gegevens adviseert WattsNext:
       </Text>
       <Text style={styles.advice}>10 kWh batterijopslag (Laag Voltage)</Text>
 
