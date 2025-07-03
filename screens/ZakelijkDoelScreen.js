@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 
 export default function ZakelijkDoelScreen({ navigation }) {
   const opties = [
-    'Opslag van PV-opwek optimaliseren',
+    'PV-opwek optimaliseren',
     'Peak shaving',
     'Netcongestie',
     'Noodstroomvoorziening',
@@ -12,7 +12,7 @@ export default function ZakelijkDoelScreen({ navigation }) {
   ];
 
   const handleKeuze = (doel) => {
-  if (doel === 'Opslag van PV-opwek optimaliseren') {
+  if (doel === 'PV-opwek optimaliseren') {
     navigation.navigate('ZakelijkOpslag');
   } else if (doel === 'Peak shaving') {
     navigation.navigate('PeakShaving');
