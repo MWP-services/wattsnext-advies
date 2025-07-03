@@ -41,7 +41,7 @@ export default function PeakNoodstroomVraagScreen({ navigation, route }) {
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Wilt u ruimte overhouden voor noodstroom?</Text>
 
-        <Text style={styles.label}>Kritisch verbruik (kW)</Text>
+        <Text style={styles.label}>Benodigde capaciteit (kWh)</Text>
         <TextInput
           style={styles.input}
           keyboardType="numeric"

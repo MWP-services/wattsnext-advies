@@ -34,7 +34,7 @@ export default function ZakelijkNoodstroomScreen() {
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Noodstroomvoorziening</Text>
 
-        <Text style={styles.label}>Kritisch verbruik (kW)</Text>
+        <Text style={styles.label}>Benodigde capaciteit (kWh)</Text>
         <TextInput
           style={styles.input}
           keyboardType="numeric"

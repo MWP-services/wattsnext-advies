@@ -58,7 +58,7 @@ export default function NoodstroomVraagScreen({ navigation, route }) {
 
         {wilNoodstroom === true && (
           <>
-            <Text style={styles.label}>Kritisch verbruik (kW)</Text>
+            <Text style={styles.label}>Benodigde capaciteit (kWh)</Text>
             <TextInput
               style={styles.input}
               keyboardType="numeric"

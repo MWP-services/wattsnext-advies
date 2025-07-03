@@ -28,7 +28,7 @@ export default function Noodstroomvoorziening({ navigation }) {
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <Text style={styles.title}>Noodstroomvoorziening</Text>
 
-        <Text style={styles.label}>Kritisch verbruik (kW)</Text>
+        <Text style={styles.label}>Benodigde capaciteit (kWh)</Text>
         <TextInput
           style={styles.input}
           keyboardType="numeric"
