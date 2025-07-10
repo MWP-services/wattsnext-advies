@@ -20,15 +20,17 @@ export default function HomeScreen({ navigation }) {
       resizeMode="cover"
     >
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.wrapper}>
+        <View style={styles.container}>
           <Image
             source={require('../assets/logo.png')}
-            style={{
-              width: width > 1024 ? 300 : 200,
-              height: width > 1024 ? 120 : 80,
-              resizeMode: 'contain',
-              marginBottom: 40,
-            }}
+            style={[
+              styles.logo,
+              {
+                width: width > 768 ? 300 : 200,
+                height: width > 768 ? 120 : 80,
+              },
+            ]}
+            resizeMode="contain"
           />
           <Text style={[styles.title, { fontSize: width > 768 ? 36 : 24 }]}>
             WattsNext Advies
@@ -40,7 +42,9 @@ export default function HomeScreen({ navigation }) {
             ]}
             onPress={() => navigation.navigate('Stap 1')}
           >
-            <Text style={styles.buttonText}>Start Advies</Text>
+            <Text style={[styles.buttonText, { fontSize: width > 768 ? 20 : 18 }]}>
+              Start Advies
+            </Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -50,16 +54,21 @@ export default function HomeScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   background: {
-    flex: 1,
+    flex: 1, // 🔑 vult altijd het hele scherm
   },
   safeArea: {
-    flex: 1,
+    flex: 1, // 🔑 SafeAreaView vult het hele scherm, ook op iPhone met notch
   },
-  wrapper: {
-    flex: 1,
-    justifyContent: 'center',   // 💚 centreren op Y-as
-    alignItems: 'center',       // 💚 centreren op X-as
+  container: {
+    flex: 1, // 🔑 View vult SafeAreaView
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingHorizontal: 24,
+    maxWidth: 1200, // optioneel voor web: max breedte
+    alignSelf: 'center', // center op web-breedte
+  },
+  logo: {
+    marginBottom: 40,
   },
   title: {
     fontWeight: 'bold',
@@ -75,7 +84,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: 18,
     fontWeight: '600',
   },
 });
