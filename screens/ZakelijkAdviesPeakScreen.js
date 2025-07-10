@@ -7,32 +7,41 @@ export default function ZakelijkAdviesPeakScreen({ route, navigation }) {
 
   let advies = '';
   let image = null;
+  let specificatieScreen = '';
 
   if (totaleBehoefte <= 64) {
     advies = '64 kWh batterij';
     image = require('../assets/64-KWH-ZAKELIJK.png');
+    specificatieScreen = 'Specificaties64';
   } else if (totaleBehoefte <= 96) {
     advies = '96 kWh batterij';
     image = require('../assets/96-KWH-ZAKELIJK.png');
+    specificatieScreen = 'Specificaties96';
   } else if (totaleBehoefte <= 232) {
     advies = '232 kWh batterij';
     image = require('../assets/232-KWH-ZAKELIJK.png');
+    specificatieScreen = 'Specificaties232';
   } else if (totaleBehoefte <= 1160) {
     const modules = Math.ceil(totaleBehoefte / 232);
     advies = `232 kWh batterij met ${modules} module${modules > 1 ? 's' : ''}`;
     image = require('../assets/232-KWH-ZAKELIJK.png');
+    specificatieScreen = 'Specificaties232';
   } else if (totaleBehoefte <= 2090) {
     advies = '2.09 MWh batterij';
     image = require('../assets/2-MW-ZAKELIJK.png');
+    specificatieScreen = 'Specificaties209';
   } else {
     advies = '5.01 MWh batterij';
     image = require('../assets/5-MW-ZAKELIJK.png');
+    specificatieScreen = 'Specificaties501';
   }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Advies op maat</Text>
-      <Text style={styles.info}>Totale energiebehoefte: {totaleBehoefte.toFixed(1)} kWh</Text>
+      <Text style={styles.info}>
+        Totale energiebehoefte: {totaleBehoefte.toFixed(1)} kWh
+      </Text>
       <Text style={styles.advice}>{advies}</Text>
 
       {image && (
@@ -41,7 +50,7 @@ export default function ZakelijkAdviesPeakScreen({ route, navigation }) {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate('Specificaties')}
+        onPress={() => navigation.navigate(specificatieScreen)}
       >
         <Text style={styles.buttonText}>Bekijk specificaties</Text>
       </TouchableOpacity>

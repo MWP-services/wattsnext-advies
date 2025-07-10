@@ -10,26 +10,33 @@ export default function ZakelijkAdviesLoadShiftingScreen({ route, navigation }) 
   let advies = '';
   let image = null;
   let modules = 0;
+  let specificatieScreen = '';
 
   if (totaleBehoefte <= 64) {
     advies = '64 kWh batterij';
     image = require('../assets/64-KWH-ZAKELIJK.png');
+    specificatieScreen = 'Specificaties64';
   } else if (totaleBehoefte <= 96) {
     advies = '96 kWh batterij';
     image = require('../assets/96-KWH-ZAKELIJK.png');
+    specificatieScreen = 'Specificaties96';
   } else if (totaleBehoefte <= 232) {
     advies = '232 kWh batterij';
     image = require('../assets/232-KWH-ZAKELIJK.png');
+    specificatieScreen = 'Specificaties232';
   } else if (totaleBehoefte <= 1160) {
     modules = Math.ceil(totaleBehoefte / 232);
     advies = `232 kWh batterij (${modules} modules)`;
     image = require('../assets/232-KWH-ZAKELIJK.png');
+    specificatieScreen = 'Specificaties232';
   } else if (totaleBehoefte <= 2090) {
     advies = '2.09 MWh batterij';
     image = require('../assets/2-MW-ZAKELIJK.png');
+    specificatieScreen = 'Specificaties209';
   } else {
     advies = '5.01 MWh batterij';
     image = require('../assets/5-MW-ZAKELIJK.png');
+    specificatieScreen = 'Specificaties501';
   }
 
   return (
@@ -42,8 +49,11 @@ export default function ZakelijkAdviesLoadShiftingScreen({ route, navigation }) 
         <Image source={image} style={styles.image} resizeMode="contain" />
       )}
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ZakelijkDoel')}>
-        <Text style={styles.buttonText}>Terug naar Start</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate(specificatieScreen)}
+      >
+        <Text style={styles.buttonText}>Bekijk specificaties</Text>
       </TouchableOpacity>
     </ScrollView>
   );

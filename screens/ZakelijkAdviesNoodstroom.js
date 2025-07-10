@@ -8,22 +8,28 @@ export default function ZakelijkAdviesNoodstroom({ route, navigation }) {
 
   let advies = '';
   let afbeelding = '';
+  let specificatieScreen = '';
 
   if (totaalKwh <= 64) {
     advies = '64 kWh batterij';
     afbeelding = require('../assets/64-KWH-ZAKELIJK.png');
+    specificatieScreen = 'Specificaties64';
   } else if (totaalKwh <= 96) {
     advies = '96 kWh batterij';
     afbeelding = require('../assets/96-KWH-ZAKELIJK.png');
+    specificatieScreen = 'Specificaties96';
   } else if (totaalKwh <= 232) {
     advies = '232 kWh batterij';
     afbeelding = require('../assets/232-KWH-ZAKELIJK.png');
+    specificatieScreen = 'Specificaties232';
   } else if (totaalKwh < 2090) {
     advies = '232 kWh batterij met modules';
     afbeelding = require('../assets/232-KWH-ZAKELIJK.png');
+    specificatieScreen = 'Specificaties232';
   } else {
     advies = '5.01 MWh batterij';
     afbeelding = require('../assets/5-MW-ZAKELIJK.png');
+    specificatieScreen = 'Specificaties501';
   }
 
   return (
@@ -36,9 +42,9 @@ export default function ZakelijkAdviesNoodstroom({ route, navigation }) {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate('Home')}
+        onPress={() => navigation.navigate(specificatieScreen)}
       >
-        <Text style={styles.buttonText}>Terug naar start</Text>
+        <Text style={styles.buttonText}>Bekijk specificaties</Text>
       </TouchableOpacity>
     </ScrollView>
   );

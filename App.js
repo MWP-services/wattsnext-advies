@@ -44,7 +44,11 @@ import ZakelijkAdviesLoadShiftingScreen from './screens/ZakelijkAdviesLoadShifti
 import EnergieHandel from './screens/EnergieHandel';
 import HandelNoodstroomVraagScreen from './screens/HandelNoodstroomVraagScreen';
 import ZakelijkAdviesHandelScreen from './screens/ZakelijkAdviesHandelScreen';
-
+import Specificaties64Screen from './screens/spec-64-kwh';
+import Specificaties96Screen from './screens/spec-96-kwh'; 
+import Specificaties232Screen from './screens/spec-232-kwh';
+import Specificaties209Screen from './screens/spec-2-mwh';
+import Specificaties501Screen from './screens/spec-5-mwh';
 
 const Stack = createNativeStackNavigator();
 
@@ -95,6 +99,12 @@ export default function App() {
 <Stack.Screen name="EnergieHandel" component={EnergieHandel} />
 <Stack.Screen name="HandelNoodstroomVraag" component={HandelNoodstroomVraagScreen} />
 <Stack.Screen name="ZakelijkAdviesHandel" component={ZakelijkAdviesHandelScreen} />
+<Stack.Screen name="Specificaties64" component={Specificaties64Screen} />
+<Stack.Screen name="Specificaties96" component={Specificaties96Screen} />
+<Stack.Screen name="Specificaties232" component={Specificaties232Screen} />
+<Stack.Screen name="Specificaties209" component={Specificaties209Screen} />
+<Stack.Screen name="Specificaties501" component={Specificaties501Screen} />
+
 
       </Stack.Navigator>
     </NavigationContainer>
