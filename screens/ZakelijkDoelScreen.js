@@ -21,9 +21,9 @@ export default function ZakelijkDoelScreen({ navigation }) {
   } else if (doel === 'Noodstroomvoorziening') {
   navigation.navigate('Noodstroomvoorziening');
  } else if (doel === 'Load shifting') {
-  navigation.navigate('LoadShiftingVraagScreen'); 
+  navigation.navigate('LoadShifting'); 
   } else if (doel === 'Handel op energiemarkten') {
-  navigation.navigate('HandelEnergieHandelVraagScreen');
+  navigation.navigate('EnergieHandel');
 
 }
 
