@@ -9,6 +9,8 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  ImageBackground,
+  SafeAreaView,
 } from 'react-native';
 
 export default function LoadShifting({ navigation }) {
@@ -29,46 +31,56 @@ export default function LoadShifting({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={80}
+    <ImageBackground
+      source={require('../assets/achtergrond.png')}
+      style={styles.background}
+      resizeMode="cover"
     >
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <Text style={styles.title}>Energie-inkoop optimaliseren (Load Shifting)</Text>
+      <SafeAreaView style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={80}
+        >
+          <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+            <Text style={styles.title}>Energie-inkoop optimaliseren (Load Shifting)</Text>
 
-        <Text style={styles.label}>Gewenst vermogen (kW)</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={vermogen}
-          onChangeText={setVermogen}
-          placeholder="Bijv. 50"
-          placeholderTextColor="#aaa"
-        />
+            <Text style={styles.label}>Gewenst vermogen (kW)</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={vermogen}
+              onChangeText={setVermogen}
+              placeholder="Bijv. 50"
+              placeholderTextColor="#aaa"
+            />
 
-        <Text style={styles.label}>Duur verschuiving (uren)</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={duur}
-          onChangeText={setDuur}
-          placeholder="Bijv. 3"
-          placeholderTextColor="#aaa"
-        />
+            <Text style={styles.label}>Duur verschuiving (uren)</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={duur}
+              onChangeText={setDuur}
+              placeholder="Bijv. 3"
+              placeholderTextColor="#aaa"
+            />
 
-        <TouchableOpacity style={styles.button} onPress={handleNext}>
-          <Text style={styles.buttonText}>Ga verder</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </KeyboardAvoidingView>
+            <TouchableOpacity style={styles.button} onPress={handleNext}>
+              <Text style={styles.buttonText}>Ga verder</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   container: {
     flexGrow: 1,
-    backgroundColor: '#fff',
     padding: 24,
     justifyContent: 'center',
   },
@@ -90,6 +102,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 20,
     fontSize: 16,
+    backgroundColor: '#fff', // Input zelf blijft wit
   },
   button: {
     backgroundColor: '#FF7F00',

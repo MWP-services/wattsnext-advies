@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, ImageBackground, SafeAreaView } from 'react-native';
 
 export default function ZakelijkAdviesScreen({ navigation, route }) {
-  const { kwh1, kwh2, kwh3 } = route.params;
+  const { kwh1 = 0, kwh2 = 0, kwh3 = 0 } = route.params;
   console.log("kwh1:", kwh1, "kwh2:", kwh2, "kwh3:", kwh3);
   const k0 = kwh1 + kwh2 + kwh3;
 
@@ -33,28 +33,36 @@ export default function ZakelijkAdviesScreen({ navigation, route }) {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Advies op maat</Text>
-      <Text style={styles.text}>Benodigd vermogen: {k0.toFixed(2)} kWh</Text>
-      <Text style={styles.text}>Aanbevolen oplossing: {advies}</Text>
+    <ImageBackground
+      source={require('../assets/achtergrond.png')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={styles.container}>
+          <Text style={styles.title}>Advies op maat</Text>
+          <Text style={styles.text}>Benodigd vermogen: {k0.toFixed(2)} kWh</Text>
+          <Text style={styles.text}>Aanbevolen oplossing: {advies}</Text>
 
-      {image && <Image source={image} style={styles.image} resizeMode="contain" />}
+          {image && <Image source={image} style={styles.image} resizeMode="contain" />}
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate(specificatieScreen)}
-      >
-        <Text style={styles.buttonText}>Bekijk specificaties</Text>
-      </TouchableOpacity>
-    </ScrollView>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate(specificatieScreen)}
+          >
+            <Text style={styles.buttonText}>Bekijk specificaties</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: { flex: 1 },
   container: {
-    backgroundColor: '#fff',
-    padding: 24,
     flexGrow: 1,
+    padding: 24,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -76,7 +84,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   button: {
-    backgroundColor: '#FF7F00', // oranje knop
+    backgroundColor: '#FF7F00',
     padding: 14,
     borderRadius: 10,
     alignItems: 'center',

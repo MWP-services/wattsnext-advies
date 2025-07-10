@@ -1,5 +1,14 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  ImageBackground,
+  SafeAreaView
+} from 'react-native';
 
 export default function ZakelijkAdviesNetcongestie({ navigation, route }) {
   const { kwh1, kwh2 = 0, kwh3 = 0 } = route.params;
@@ -32,30 +41,42 @@ export default function ZakelijkAdviesNetcongestie({ navigation, route }) {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Advies Netcongestie</Text>
-      <Text style={styles.text}>Benodigd vermogen: {totaleBehoefte.toFixed(2)} kWh</Text>
-      <Text style={styles.text}>Aanbevolen oplossing: {advies}</Text>
+    <ImageBackground
+      source={require('../assets/achtergrond.png')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={styles.container}>
+          <Text style={styles.title}>Advies Netcongestie</Text>
+          <Text style={styles.text}>Benodigd vermogen: {totaleBehoefte.toFixed(2)} kWh</Text>
+          <Text style={styles.text}>Aanbevolen oplossing: {advies}</Text>
 
-      {image && <Image source={image} style={styles.image} resizeMode="contain" />}
+          {image && (
+            <Image source={image} style={styles.image} resizeMode="contain" />
+          )}
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate(specificatieScreen)}
-      >
-        <Text style={styles.buttonText}>Bekijk specificaties</Text>
-      </TouchableOpacity>
-    </ScrollView>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate(specificatieScreen)}
+          >
+            <Text style={styles.buttonText}>Bekijk specificaties</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   container: {
-    backgroundColor: '#fff',
-    padding: 24,
     flexGrow: 1,
-    alignItems: 'center',
+    padding: 24,
     justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontSize: 22,

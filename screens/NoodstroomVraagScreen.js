@@ -7,7 +7,9 @@ import {
   StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  ImageBackground,
+  SafeAreaView,
 } from 'react-native';
 
 export default function NoodstroomVraagScreen({ navigation, route }) {
@@ -33,65 +35,75 @@ export default function NoodstroomVraagScreen({ navigation, route }) {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={80}
+    <ImageBackground
+      source={require('../assets/achtergrond.png')}
+      style={styles.background}
+      resizeMode="cover"
     >
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <Text style={styles.title}>Wilt u ruimte overhouden voor noodstroom?</Text>
+      <SafeAreaView style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={80}
+        >
+          <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+            <Text style={styles.title}>Wilt u ruimte overhouden voor noodstroom?</Text>
 
-        <View style={styles.toggleContainer}>
-          <TouchableOpacity
-            style={[styles.toggleButton, wilNoodstroom === true && styles.toggleSelected]}
-            onPress={() => setWilNoodstroom(true)}
-          >
-            <Text style={styles.toggleText}>Ja</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.toggleButton, wilNoodstroom === false && styles.toggleSelected]}
-            onPress={handleNee}
-          >
-            <Text style={styles.toggleText}>Nee</Text>
-          </TouchableOpacity>
-        </View>
+            <View style={styles.toggleContainer}>
+              <TouchableOpacity
+                style={[styles.toggleButton, wilNoodstroom === true && styles.toggleSelected]}
+                onPress={() => setWilNoodstroom(true)}
+              >
+                <Text style={styles.toggleText}>Ja</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.toggleButton, wilNoodstroom === false && styles.toggleSelected]}
+                onPress={handleNee}
+              >
+                <Text style={styles.toggleText}>Nee</Text>
+              </TouchableOpacity>
+            </View>
 
-        {wilNoodstroom === true && (
-          <>
-            <Text style={styles.label}>Benodigde capaciteit (kWh)</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={kritischVerbruik}
-              onChangeText={setKritischVerbruik}
-              placeholder="Bijv. 3.5"
-              placeholderTextColor="#aaa"
-            />
+            {wilNoodstroom === true && (
+              <>
+                <Text style={styles.label}>Benodigde capaciteit (kWh)</Text>
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={kritischVerbruik}
+                  onChangeText={setKritischVerbruik}
+                  placeholder="Bijv. 3.5"
+                  placeholderTextColor="#aaa"
+                />
 
-            <Text style={styles.label}>Backuptijd (uren)</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={backupTijd}
-              onChangeText={setBackupTijd}
-              placeholder="Bijv. 2"
-              placeholderTextColor="#aaa"
-            />
+                <Text style={styles.label}>Backuptijd (uren)</Text>
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={backupTijd}
+                  onChangeText={setBackupTijd}
+                  placeholder="Bijv. 2"
+                  placeholderTextColor="#aaa"
+                />
 
-            <TouchableOpacity style={styles.button} onPress={handleNext}>
-              <Text style={styles.buttonText}>Ga verder</Text>
-            </TouchableOpacity>
-          </>
-        )}
-      </ScrollView>
-    </KeyboardAvoidingView>
+                <TouchableOpacity style={styles.button} onPress={handleNext}>
+                  <Text style={styles.buttonText}>Ga verder</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   container: {
     flexGrow: 1,
-    backgroundColor: '#fff',
     padding: 24,
     justifyContent: 'center',
   },
@@ -113,6 +125,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 20,
     fontSize: 16,
+    backgroundColor: '#fff', // Inputvelden wit voor goede leesbaarheid
   },
   button: {
     backgroundColor: '#FF7F00',

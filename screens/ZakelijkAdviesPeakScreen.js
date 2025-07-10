@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ImageBackground, SafeAreaView } from 'react-native';
 
 export default function ZakelijkAdviesPeakScreen({ route, navigation }) {
   const { kwh1, kwh2 = 0, kwh3 = 0 } = route.params;
@@ -40,33 +40,42 @@ export default function ZakelijkAdviesPeakScreen({ route, navigation }) {
     <ImageBackground
       source={require('../assets/achtergrond.png')}
       style={styles.background}
-      resizeMode="contain"
+      resizeMode="cover"  // meestal mooier voor fullscreen
     >
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Advies op maat</Text>
-      <Text style={styles.info}>
-        Totale energiebehoefte: {totaleBehoefte.toFixed(1)} kWh
-      </Text>
-      <Text style={styles.advice}>{advies}</Text>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView 
+          style={{ flex: 1 }} 
+          contentContainerStyle={styles.container}
+        >
+          <Text style={styles.title}>Advies op maat</Text>
+          <Text style={styles.info}>
+            Totale energiebehoefte: {totaleBehoefte.toFixed(1)} kWh
+          </Text>
+          <Text style={styles.advice}>{advies}</Text>
 
-      {image && (
-        <Image source={image} style={styles.image} resizeMode="contain" />
-      )}
+          {image && (
+            <Image source={image} style={styles.image} resizeMode="contain" />
+          )}
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate(specificatieScreen)}
-      >
-        <Text style={styles.buttonText}>Bekijk specificaties</Text>
-      </TouchableOpacity>
-    </ScrollView>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate(specificatieScreen)}
+          >
+            <Text style={styles.buttonText}>Bekijk specificaties</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
     </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   container: {
     flexGrow: 1,
+    minHeight: '100%',
     padding: 24,
     alignItems: 'center',
     justifyContent: 'center',

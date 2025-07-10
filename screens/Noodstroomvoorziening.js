@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity,
-  StyleSheet, ScrollView, KeyboardAvoidingView, Platform
+  StyleSheet, ScrollView, KeyboardAvoidingView, Platform,
+  ImageBackground, SafeAreaView
 } from 'react-native';
 
 export default function Noodstroomvoorziening({ navigation }) {
@@ -20,46 +21,56 @@ export default function Noodstroomvoorziening({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={80}
+    <ImageBackground
+      source={require('../assets/achtergrond.png')}
+      style={styles.background}
+      resizeMode="cover"
     >
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <Text style={styles.title}>Noodstroomvoorziening</Text>
+      <SafeAreaView style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={80}
+        >
+          <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+            <Text style={styles.title}>Noodstroomvoorziening</Text>
 
-        <Text style={styles.label}>Benodigde capaciteit (kWh)</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={kritischVerbruik}
-          onChangeText={setKritischVerbruik}
-          placeholder="Bijv. 3.5"
-          placeholderTextColor="#aaa"
-        />
+            <Text style={styles.label}>Benodigde capaciteit (kWh)</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={kritischVerbruik}
+              onChangeText={setKritischVerbruik}
+              placeholder="Bijv. 3.5"
+              placeholderTextColor="#aaa"
+            />
 
-        <Text style={styles.label}>Backuptijd (uren)</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={backupTijd}
-          onChangeText={setBackupTijd}
-          placeholder="Bijv. 2"
-          placeholderTextColor="#aaa"
-        />
+            <Text style={styles.label}>Backuptijd (uren)</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={backupTijd}
+              onChangeText={setBackupTijd}
+              placeholder="Bijv. 2"
+              placeholderTextColor="#aaa"
+            />
 
-        <TouchableOpacity style={styles.button} onPress={handleNext}>
-          <Text style={styles.buttonText}>Ga verder</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </KeyboardAvoidingView>
+            <TouchableOpacity style={styles.button} onPress={handleNext}>
+              <Text style={styles.buttonText}>Ga verder</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   container: {
     flexGrow: 1,
-    backgroundColor: '#fff',
     padding: 24,
     justifyContent: 'center',
   },
@@ -81,6 +92,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 20,
     fontSize: 16,
+    backgroundColor: '#fff', // Inputveld wit voor leesbaarheid
   },
   button: {
     backgroundColor: '#FF7F00',

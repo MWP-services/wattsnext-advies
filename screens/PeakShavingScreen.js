@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  ImageBackground,
+  SafeAreaView
+} from 'react-native';
 
 export default function PeakShavingScreen({ navigation }) {
   const [mode, setMode] = useState('kW'); // 'kW' of 'A'
@@ -42,56 +53,75 @@ export default function PeakShavingScreen({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>Peak Shaving</Text>
+    <ImageBackground
+      source={require('../assets/achtergrond.png')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={80}
+        >
+          <ScrollView contentContainerStyle={styles.container}>
+            <Text style={styles.title}>Peak Shaving</Text>
 
-        <View style={styles.toggleContainer}>
-          <TouchableOpacity
-            style={[styles.toggleButton, mode === 'kW' && styles.toggleSelected]}
-            onPress={() => setMode('kW')}
-          >
-            <Text style={styles.toggleText}>Invoer in kW</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.toggleButton, mode === 'A' && styles.toggleSelected]}
-            onPress={() => setMode('A')}
-          >
-            <Text style={styles.toggleText}>Invoer in Ampère</Text>
-          </TouchableOpacity>
-        </View>
+            <View style={styles.toggleContainer}>
+              <TouchableOpacity
+                style={[styles.toggleButton, mode === 'kW' && styles.toggleSelected]}
+                onPress={() => setMode('kW')}
+              >
+                <Text style={styles.toggleText}>Invoer in kW</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.toggleButton, mode === 'A' && styles.toggleSelected]}
+                onPress={() => setMode('A')}
+              >
+                <Text style={styles.toggleText}>Invoer in Ampère</Text>
+              </TouchableOpacity>
+            </View>
 
-        <Text style={styles.label}>Netaansluiting ({mode})</Text>
-        <TextInput style={styles.input} keyboardType="numeric" value={net} onChangeText={setNet} />
+            <Text style={styles.label}>Netaansluiting ({mode})</Text>
+            <TextInput style={styles.input} keyboardType="numeric" value={net} onChangeText={setNet} />
 
-        <Text style={styles.label}>Gemeten piekbelasting ({mode})</Text>
-        <TextInput style={styles.input} keyboardType="numeric" value={piek} onChangeText={setPiek} />
+            <Text style={styles.label}>Gemeten piekbelasting ({mode})</Text>
+            <TextInput style={styles.input} keyboardType="numeric" value={piek} onChangeText={setPiek} />
 
-        <Text style={styles.label}>Duur van de piek (uren)</Text>
-        <TextInput style={styles.input} keyboardType="numeric" value={duur} onChangeText={setDuur} />
+            <Text style={styles.label}>Duur van de piek (uren)</Text>
+            <TextInput style={styles.input} keyboardType="numeric" value={duur} onChangeText={setDuur} />
 
-        <Text style={styles.label}>Frequentie per dag</Text>
-        <TextInput style={styles.input} keyboardType="numeric" value={frequentie} onChangeText={setFrequentie} />
+            <Text style={styles.label}>Frequentie per dag</Text>
+            <TextInput style={styles.input} keyboardType="numeric" value={frequentie} onChangeText={setFrequentie} />
 
-        {mode === 'A' && (
-          <>
-            <Text style={styles.label}>Vermogensfactor (standaard 0.95)</Text>
-            <TextInput style={styles.input} keyboardType="numeric" value={vermogensfactor} onChangeText={setVermogensfactor} />
-          </>
-        )}
+            {mode === 'A' && (
+              <>
+                <Text style={styles.label}>Vermogensfactor (standaard 0.95)</Text>
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={vermogensfactor}
+                  onChangeText={setVermogensfactor}
+                />
+              </>
+            )}
 
-        <TouchableOpacity style={styles.button} onPress={handleNext}>
-          <Text style={styles.buttonText}>Ga verder</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </KeyboardAvoidingView>
+            <TouchableOpacity style={styles.button} onPress={handleNext}>
+              <Text style={styles.buttonText}>Ga verder</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   container: {
     flexGrow: 1,
-    backgroundColor: '#fff',
     padding: 24,
     justifyContent: 'center',
   },
@@ -115,6 +145,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 16,
     width: '100%',
+    backgroundColor: '#fff',
   },
   button: {
     backgroundColor: '#FF7F00',

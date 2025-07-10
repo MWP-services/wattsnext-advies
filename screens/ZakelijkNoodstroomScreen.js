@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, KeyboardAvoidingView, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  KeyboardAvoidingView,
+  ScrollView,
+  ImageBackground,
+  SafeAreaView
+} from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 export default function ZakelijkNoodstroomScreen() {
@@ -30,51 +41,83 @@ export default function ZakelijkNoodstroomScreen() {
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-      <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>Noodstroomvoorziening</Text>
+    <ImageBackground
+      source={require('../assets/achtergrond.png')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={{ flex: 1 }}>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+          <ScrollView contentContainerStyle={styles.container}>
+            <Text style={styles.title}>Noodstroomvoorziening</Text>
 
-        <Text style={styles.label}>Benodigde capaciteit (kWh)</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={kritischVermogen}
-          onChangeText={setKritischVermogen}
-        />
+            <Text style={styles.label}>Benodigde capaciteit (kWh)</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={kritischVermogen}
+              onChangeText={setKritischVermogen}
+            />
 
-        <Text style={styles.label}>Backuptijd (uren)</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={backuptijd}
-          onChangeText={setBackuptijd}
-        />
+            <Text style={styles.label}>Backuptijd (uren)</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={backuptijd}
+              onChangeText={setBackuptijd}
+            />
 
-        <TouchableOpacity style={styles.button} onPress={doorgaan}>
-          <Text style={styles.buttonText}>Ga verder</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </KeyboardAvoidingView>
+            <TouchableOpacity style={styles.button} onPress={doorgaan}>
+              <Text style={styles.buttonText}>Ga verder</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   container: {
-    flexGrow: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff', padding: 24
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
   },
   title: {
-    fontSize: 22, fontWeight: 'bold', color: '#3eaf4f', marginBottom: 24
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#3eaf4f',
+    marginBottom: 24,
+    textAlign: 'center',
   },
   label: {
-    fontSize: 16, alignSelf: 'flex-start', marginBottom: 8
+    fontSize: 16,
+    alignSelf: 'flex-start',
+    marginBottom: 8,
+    color: '#000',
   },
   input: {
-    borderWidth: 1, borderColor: '#ccc', borderRadius: 10, padding: 10, marginBottom: 20, width: '100%'
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 20,
+    width: '100%',
+    backgroundColor: '#fff',
   },
   button: {
-    backgroundColor: '#f7941e', padding: 16, borderRadius: 10, width: '100%', alignItems: 'center'
+    backgroundColor: '#f7941e',
+    padding: 16,
+    borderRadius: 10,
+    width: '100%',
+    alignItems: 'center',
   },
   buttonText: {
-    color: '#fff', fontSize: 18
-  }
+    color: '#fff',
+    fontSize: 18,
+  },
 });

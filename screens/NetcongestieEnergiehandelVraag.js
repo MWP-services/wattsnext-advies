@@ -7,7 +7,9 @@ import {
   StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  ImageBackground,
+  SafeAreaView,
 } from 'react-native';
 
 export default function NetcongestieEnergiehandelVraag({ navigation, route }) {
@@ -26,10 +28,9 @@ export default function NetcongestieEnergiehandelVraag({ navigation, route }) {
       const minVermogen = Math.min(markt, net);
       const kwh3 = (minVermogen * 2 * a) / 0.9;
       console.log('kwh1:', kwh1);
-console.log('kwh2:', kwh2);
-console.log('kwh3:', kwh3);
-navigation.navigate('ZakelijkAdviesNetcongestie', { kwh1, kwh2, kwh3 });
-
+      console.log('kwh2:', kwh2);
+      console.log('kwh3:', kwh3);
+      navigation.navigate('ZakelijkAdviesNetcongestie', { kwh1, kwh2, kwh3 });
     } else {
       alert("Vul geldige waarden in.");
     }
@@ -40,75 +41,85 @@ navigation.navigate('ZakelijkAdviesNetcongestie', { kwh1, kwh2, kwh3 });
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={80}
+    <ImageBackground
+      source={require('../assets/achtergrond.png')}
+      style={styles.background}
+      resizeMode="cover"
     >
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <Text style={styles.title}>Wilt u handelen op de energiemarkt?</Text>
+      <SafeAreaView style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={80}
+        >
+          <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+            <Text style={styles.title}>Wilt u handelen op de energiemarkt?</Text>
 
-        <View style={styles.toggleContainer}>
-          <TouchableOpacity
-            style={[styles.toggleButton, wiltHandelen === true && styles.toggleSelected]}
-            onPress={() => setWiltHandelen(true)}
-          >
-            <Text style={styles.toggleText}>Ja</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.toggleButton, wiltHandelen === false && styles.toggleSelected]}
-            onPress={handleNee}
-          >
-            <Text style={styles.toggleText}>Nee</Text>
-          </TouchableOpacity>
-        </View>
+            <View style={styles.toggleContainer}>
+              <TouchableOpacity
+                style={[styles.toggleButton, wiltHandelen === true && styles.toggleSelected]}
+                onPress={() => setWiltHandelen(true)}
+              >
+                <Text style={styles.toggleText}>Ja</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.toggleButton, wiltHandelen === false && styles.toggleSelected]}
+                onPress={handleNee}
+              >
+                <Text style={styles.toggleText}>Nee</Text>
+              </TouchableOpacity>
+            </View>
 
-        {wiltHandelen === true && (
-          <>
-            <Text style={styles.label}>Gewenste handels capaciteit (kWh)</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={pmarkt}
-              onChangeText={setPmarkt}
-              placeholder="Bijv. 15"
-              placeholderTextColor="#aaa"
-            />
+            {wiltHandelen === true && (
+              <>
+                <Text style={styles.label}>Gewenste handels capaciteit (kWh)</Text>
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={pmarkt}
+                  onChangeText={setPmarkt}
+                  placeholder="Bijv. 15"
+                  placeholderTextColor="#aaa"
+                />
 
-            <Text style={styles.label}>Maximaal netaansluitingsvermogen (kW)</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={pnet}
-              onChangeText={setPnet}
-              placeholder="Bijv. 20"
-              placeholderTextColor="#aaa"
-            />
+                <Text style={styles.label}>Maximaal netaansluitingsvermogen (kW)</Text>
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={pnet}
+                  onChangeText={setPnet}
+                  placeholder="Bijv. 20"
+                  placeholderTextColor="#aaa"
+                />
 
-            <Text style={styles.label}>Aantal activaties per dag</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={activaties}
-              onChangeText={setActivaties}
-              placeholder="Bijv. 2"
-              placeholderTextColor="#aaa"
-            />
+                <Text style={styles.label}>Aantal activaties per dag</Text>
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={activaties}
+                  onChangeText={setActivaties}
+                  placeholder="Bijv. 2"
+                  placeholderTextColor="#aaa"
+                />
 
-            <TouchableOpacity style={styles.button} onPress={handleNext}>
-              <Text style={styles.buttonText}>Ga verder</Text>
-            </TouchableOpacity>
-          </>
-        )}
-      </ScrollView>
-    </KeyboardAvoidingView>
+                <TouchableOpacity style={styles.button} onPress={handleNext}>
+                  <Text style={styles.buttonText}>Ga verder</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   container: {
     flexGrow: 1,
-    backgroundColor: '#fff',
     padding: 24,
     justifyContent: 'center',
   },
@@ -130,6 +141,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 20,
     fontSize: 16,
+    backgroundColor: '#fff', // invoervelden zelf blijven wit
   },
   button: {
     backgroundColor: '#FF7F00',

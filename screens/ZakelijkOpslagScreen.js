@@ -1,4 +1,3 @@
-// screens/ZakelijkOpslagScreen.js
 import React, { useState } from 'react';
 import {
   View,
@@ -8,6 +7,8 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   ScrollView,
+  ImageBackground,
+  SafeAreaView
 } from 'react-native';
 
 export default function ZakelijkOpslagScreen({ navigation }) {
@@ -50,51 +51,64 @@ export default function ZakelijkOpslagScreen({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-      <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>Opslag van PV-opwek optimaliseren</Text>
+    <ImageBackground
+      source={require('../assets/achtergrond.png')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={{ flex: 1 }}>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+          <ScrollView contentContainerStyle={styles.container}>
+            <Text style={styles.title}>Opslag van PV-opwek optimaliseren</Text>
 
-        <Text style={styles.label}>Jaarlijks stroomverbruik (kWh)</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={jaarlijksVerbruik}
-          onChangeText={setJaarlijksVerbruik}
-          placeholder="Bijv. 3650"
-        />
+            <Text style={styles.label}>Jaarlijks stroomverbruik (kWh)</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={jaarlijksVerbruik}
+              onChangeText={setJaarlijksVerbruik}
+              placeholder="Bijv. 3650"
+              placeholderTextColor="#aaa"
+            />
 
-        <Text style={styles.label}>Vermogen per zonnepaneel (Wp)</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={wpPerPaneel}
-          onChangeText={setWpPerPaneel}
-          placeholder="Bijv. 400"
-        />
+            <Text style={styles.label}>Vermogen per zonnepaneel (Wp)</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={wpPerPaneel}
+              onChangeText={setWpPerPaneel}
+              placeholder="Bijv. 400"
+              placeholderTextColor="#aaa"
+            />
 
-        <Text style={styles.label}>Aantal zonnepanelen</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={aantalPanelen}
-          onChangeText={setAantalPanelen}
-          placeholder="Bijv. 12"
-        />
+            <Text style={styles.label}>Aantal zonnepanelen</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={aantalPanelen}
+              onChangeText={setAantalPanelen}
+              placeholder="Bijv. 12"
+              placeholderTextColor="#aaa"
+            />
 
-        <TouchableOpacity style={styles.button} onPress={doorgaan}>
-          <Text style={styles.buttonText}>Ga verder</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </KeyboardAvoidingView>
+            <TouchableOpacity style={styles.button} onPress={doorgaan}>
+              <Text style={styles.buttonText}>Ga verder</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   container: {
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
     padding: 20,
   },
   title: {
@@ -108,6 +122,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     alignSelf: 'flex-start',
     marginBottom: 5,
+    color: '#000',
   },
   input: {
     borderWidth: 1,
@@ -116,6 +131,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 20,
     width: '100%',
+    backgroundColor: '#fff',
   },
   button: {
     backgroundColor: '#f7941e',

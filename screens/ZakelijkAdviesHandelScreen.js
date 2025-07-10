@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ImageBackground, SafeAreaView } from 'react-native';
 
 export default function ZakelijkAdviesHandelScreen({ route, navigation }) {
   const { kwh1, kwh2 = 0 } = route.params;
@@ -26,25 +26,35 @@ export default function ZakelijkAdviesHandelScreen({ route, navigation }) {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Advies - Handel op energiemarkt</Text>
-      <Text style={styles.info}>Totale energiebehoefte: {totaleBehoefte.toFixed(2)} kWh</Text>
-      <Text style={styles.advice}>{advies}</Text>
+    <ImageBackground
+      source={require('../assets/achtergrond.png')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={styles.container}>
+          <Text style={styles.title}>Advies - Handel op energiemarkt</Text>
+          <Text style={styles.info}>Totale energiebehoefte: {totaleBehoefte.toFixed(2)} kWh</Text>
+          <Text style={styles.advice}>{advies}</Text>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate(specificatieScreen)}
-      >
-        <Text style={styles.buttonText}>Bekijk specificaties</Text>
-      </TouchableOpacity>
-    </ScrollView>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate(specificatieScreen)}
+          >
+            <Text style={styles.buttonText}>Bekijk specificaties</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   container: {
     flexGrow: 1,
-    backgroundColor: '#fff',
     padding: 24,
     justifyContent: 'center',
     alignItems: 'center',

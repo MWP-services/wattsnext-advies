@@ -1,24 +1,34 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground, SafeAreaView } from 'react-native';
 
 export default function HomeScreen({ navigation }) {
   return (
-    <View style={styles.container}>
-      <Image source={require('../assets/logo.png')} style={styles.logo} />
-      <Text style={styles.title}>WattsNext Advies</Text>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Stap 1')}>
-        <Text style={styles.buttonText}>Start Advies</Text>
-      </TouchableOpacity>
-    </View>
+    <ImageBackground
+      source={require('../assets/achtergrond.png')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <Image source={require('../assets/logo.png')} style={styles.logo} />
+          <Text style={styles.title}>WattsNext Advies</Text>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Stap 1')}>
+            <Text style={styles.buttonText}>Start Advies</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
   },
   logo: {
     width: 200,

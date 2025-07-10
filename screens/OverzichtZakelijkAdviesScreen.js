@@ -1,5 +1,14 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ImageBackground,
+  SafeAreaView,
+  ScrollView
+} from 'react-native';
 
 export default function OverzichtZakelijkAdviesScreen({ route, navigation }) {
   const { kwh1, kwh2, energiehandel } = route.params;
@@ -16,58 +25,79 @@ export default function OverzichtZakelijkAdviesScreen({ route, navigation }) {
     { capaciteit: 20, naam: '20 kWh Zakelijk', afbeelding: require('../assets/20-KWH-ADVIES.jpg') },
   ];
 
-  // Kies eerste optie die groter of gelijk is aan totaalbehoefte
   const gekozen = zakelijkeOpties.find(optie => kwhTotaal <= optie.capaciteit) || { naam: 'Meer dan 20 kWh nodig', afbeelding: null };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Zakelijk Advies</Text>
-      <Text style={styles.subtext}>Benodigd totaal: {kwhTotaal.toFixed(1)} kWh</Text>
+    <ImageBackground
+      source={require('../assets/achtergrond.png')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={styles.container}>
+          <Text style={styles.title}>Zakelijk Advies</Text>
+          <Text style={styles.subtext}>Benodigd totaal: {kwhTotaal.toFixed(1)} kWh</Text>
 
-      {gekozen.afbeelding && (
-        <Image source={gekozen.afbeelding} style={styles.image} resizeMode="contain" />
-      )}
+          {gekozen.afbeelding && (
+            <Image source={gekozen.afbeelding} style={styles.image} resizeMode="contain" />
+          )}
 
-      <Text style={styles.advies}>{gekozen.naam}</Text>
+          <Text style={styles.advies}>{gekozen.naam}</Text>
 
-      {energiehandel && (
-        <Text style={styles.subtext}>Energiehandel gewenst: {energiehandel}</Text>
-      )}
+          {energiehandel && (
+            <Text style={styles.subtext}>Energiehandel gewenst: {energiehandel}</Text>
+          )}
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
-        <Text style={styles.buttonText}>Terug naar begin</Text>
-      </TouchableOpacity>
-    </View>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
+            <Text style={styles.buttonText}>Terug naar begin</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   container: {
-    flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff', padding: 20
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
   },
   title: {
-    fontSize: 24, fontWeight: 'bold', color: '#3eaf4f', marginBottom: 10
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#3eaf4f',
+    marginBottom: 10,
   },
   subtext: {
-    fontSize: 16, marginBottom: 10
+    fontSize: 16,
+    marginBottom: 10,
   },
   advies: {
-    fontSize: 20, fontWeight: 'bold', color: '#f7941e', marginVertical: 20, textAlign: 'center'
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#f7941e',
+    marginVertical: 20,
+    textAlign: 'center',
   },
   image: {
     width: 300,
     height: 200,
-    marginBottom: 20
+    marginBottom: 20,
   },
   button: {
     backgroundColor: '#f7941e',
     padding: 14,
     borderRadius: 10,
     width: '100%',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   buttonText: {
     color: '#fff',
-    fontSize: 18
-  }
+    fontSize: 18,
+  },
 });

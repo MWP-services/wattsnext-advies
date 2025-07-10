@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   View,
@@ -9,6 +8,8 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  ImageBackground,
+  SafeAreaView,
 } from 'react-native';
 
 export default function EnergieHandel({ navigation }) {
@@ -37,72 +38,85 @@ export default function EnergieHandel({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={80}
+    <ImageBackground
+      source={require('../assets/achtergrond.png')}
+      style={styles.background}
+      resizeMode="cover"
     >
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <Text style={styles.title}>Handel op de energiemarkt</Text>
-
-        <Text style={styles.label}>Gewenste handels capaciteit (kWh)</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={pmarkt}
-          onChangeText={setPmarkt}
-          placeholder="Bijv. 15"
-          placeholderTextColor="#aaa"
-        />
-
-        <Text style={styles.label}>Maximaal netaansluitingsvermogen (kW)</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={pnet}
-          onChangeText={setPnet}
-          placeholder="Bijv. 20"
-          placeholderTextColor="#aaa"
-        />
-
-        <Text style={styles.label}>Aantal activaties per dag</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={activaties}
-          onChangeText={setActivaties}
-          placeholder="Bijv. 2"
-          placeholderTextColor="#aaa"
-        />
-
-        <Text style={styles.label}>Wilt u ruimte reserveren voor noodstroomvoorziening?</Text>
-        <View style={styles.toggleContainer}>
-          <TouchableOpacity
-            style={[styles.toggleButton, wiltNoodstroom === true && styles.toggleSelected]}
-            onPress={() => setWiltNoodstroom(true)}
+      <SafeAreaView style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={80}
+        >
+          <ScrollView
+            contentContainerStyle={styles.container}
+            keyboardShouldPersistTaps="handled"
           >
-            <Text style={styles.toggleText}>Ja</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.toggleButton, wiltNoodstroom === false && styles.toggleSelected]}
-            onPress={() => setWiltNoodstroom(false)}
-          >
-            <Text style={styles.toggleText}>Nee</Text>
-          </TouchableOpacity>
-        </View>
+            <Text style={styles.title}>Handel op de energiemarkt</Text>
 
-        <TouchableOpacity style={styles.button} onPress={handleNext}>
-          <Text style={styles.buttonText}>Ga verder</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </KeyboardAvoidingView>
+            <Text style={styles.label}>Gewenste handels capaciteit (kWh)</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={pmarkt}
+              onChangeText={setPmarkt}
+              placeholder="Bijv. 15"
+              placeholderTextColor="#aaa"
+            />
+
+            <Text style={styles.label}>Maximaal netaansluitingsvermogen (kW)</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={pnet}
+              onChangeText={setPnet}
+              placeholder="Bijv. 20"
+              placeholderTextColor="#aaa"
+            />
+
+            <Text style={styles.label}>Aantal activaties per dag</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={activaties}
+              onChangeText={setActivaties}
+              placeholder="Bijv. 2"
+              placeholderTextColor="#aaa"
+            />
+
+            <Text style={styles.label}>Wilt u ruimte reserveren voor noodstroomvoorziening?</Text>
+            <View style={styles.toggleContainer}>
+              <TouchableOpacity
+                style={[styles.toggleButton, wiltNoodstroom === true && styles.toggleSelected]}
+                onPress={() => setWiltNoodstroom(true)}
+              >
+                <Text style={styles.toggleText}>Ja</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.toggleButton, wiltNoodstroom === false && styles.toggleSelected]}
+                onPress={() => setWiltNoodstroom(false)}
+              >
+                <Text style={styles.toggleText}>Nee</Text>
+              </TouchableOpacity>
+            </View>
+
+            <TouchableOpacity style={styles.button} onPress={handleNext}>
+              <Text style={styles.buttonText}>Ga verder</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   container: {
     flexGrow: 1,
-    backgroundColor: '#fff',
     padding: 24,
     justifyContent: 'center',
   },
@@ -124,6 +138,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 20,
     fontSize: 16,
+    backgroundColor: '#fff', // input zelf mag wit blijven
   },
   button: {
     backgroundColor: '#FF7F00',
