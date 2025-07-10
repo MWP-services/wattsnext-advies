@@ -1,19 +1,52 @@
 // screens/ZakelijkOpslagScreen.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  KeyboardAvoidingView,
+  ScrollView,
+} from 'react-native';
 
 export default function ZakelijkOpslagScreen({ navigation }) {
-  const [pvOpwek, setPvOpwek] = useState('');
-  const [buffer, setBuffer] = useState('');
+  const [jaarlijksVerbruik, setJaarlijksVerbruik] = useState('');
+  const [wpPerPaneel, setWpPerPaneel] = useState('');
+  const [aantalPanelen, setAantalPanelen] = useState('');
 
   const doorgaan = () => {
-    const bufferDecimaal = parseFloat(buffer) / 100;
-    const autonomie = 1;
-    const efficientie = 0.9;
+    const jaarlijks = parseFloat(jaarlijksVerbruik);
+    const wp = parseFloat(wpPerPaneel);
+    const panelen = parseFloat(aantalPanelen);
 
-    const benodigdKwh1 = (parseFloat(pvOpwek) * bufferDecimaal * autonomie) / efficientie;
+    if (isNaN(jaarlijks) || isNaN(wp) || isNaN(panelen)) {
+      alert('Vul alle velden in met geldige getallen.');
+      return;
+    }
 
-   navigation.navigate('NoodstroomVraag', { kwh1: benodigdKwh1 });
+    // Stap 1: Jaarlijks verbruik -> dagelijks -> kWh1
+    const dagelijksVerbruik = jaarlijks / 365;
+    const kwh1 = dagelijksVerbruik / 2;
+
+    // Stap 2: Zonnepanelen installatie
+    const vermogenInstallatie = (wp * panelen) / 1000; // Wp naar kWp
+    const kwh2 = vermogenInstallatie * 1.5;
+
+    // Stap 3: Gemiddelde
+    const totaalBenodigd = (kwh1 + kwh2) / 2;
+
+    console.log('Zakelijk Opslag Berekening =>');
+    console.log('Jaarlijks verbruik:', jaarlijks);
+    console.log('Dagelijks verbruik:', dagelijksVerbruik.toFixed(2));
+    console.log('kWh1:', kwh1.toFixed(2));
+    console.log('Wp per paneel:', wp);
+    console.log('Aantal panelen:', panelen);
+    console.log('Vermogen installatie:', vermogenInstallatie.toFixed(2));
+    console.log('kWh2:', kwh2.toFixed(2));
+    console.log('Totaal benodigd:', totaalBenodigd.toFixed(2));
+
+    navigation.navigate('NoodstroomVraag', { kwh1: totaalBenodigd });
   };
 
   return (
@@ -21,20 +54,31 @@ export default function ZakelijkOpslagScreen({ navigation }) {
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Opslag van PV-opwek optimaliseren</Text>
 
-        <Text style={styles.label}>Dagelijkse PV-opwek (kWh)</Text>
+        <Text style={styles.label}>Jaarlijks stroomverbruik (kWh)</Text>
         <TextInput
           style={styles.input}
           keyboardType="numeric"
-          value={pvOpwek}
-          onChangeText={setPvOpwek}
+          value={jaarlijksVerbruik}
+          onChangeText={setJaarlijksVerbruik}
+          placeholder="Bijv. 3650"
         />
 
-        <Text style={styles.label}>Gewenste buffer (%)</Text>
+        <Text style={styles.label}>Vermogen per zonnepaneel (Wp)</Text>
         <TextInput
           style={styles.input}
           keyboardType="numeric"
-          value={buffer}
-          onChangeText={setBuffer}
+          value={wpPerPaneel}
+          onChangeText={setWpPerPaneel}
+          placeholder="Bijv. 400"
+        />
+
+        <Text style={styles.label}>Aantal zonnepanelen</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          value={aantalPanelen}
+          onChangeText={setAantalPanelen}
+          placeholder="Bijv. 12"
         />
 
         <TouchableOpacity style={styles.button} onPress={doorgaan}>
@@ -51,19 +95,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-    padding: 20
+    padding: 20,
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
     color: '#3eaf4f',
     marginBottom: 30,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   label: {
     fontSize: 16,
     alignSelf: 'flex-start',
-    marginBottom: 5
+    marginBottom: 5,
   },
   input: {
     borderWidth: 1,
@@ -71,17 +115,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     marginBottom: 20,
-    width: '100%'
+    width: '100%',
   },
   button: {
     backgroundColor: '#f7941e',
     padding: 16,
     borderRadius: 10,
     width: '100%',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   buttonText: {
     color: '#fff',
-    fontSize: 18
-  }
+    fontSize: 18,
+  },
 });
