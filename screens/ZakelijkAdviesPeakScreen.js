@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ImageBackground } from 'react-native';
 
 export default function ZakelijkAdviesPeakScreen({ route, navigation }) {
   const { kwh1, kwh2 = 0, kwh3 = 0 } = route.params;
@@ -37,6 +37,11 @@ export default function ZakelijkAdviesPeakScreen({ route, navigation }) {
   }
 
   return (
+    <ImageBackground
+      source={require('../assets/achtergrond.png')}
+      style={styles.background}
+      resizeMode="contain"
+    >
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Advies op maat</Text>
       <Text style={styles.info}>
@@ -55,13 +60,13 @@ export default function ZakelijkAdviesPeakScreen({ route, navigation }) {
         <Text style={styles.buttonText}>Bekijk specificaties</Text>
       </TouchableOpacity>
     </ScrollView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: '#fff',
     padding: 24,
     alignItems: 'center',
     justifyContent: 'center',
