@@ -49,6 +49,8 @@ import Specificaties96Screen from './screens/spec-96-kwh';
 import Specificaties232Screen from './screens/spec-232-kwh';
 import Specificaties209Screen from './screens/spec-2-mwh';
 import Specificaties501Screen from './screens/spec-5-mwh';
+import Spec_HV_particulier from './screens/Spec_HV_particulier';
+import Spec_LV_particulier from './screens/Spec_LV_particulier';
 
 const Stack = createNativeStackNavigator();
 
@@ -104,7 +106,8 @@ export default function App() {
 <Stack.Screen name="Specificaties232" component={Specificaties232Screen} />
 <Stack.Screen name="Specificaties209" component={Specificaties209Screen} />
 <Stack.Screen name="Specificaties501" component={Specificaties501Screen} />
-
+<Stack.Screen name="Spec_HV_particulier" component={Spec_HV_particulier} />
+<Stack.Screen name="Spec_LV_particulier" component={Spec_LV_particulier} />
 
       </Stack.Navigator>
     </NavigationContainer>

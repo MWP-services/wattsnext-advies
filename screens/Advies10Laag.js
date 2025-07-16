@@ -24,7 +24,7 @@ export default function Advies10Laag({ navigation }) {
 
           <TouchableOpacity
             style={styles.specButton}
-            onPress={() => navigation.navigate('Specificaties')}
+            onPress={() => navigation.navigate('spec_LV_particulier')}
           >
             <Text style={styles.specButtonText}>Bekijk specificaties</Text>
           </TouchableOpacity>

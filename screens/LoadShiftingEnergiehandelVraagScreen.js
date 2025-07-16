@@ -14,29 +14,45 @@ import {
 } from 'react-native';
 
 export default function LoadShiftingEnergiehandelVraagScreen({ navigation, route }) {
-  const { kwh1, kwh2 } = route.params;
+  const { kwh1 = 0, kwh2 = 0 } = route.params || {};
+
   const [wiltHandelen, setWiltHandelen] = useState(null);
-  const [pmarkt, setPmarkt] = useState('');
   const [pnet, setPnet] = useState('');
-  const [activaties, setActivaties] = useState('');
+  const [pgewenst, setPgewenst] = useState('');
 
   const handleNext = () => {
-    const markt = parseFloat(pmarkt);
     const net = parseFloat(pnet);
-    const a = parseInt(activaties);
+    const gewenst = parseFloat(pgewenst);
 
-    if (!isNaN(markt) && !isNaN(net) && !isNaN(a) && markt > 0 && net > 0 && a > 0) {
-      const minVermogen = Math.min(markt, net);
-      const kwh3 = (minVermogen * 2 * a) / 0.9; // 90% efficiëntie
-      console.log("LoadShifting kwh3:", kwh3);
-      navigation.navigate('ZakelijkAdviesLoadShifting', { kwh1, kwh2, kwh3 });
-    } else {
+    if (isNaN(net) || isNaN(gewenst) || net <= 0 || gewenst <= 0) {
       alert("Vul geldige waarden in.");
+      return;
     }
+
+    if (gewenst > net * 2) {
+      alert("De gewenste handelscapaciteit mag niet meer dan 2x de netaansluiting zijn.");
+      return;
+    }
+
+    const kwh3 = gewenst;
+
+    console.log("[LoadShifting] handleNext");
+    console.log("kwh1:", kwh1);
+    console.log("kwh2:", kwh2);
+    console.log("kwh3:", kwh3);
+
+    navigation.navigate('ZakelijkAdviesLoadShifting', { kwh1, kwh2, kwh3 });
   };
 
   const handleNee = () => {
-    navigation.navigate('ZakelijkAdviesLoadShifting', { kwh1, kwh2, kwh3: 0 });
+    const kwh3 = 0;
+
+    console.log("[LoadShifting] handleNee");
+    console.log("kwh1:", kwh1);
+    console.log("kwh2:", kwh2);
+    console.log("kwh3:", kwh3);
+
+    navigation.navigate('ZakelijkAdviesLoadShifting', { kwh1, kwh2, kwh3 });
   };
 
   return (
@@ -71,16 +87,6 @@ export default function LoadShiftingEnergiehandelVraagScreen({ navigation, route
 
             {wiltHandelen === true && (
               <>
-                <Text style={styles.label}>Gewenste handels capaciteit (kWh)</Text>
-                <TextInput
-                  style={styles.input}
-                  keyboardType="numeric"
-                  value={pmarkt}
-                  onChangeText={setPmarkt}
-                  placeholder="Bijv. 15"
-                  placeholderTextColor="#aaa"
-                />
-
                 <Text style={styles.label}>Maximaal netaansluitingsvermogen (kW)</Text>
                 <TextInput
                   style={styles.input}
@@ -91,13 +97,13 @@ export default function LoadShiftingEnergiehandelVraagScreen({ navigation, route
                   placeholderTextColor="#aaa"
                 />
 
-                <Text style={styles.label}>Aantal activaties per dag</Text>
+                <Text style={styles.label}>Gewenste handelscapaciteit (kWh)</Text>
                 <TextInput
                   style={styles.input}
                   keyboardType="numeric"
-                  value={activaties}
-                  onChangeText={setActivaties}
-                  placeholder="Bijv. 2"
+                  value={pgewenst}
+                  onChangeText={setPgewenst}
+                  placeholder="Bijv. 15"
                   placeholderTextColor="#aaa"
                 />
 
@@ -140,7 +146,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 20,
     fontSize: 16,
-    backgroundColor: '#fff', // Input zelf wit voor leesbaarheid
+    backgroundColor: '#fff',
   },
   button: {
     backgroundColor: '#FF7F00',

@@ -1,4 +1,3 @@
-// screens/NetcongestieNoodstroomVraag.js
 import React, { useState } from 'react';
 import {
   View,
@@ -20,7 +19,8 @@ export default function NetcongestieNoodstroomVraag({ navigation, route }) {
   const [backupTijd, setBackupTijd] = useState('');
 
   const handleNee = () => {
-    navigation.navigate('NetcongestieEnergiehandelVraag', { kwh1, kwh2: 0 });
+    console.log('Netcongestie advies zónder noodstroom:', { kwh1, kwh2: 0 });
+    navigation.navigate('ZakelijkAdviesNetcongestie', { kwh1, kwh2: 0 });
   };
 
   const handleNext = () => {
@@ -28,7 +28,8 @@ export default function NetcongestieNoodstroomVraag({ navigation, route }) {
     const t = parseFloat(backupTijd);
     if (!isNaN(v) && !isNaN(t) && v > 0 && t > 0) {
       const kwh2 = (v * t) / 0.9;
-      navigation.navigate('NetcongestieEnergiehandelVraag', { kwh1, kwh2 });
+      console.log('Netcongestie advies mét noodstroom:', { kwh1, kwh2 });
+      navigation.navigate('ZakelijkAdviesNetcongestie', { kwh1, kwh2 });
     } else {
       alert('Vul geldige waarden in.');
     }
@@ -125,7 +126,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 20,
     fontSize: 16,
-    backgroundColor: '#fff', // Inputvelden wit houden voor leesbaarheid
+    backgroundColor: '#fff',
   },
   button: {
     backgroundColor: '#FF7F00',

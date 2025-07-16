@@ -22,7 +22,7 @@ export default function Advies15Hoog({ navigation }) {
 
           <TouchableOpacity
             style={styles.specButton}
-            onPress={() => navigation.navigate('Specificaties')}
+            onPress={() => navigation.navigate('spec_HV_particulier')}
           >
             <Text style={styles.specButtonText}>Bekijk specificaties</Text>
           </TouchableOpacity>

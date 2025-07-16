@@ -1,33 +1,46 @@
 import React, { useState } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity,
-  StyleSheet, ScrollView, KeyboardAvoidingView, Platform,
-  ImageBackground, SafeAreaView
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  ImageBackground,
+  SafeAreaView
 } from 'react-native';
 
 export default function Netcongestie({ navigation }) {
   const [stroombelasting, setStroombelasting] = useState('');
   const [netaansluiting, setNetaansluiting] = useState('');
   const [duur, setDuur] = useState('');
-  const [vermogensfactor, setVermogensfactor] = useState('0.95');
 
   const handleNext = () => {
     const stroom = parseFloat(stroombelasting);
     const net = parseFloat(netaansluiting);
     const t = parseFloat(duur);
-    const v = parseFloat(vermogensfactor);
+    const v = 0.95; // vaste vermogensfactor
+    const efficientie = 0.9;
 
-    if (!isNaN(stroom) && !isNaN(net) && !isNaN(t) && !isNaN(v)) {
-      const verschil = stroom - net;
-      if (verschil <= 0) {
-        alert("Stroombelasting moet hoger zijn dan netaansluiting.");
+    if (!isNaN(stroom) && !isNaN(net) && !isNaN(t)) {
+      const verschilAmp = ((stroom - net) * v * t) / efficientie;
+
+      if (verschilAmp <= 0) {
+        alert("De stroombelasting moet hoger zijn dan de netaansluiting.");
         return;
       }
 
-      const kwh1 = (Math.sqrt(3) * 400 * verschil * v * t) / 0.9;
-      navigation.navigate('NetcongestieNoodstroomVraag', { kwh1 });
+      const aanbevolenCapaciteit = verschilAmp * 0.658 * 2;
+
+      console.log('Netcongestie berekening:');
+      console.log('Verschil in Ampère:', verschilAmp.toFixed(2));
+      console.log('Aanbevolen capaciteit (kWh1):', aanbevolenCapaciteit.toFixed(2));
+
+      navigation.navigate('NetcongestieNoodstroomVraag', { kwh1: aanbevolenCapaciteit });
     } else {
-      alert("Vul alle velden correct in.");
+      alert("Vul alle velden in met geldige getallen.");
     }
   };
 
@@ -44,7 +57,11 @@ export default function Netcongestie({ navigation }) {
           keyboardVerticalOffset={80}
         >
           <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-            <Text style={styles.title}>Netcongestie</Text>
+            <Text style={styles.title}>Netcongestie Berekening</Text>
+
+            <Text style={styles.info}>
+              
+            </Text>
 
             <Text style={styles.label}>Gemiddelde stroombelasting (A)</Text>
             <TextInput
@@ -52,7 +69,7 @@ export default function Netcongestie({ navigation }) {
               keyboardType="numeric"
               value={stroombelasting}
               onChangeText={setStroombelasting}
-              placeholder="Bijv. 160"
+              placeholder="Bijv. 160 A"
               placeholderTextColor="#aaa"
             />
 
@@ -62,7 +79,7 @@ export default function Netcongestie({ navigation }) {
               keyboardType="numeric"
               value={netaansluiting}
               onChangeText={setNetaansluiting}
-              placeholder="Bijv. 125"
+              placeholder="Bijv. 125 A"
               placeholderTextColor="#aaa"
             />
 
@@ -72,22 +89,12 @@ export default function Netcongestie({ navigation }) {
               keyboardType="numeric"
               value={duur}
               onChangeText={setDuur}
-              placeholder="Bijv. 3"
-              placeholderTextColor="#aaa"
-            />
-
-            <Text style={styles.label}>Vermogensfactor (standaard = 0.95)</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={vermogensfactor}
-              onChangeText={setVermogensfactor}
-              placeholder="0.95"
+              placeholder="Bijv. 3 uur"
               placeholderTextColor="#aaa"
             />
 
             <TouchableOpacity style={styles.button} onPress={handleNext}>
-              <Text style={styles.buttonText}>Ga verder</Text>
+              <Text style={styles.buttonText}>Bereken en ga verder</Text>
             </TouchableOpacity>
           </ScrollView>
         </KeyboardAvoidingView>
@@ -109,8 +116,14 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 30,
+    marginBottom: 15,
     color: '#4CAF50',
+  },
+  info: {
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#333',
   },
   label: {
     fontSize: 16,
@@ -123,7 +136,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 20,
     fontSize: 16,
-    backgroundColor: '#fff', // invoervelden blijven wit voor leesbaarheid
+    backgroundColor: '#fff',
   },
   button: {
     backgroundColor: '#FF7F00',
