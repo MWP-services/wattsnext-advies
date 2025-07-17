@@ -5,6 +5,10 @@ export default function ZakelijkAdviesHandelScreen({ route, navigation }) {
   const { kwh1, kwh2 = 0 } = route.params;
   const totaleBehoefte = kwh1 + kwh2;
 
+  console.log('Ontvangen kwh1:', kwh1);
+  console.log('Ontvangen kwh2:', kwh2);
+  console.log('Totale behoefte:', totaleBehoefte);
+
   let advies = '';
   let specificatieScreen = '';
 
@@ -24,6 +28,9 @@ export default function ZakelijkAdviesHandelScreen({ route, navigation }) {
     advies = '5.01 MWh batterij (modulair uitbreidbaar)';
     specificatieScreen = 'Specificaties501';
   }
+
+  console.log('Gekozen advies:', advies);
+  console.log('Navigeren naar scherm:', specificatieScreen);
 
   return (
     <ImageBackground

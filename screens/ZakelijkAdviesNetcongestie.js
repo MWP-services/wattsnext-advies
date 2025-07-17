@@ -14,6 +14,9 @@ export default function ZakelijkAdviesNetcongestie({ navigation, route }) {
   const { kwh1, kwh2 = 0, kwh3 = 0 } = route.params;
   const totaleBehoefte = kwh1 + kwh2 + kwh3;
 
+  console.log("Netcongestie Advies -> kwh1:", kwh1, "kwh2:", kwh2, "kwh3:", kwh3);
+  console.log("Totale behoefte:", totaleBehoefte);
+
   let advies = '';
   let image = null;
   let specificatieScreen = '';
@@ -39,6 +42,9 @@ export default function ZakelijkAdviesNetcongestie({ navigation, route }) {
     image = require('../assets/5-MW-ZAKELIJK.png');
     specificatieScreen = 'Specificaties501';
   }
+
+  console.log("Gekozen advies:", advies);
+  console.log("Navigeren naar:", specificatieScreen);
 
   return (
     <ImageBackground

@@ -14,6 +14,9 @@ export default function ZakelijkAdviesNoodstroom({ route, navigation }) {
   const { kwh1, kwh2 } = route.params;
   const totaalKwh = kwh1 + kwh2;
 
+  console.log("Noodstroom Advies → kwh1:", kwh1, "kwh2:", kwh2);
+  console.log("Totale behoefte:", totaalKwh);
+
   let advies = '';
   let afbeelding = '';
   let specificatieScreen = '';
@@ -39,6 +42,9 @@ export default function ZakelijkAdviesNoodstroom({ route, navigation }) {
     afbeelding = require('../assets/5-MW-ZAKELIJK.png');
     specificatieScreen = 'Specificaties501';
   }
+
+  console.log("Gekozen advies:", advies);
+  console.log("Navigeren naar:", specificatieScreen);
 
   return (
     <ImageBackground

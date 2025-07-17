@@ -13,27 +13,27 @@ import {
 } from 'react-native';
 
 export default function EnergieHandel({ navigation }) {
-  const [pmarkt, setPmarkt] = useState('');
-  const [pnet, setPnet] = useState('');
-  const [activaties, setActivaties] = useState('');
+  const [vermogen, setVermogen] = useState('');
+  const [teruglever, setTeruglever] = useState('');
   const [wiltNoodstroom, setWiltNoodstroom] = useState(null);
 
   const handleNext = () => {
-    const markt = parseFloat(pmarkt);
-    const net = parseFloat(pnet);
-    const a = parseInt(activaties);
+    const teruglevering = parseFloat(teruglever);
 
-    if (!isNaN(markt) && !isNaN(net) && !isNaN(a) && markt > 0 && net > 0 && a > 0) {
-      const minVermogen = Math.min(markt, net);
-      const kwh1 = (minVermogen * 2 * a) / 0.9;
+    if (isNaN(teruglevering) || teruglevering <= 0) {
+      alert("Vul een geldige teruglevercapaciteit in.");
+      return;
+    }
 
-      if (wiltNoodstroom === true) {
-        navigation.navigate('HandelNoodstroomVraag', { kwh1 });
-      } else {
-        navigation.navigate('ZakelijkAdviesHandel', { kwh1, kwh2: 0 });
-      }
+    const kwh1 = teruglevering * 2;
+
+    console.log('Gecontracteerd terugleververmogen (kW):', teruglevering);
+    console.log('Berekening kwh1 = teruglever × 2:', kwh1);
+
+    if (wiltNoodstroom === true) {
+      navigation.navigate('HandelNoodstroomVraag', { kwh1 });
     } else {
-      alert("Vul geldige waarden in.");
+      navigation.navigate('ZakelijkAdviesHandel', { kwh1, kwh2: 0 });
     }
   };
 
@@ -49,39 +49,26 @@ export default function EnergieHandel({ navigation }) {
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           keyboardVerticalOffset={80}
         >
-          <ScrollView
-            contentContainerStyle={styles.container}
-            keyboardShouldPersistTaps="handled"
-          >
+          <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
             <Text style={styles.title}>Handel op de energiemarkt</Text>
 
-            <Text style={styles.label}>Gewenste handels capaciteit (kWh)</Text>
+            <Text style={styles.label}>Gecontracteerd vermogen (kW)</Text>
             <TextInput
               style={styles.input}
               keyboardType="numeric"
-              value={pmarkt}
-              onChangeText={setPmarkt}
-              placeholder="Bijv. 15"
-              placeholderTextColor="#aaa"
-            />
-
-            <Text style={styles.label}>Maximaal netaansluitingsvermogen (kW)</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={pnet}
-              onChangeText={setPnet}
+              value={vermogen}
+              onChangeText={setVermogen}
               placeholder="Bijv. 20"
               placeholderTextColor="#aaa"
             />
 
-            <Text style={styles.label}>Aantal activaties per dag</Text>
+            <Text style={styles.label}>Gecontracteerd terugleververmogen (kW)</Text>
             <TextInput
               style={styles.input}
               keyboardType="numeric"
-              value={activaties}
-              onChangeText={setActivaties}
-              placeholder="Bijv. 2"
+              value={teruglever}
+              onChangeText={setTeruglever}
+              placeholder="Bijv. 15"
               placeholderTextColor="#aaa"
             />
 
@@ -138,7 +125,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 20,
     fontSize: 16,
-    backgroundColor: '#fff', // input zelf mag wit blijven
+    backgroundColor: '#fff',
   },
   button: {
     backgroundColor: '#FF7F00',

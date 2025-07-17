@@ -3,8 +3,11 @@ import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, ImageBackg
 
 export default function ZakelijkAdviesScreen({ navigation, route }) {
   const { kwh1 = 0, kwh2 = 0, kwh3 = 0 } = route.params;
-  console.log("kwh1:", kwh1, "kwh2:", kwh2, "kwh3:", kwh3);
+
+  console.log("Zakelijk Advies → kwh1:", kwh1, "kwh2:", kwh2, "kwh3:", kwh3);
+
   const k0 = kwh1 + kwh2 + kwh3;
+  console.log("Totale behoefte (k0):", k0);
 
   let advies = '';
   let image = null;
@@ -31,6 +34,9 @@ export default function ZakelijkAdviesScreen({ navigation, route }) {
     image = require('../assets/5-MW-ZAKELIJK.png');
     specificatieScreen = 'Specificaties501';
   }
+
+  console.log("Gekozen advies:", advies);
+  console.log("Navigeren naar:", specificatieScreen);
 
   return (
     <ImageBackground

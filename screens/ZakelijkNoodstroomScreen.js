@@ -27,12 +27,16 @@ export default function ZakelijkNoodstroomScreen() {
     const vermogen = parseFloat(kritischVermogen);
     const tijd = parseFloat(backuptijd);
 
+    console.log('Invoer → vermogen (kW):', vermogen, 'tijd (uren):', tijd);
+    console.log('Ontvangen benodigdKWh1 uit params:', benodigdKWh1);
+
     if (isNaN(vermogen) || isNaN(tijd)) {
       Alert.alert('Ongeldige invoer', 'Vul beide velden correct in.');
       return;
     }
 
     const kWh2 = (vermogen * tijd) / efficientie;
+    console.log('Berekend kWh2 (noodstroom):', kWh2.toFixed(2));
 
     navigation.navigate('ZakelijkEnergiehandelVraag', {
       benodigdKWh1: parseFloat(benodigdKWh1),

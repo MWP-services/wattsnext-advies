@@ -26,7 +26,7 @@ export default function ZakelijkOpslagScreen({ navigation }) {
       return;
     }
 
-    // Stap 1: Jaarlijks verbruik -> dagelijks -> kWh1
+    // Stap 1: Jaarlijks verbruik → dagelijks → kWh1
     const dagelijksVerbruik = jaarlijks / 365;
     const kwh1 = dagelijksVerbruik / 2;
 
@@ -37,15 +37,16 @@ export default function ZakelijkOpslagScreen({ navigation }) {
     // Stap 3: Gemiddelde
     const totaalBenodigd = (kwh1 + kwh2) / 2;
 
+    // ✅ Debug logging
     console.log('Zakelijk Opslag Berekening =>');
     console.log('Jaarlijks verbruik:', jaarlijks);
     console.log('Dagelijks verbruik:', dagelijksVerbruik.toFixed(2));
     console.log('kWh1:', kwh1.toFixed(2));
     console.log('Wp per paneel:', wp);
     console.log('Aantal panelen:', panelen);
-    console.log('Vermogen installatie:', vermogenInstallatie.toFixed(2));
-    console.log('kWh2:', kwh2.toFixed(2));
-    console.log('Totaal benodigd:', totaalBenodigd.toFixed(2));
+    console.log('Vermogen installatie (kWp):', vermogenInstallatie.toFixed(2));
+    console.log('kWh2 (PV-opwek):', kwh2.toFixed(2));
+    console.log('Totaal benodigd (gemiddelde):', totaalBenodigd.toFixed(2));
 
     navigation.navigate('NoodstroomVraag', { kwh1: totaalBenodigd });
   };

@@ -5,6 +5,7 @@ export default function ZakelijkAdviesLoadShiftingScreen({ route, navigation }) 
   const { kwh1 = 0, kwh2 = 0, kwh3 = 0 } = route.params;
   const totaleBehoefte = kwh1 + kwh2 + kwh3;
   console.log("LoadShifting Advies -> kwh1:", kwh1, "kwh2:", kwh2, "kwh3:", kwh3);
+  console.log("Totale behoefte:", totaleBehoefte);
 
   let advies = '';
   let image = null;
@@ -28,6 +29,7 @@ export default function ZakelijkAdviesLoadShiftingScreen({ route, navigation }) 
     advies = `232 kWh batterij (${modules} modules)`;
     image = require('../assets/232-KWH-ZAKELIJK.png');
     specificatieScreen = 'Specificaties232';
+    console.log("Aantal modules voor 232 kWh batterij:", modules);
   } else if (totaleBehoefte <= 2090) {
     advies = '2.09 MWh batterij';
     image = require('../assets/2-MW-ZAKELIJK.png');
@@ -37,6 +39,9 @@ export default function ZakelijkAdviesLoadShiftingScreen({ route, navigation }) 
     image = require('../assets/5-MW-ZAKELIJK.png');
     specificatieScreen = 'Specificaties501';
   }
+
+  console.log("Gekozen advies:", advies);
+  console.log("Navigeren naar specificatie scherm:", specificatieScreen);
 
   return (
     <ImageBackground
