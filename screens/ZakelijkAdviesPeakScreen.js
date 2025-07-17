@@ -3,7 +3,9 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ImageBackg
 
 export default function ZakelijkAdviesPeakScreen({ route, navigation }) {
   const { kwh1, kwh2 = 0, kwh3 = 0 } = route.params;
-  const totaleBehoefte = kwh1 + kwh2 + kwh3;
+
+  const totaleBehoefteOrigineel = kwh1 + kwh2 + kwh3;
+  const totaleBehoefte = totaleBehoefteOrigineel * 2; // ✨ Keer 2
 
   let advies = '';
   let image = null;
@@ -40,11 +42,11 @@ export default function ZakelijkAdviesPeakScreen({ route, navigation }) {
     <ImageBackground
       source={require('../assets/achtergrond.png')}
       style={styles.background}
-      resizeMode="cover"  // meestal mooier voor fullscreen
+      resizeMode="cover"
     >
       <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView 
-          style={{ flex: 1 }} 
+        <ScrollView
+          style={{ flex: 1 }}
           contentContainerStyle={styles.container}
         >
           <Text style={styles.title}>Advies op maat</Text>

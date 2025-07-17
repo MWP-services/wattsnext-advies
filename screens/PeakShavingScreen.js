@@ -82,7 +82,7 @@ export default function PeakShavingScreen({ navigation }) {
               </TouchableOpacity>
             </View>
 
-            <Text style={styles.label}>Netaansluiting ({mode})</Text>
+            <Text style={styles.label}>Gecontracteerd Vermogen ({mode})</Text>
             <TextInput style={styles.input} keyboardType="numeric" value={net} onChangeText={setNet} />
 
             <Text style={styles.label}>Gemeten piekbelasting ({mode})</Text>
