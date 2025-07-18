@@ -6,11 +6,13 @@ import {
 
 export default function ParticulierScreen({ navigation }) {
   return (
-    <ImageBackground
-      source={require('../assets/achtergrond.png')}
-      style={styles.background}
-      resizeMode="cover"
-    >
+   <ImageBackground
+  source={require('../assets/achtergrond.png')}
+  style={styles.background}
+  resizeMode="contain" // 🔄 of probeer ook "stretch"
+  imageStyle={styles.imageStyle} // 🔧 web-only tweak
+>
+
       <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.container}>
           <Text style={styles.title}>Wat voor aansluiting heb je thuis?</Text>
@@ -35,9 +37,21 @@ export default function ParticulierScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-  },
+ background: {
+  flex: 1,
+  width: '100%',
+  height: '100%',
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+
+imageStyle: {
+  resizeMode: 'contain',
+  position: 'absolute',
+  width: '100%',
+  height: '100%',
+},
+
   container: {
     flex: 1,
     justifyContent: 'center',

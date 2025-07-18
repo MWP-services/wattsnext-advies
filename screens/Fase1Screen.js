@@ -8,10 +8,12 @@ export default function Fase1Screen({ navigation }) {
 
   return (
     <ImageBackground
-      source={require('../assets/achtergrond.png')}
-      style={styles.background}
-      resizeMode="cover"
-    >
+  source={require('../assets/achtergrond.png')}
+  style={styles.background}
+  resizeMode="contain" // 🔄 of probeer ook "stretch"
+  imageStyle={styles.imageStyle} // 🔧 web-only tweak
+>
+
       <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.container}>
           <Text style={styles.title}>Welke zekering heeft je 1-fase aansluiting?</Text>
@@ -46,8 +48,20 @@ export default function Fase1Screen({ navigation }) {
 
 const styles = StyleSheet.create({
   background: {
-    flex: 1,
-  },
+  flex: 1,
+  width: '100%',
+  height: '100%',
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+
+imageStyle: {
+  resizeMode: 'contain',
+  position: 'absolute',
+  width: '100%',
+  height: '100%',
+},
+
   container: {
     flex: 1,
     justifyContent: 'center',
