@@ -15,6 +15,7 @@ export default function Spec_HV_particulier() {
 }
 
 const styles = StyleSheet.create({
+  
   container: {
     flexGrow: 1,
     backgroundColor: '#fff',

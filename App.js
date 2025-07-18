@@ -49,8 +49,10 @@ import Specificaties96Screen from './screens/spec-96-kwh';
 import Specificaties232Screen from './screens/spec-232-kwh';
 import Specificaties209Screen from './screens/spec-2-mwh';
 import Specificaties501Screen from './screens/spec-5-mwh';
-import Spec_HV_particulier from './screens/Spec_HV_particulier';
+import Spec_HV_particulier from './screens/spec_HV_particulier';
 import Spec_LV_particulier from './screens/Spec_LV_particulier';
+import LoginScreen from './screens/LoginScreen';
+import RegisterScreen from './screens/RegisterScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -108,6 +110,8 @@ export default function App() {
 <Stack.Screen name="Specificaties501" component={Specificaties501Screen} />
 <Stack.Screen name="Spec_HV_particulier" component={Spec_HV_particulier} />
 <Stack.Screen name="Spec_LV_particulier" component={Spec_LV_particulier} />
+<Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
+  <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
 
       </Stack.Navigator>
     </NavigationContainer>
