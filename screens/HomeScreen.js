@@ -5,22 +5,26 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  ImageBackground,
   SafeAreaView,
   useWindowDimensions,
+  ImageBackground,
+  Platform,
 } from 'react-native';
 
 export default function HomeScreen({ navigation }) {
   const { width } = useWindowDimensions();
 
   return (
-    <ImageBackground
-      source={require('../assets/achtergrond.png')}
-      style={styles.background}
-      resizeMode="cover"
-    >
+    <View style={styles.container}>
+      {/* Achtergrondlaag */}
+      <Image
+        source={require('../assets/achtergrond.png')}
+        style={styles.backgroundImage}
+      />
+
+      {/* Voorgrond: content */}
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.container}>
+        <View style={styles.content}>
           <Image
             source={require('../assets/logo.png')}
             style={[
@@ -36,10 +40,7 @@ export default function HomeScreen({ navigation }) {
             WattsNext Advies
           </Text>
           <TouchableOpacity
-            style={[
-              styles.button,
-              { width: width > 768 ? 300 : '80%' },
-            ]}
+            style={[styles.button, { width: width > 768 ? 300 : '80%' }]}
             onPress={() => navigation.navigate('Stap 1')}
           >
             <Text style={[styles.buttonText, { fontSize: width > 768 ? 20 : 18 }]}>
@@ -48,24 +49,34 @@ export default function HomeScreen({ navigation }) {
           </TouchableOpacity>
         </View>
       </SafeAreaView>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1, // 🔑 vult altijd het hele scherm
+  container: {
+    flex: 1,
+    position: 'relative',
+  },
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    resizeMode: Platform.OS === 'web' ? 'contain' : 'cover',
+    zIndex: -1,
   },
   safeArea: {
-    flex: 1, // 🔑 SafeAreaView vult het hele scherm, ook op iPhone met notch
+    flex: 1,
   },
-  container: {
-    flex: 1, // 🔑 View vult SafeAreaView
+  content: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 24,
-    maxWidth: 1200, // optioneel voor web: max breedte
-    alignSelf: 'center', // center op web-breedte
+    maxWidth: 1200,
+    alignSelf: 'center',
   },
   logo: {
     marginBottom: 40,
