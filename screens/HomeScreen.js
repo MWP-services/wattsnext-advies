@@ -5,22 +5,26 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  ImageBackground,
   SafeAreaView,
   useWindowDimensions,
+  ImageBackground,
+  Platform,
 } from 'react-native';
 
 export default function HomeScreen({ navigation }) {
   const { width } = useWindowDimensions();
 
   return (
-    <ImageBackground
-      source={require('../assets/achtergrond.png')}
-      style={styles.background}
-      resizeMode="cover"
-    >
+    <View style={styles.container}>
+      {/* Achtergrondlaag */}
+      <Image
+        source={require('../assets/achtergrond.png')}
+        style={styles.backgroundImage}
+      />
+
+      {/* Voorgrond: content */}
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.container}>
+        <View style={styles.content}>
           <Image
             source={require('../assets/logo.png')}
             style={[
@@ -45,20 +49,28 @@ export default function HomeScreen({ navigation }) {
           </TouchableOpacity>
         </View>
       </SafeAreaView>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
+  container: {
     flex: 1,
+    position: 'relative',
+  },
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
     width: '100%',
     height: '100%',
+    resizeMode: Platform.OS === 'web' ? 'contain' : 'cover',
+    zIndex: -1,
   },
   safeArea: {
     flex: 1,
   },
-  container: {
+  content: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
