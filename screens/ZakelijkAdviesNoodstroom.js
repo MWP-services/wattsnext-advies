@@ -12,7 +12,7 @@ import {
 
 export default function ZakelijkAdviesNoodstroom({ route, navigation }) {
   const { kwh1, kwh2 } = route.params;
-  const totaalKwh = kwh1 + kwh2;
+  const totaalKwh = kwh1;
 
   console.log("Noodstroom Advies → kwh1:", kwh1, "kwh2:", kwh2);
   console.log("Totale behoefte:", totaalKwh);

@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, ImageBackg
 
 export default function ZakelijkAdviesLoadShiftingScreen({ route, navigation }) {
   const { kwh1 = 0, kwh2 = 0, kwh3 = 0 } = route.params;
-  const totaleBehoefte = kwh1 + kwh2 + kwh3;
+  const totaleBehoefte = kwh1 + kwh2;
   console.log("LoadShifting Advies -> kwh1:", kwh1, "kwh2:", kwh2, "kwh3:", kwh3);
   console.log("Totale behoefte:", totaleBehoefte);
 

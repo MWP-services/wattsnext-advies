@@ -59,60 +59,59 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Navigator initialRouteName="LoginScreen">
+        <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+        <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="Stap 1" component={Step1Screen} />
         <Stack.Screen name="Particulier" component={ParticulierScreen} />
-<Stack.Screen name="Fase 1" component={Fase1Screen} />
-<Stack.Screen name="Fase 3" component={Fase3ZekeringScreen} />
-<Stack.Screen name="Persoonsgegevens" component={PersoonsgegevensScreen} />
-<Stack.Screen name="Advies 5 kWh" component={Advies5kWhScreen} />
-<Stack.Screen name="5 kWh Specificaties" component={Specificaties5kWhScreen} />
-<Stack.Screen name="Advies 10 kWh Laag" component={Advies10Laag} />
-<Stack.Screen name="Advies 7.5 kWh Hoog" component={Advies7_5Hoog} />
-<Stack.Screen name="Advies 10 kWh Hoog" component={Advies10Hoog} />
-<Stack.Screen name="Advies 12.5 kWh Hoog" component={Advies12_5Hoog} />
-<Stack.Screen name="Advies 15 kWh Hoog" component={Advies15Hoog} />
-<Stack.Screen name="Advies 17.5 kWh Hoog" component={Advies17_5Hoog} />
-<Stack.Screen name="Advies 20 kWh Hoog" component={Advies20Hoog} />
-<Stack.Screen name="Specificaties" component={SpecificatiesScreen} />
-<Stack.Screen name="Advies" component={AdviesScreen} />
-<Stack.Screen name="ZakelijkDoel" component={ZakelijkDoelScreen} />
-<Stack.Screen name="ZakelijkOpslag" component={ZakelijkOpslagScreen} />
-<Stack.Screen name="NoodstroomVraag" component={NoodstroomVraagScreen} />
-<Stack.Screen name="ZakelijkAdvies" component={ZakelijkAdviesScreen} />
-<Stack.Screen name="ZakelijkNoodstroom" component={ZakelijkNoodstroomScreen} />
-<Stack.Screen name="NoodstroomGegevens" component={NoodstroomGegevensScreen} />
-<Stack.Screen name="EnergiehandelVraag" component={EnergiehandelVraagScreen} />
-<Stack.Screen name="OverzichtZakelijkAdvies" component={OverzichtZakelijkAdviesScreen} />
-<Stack.Screen name="PeakShaving" component={PeakShavingScreen} />
-<Stack.Screen name="PeakNoodstroomVraag" component={PeakNoodstroomVraagScreen} />
-<Stack.Screen name="PeakEnergieHandelVraag" component={PeakEnergieHandelVraagScreen} />
-<Stack.Screen name="ZakelijkAdviesPeak" component={ZakelijkAdviesPeakScreen} />
-<Stack.Screen name="Netcongestie" component={Netcongestie} />
-<Stack.Screen name="NetcongestieNoodstroomVraag" component={NetcongestieNoodstroomVraag} />
-<Stack.Screen name="NetcongestieEnergiehandelVraag" component={NetcongestieEnergiehandelVraag} />
-<Stack.Screen name="ZakelijkAdviesNetcongestie" component={ZakelijkAdviesNetcongestie} />
-<Stack.Screen name="Noodstroomvoorziening" component={Noodstroomvoorziening} />
-<Stack.Screen name="NoodstroomEnergiehandelVraag" component={NoodstroomEnergiehandelVraagScreen} />
-<Stack.Screen name="ZakelijkAdviesNoodstroom" component={ZakelijkAdviesNoodstroom} />
-<Stack.Screen name="LoadShifting" component={LoadShifting} />
-<Stack.Screen name="LoadShiftingNoodstroomVraag" component={LoadShiftingNoodstroomVraagScreen} />
-<Stack.Screen name="LoadShiftingEnergiehandelVraag" component={LoadShiftingEnergiehandelVraagScreen} />
-<Stack.Screen name="ZakelijkAdviesLoadShifting" component={ZakelijkAdviesLoadShiftingScreen} />
-<Stack.Screen name="EnergieHandel" component={EnergieHandel} />
-<Stack.Screen name="HandelNoodstroomVraag" component={HandelNoodstroomVraagScreen} />
-<Stack.Screen name="ZakelijkAdviesHandel" component={ZakelijkAdviesHandelScreen} />
-<Stack.Screen name="Specificaties64" component={Specificaties64Screen} />
-<Stack.Screen name="Specificaties96" component={Specificaties96Screen} />
-<Stack.Screen name="Specificaties232" component={Specificaties232Screen} />
-<Stack.Screen name="Specificaties209" component={Specificaties209Screen} />
-<Stack.Screen name="Specificaties501" component={Specificaties501Screen} />
-<Stack.Screen name="Spec_van_particulierhv" component={Spec_van_particulierhv} />
-<Stack.Screen name="Spec_LV_particulier" component={Spec_LV_particulier} />
-<Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
-  <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-
+        <Stack.Screen name="Fase 1" component={Fase1Screen} />
+        <Stack.Screen name="Fase 3" component={Fase3ZekeringScreen} />
+        <Stack.Screen name="Persoonsgegevens" component={PersoonsgegevensScreen} />
+        <Stack.Screen name="Advies 5 kWh" component={Advies5kWhScreen} />
+        <Stack.Screen name="5 kWh Specificaties" component={Specificaties5kWhScreen} />
+        <Stack.Screen name="Advies 10 kWh Laag" component={Advies10Laag} />
+        <Stack.Screen name="Advies 7.5 kWh Hoog" component={Advies7_5Hoog} />
+        <Stack.Screen name="Advies 10 kWh Hoog" component={Advies10Hoog} />
+        <Stack.Screen name="Advies 12.5 kWh Hoog" component={Advies12_5Hoog} />
+        <Stack.Screen name="Advies 15 kWh Hoog" component={Advies15Hoog} />
+        <Stack.Screen name="Advies 17.5 kWh Hoog" component={Advies17_5Hoog} />
+        <Stack.Screen name="Advies 20 kWh Hoog" component={Advies20Hoog} />
+        <Stack.Screen name="Specificaties" component={SpecificatiesScreen} />
+        <Stack.Screen name="Advies" component={AdviesScreen} />
+        <Stack.Screen name="ZakelijkDoel" component={ZakelijkDoelScreen} />
+        <Stack.Screen name="ZakelijkOpslag" component={ZakelijkOpslagScreen} />
+        <Stack.Screen name="NoodstroomVraag" component={NoodstroomVraagScreen} />
+        <Stack.Screen name="ZakelijkAdvies" component={ZakelijkAdviesScreen} />
+        <Stack.Screen name="ZakelijkNoodstroom" component={ZakelijkNoodstroomScreen} />
+        <Stack.Screen name="NoodstroomGegevens" component={NoodstroomGegevensScreen} />
+        <Stack.Screen name="EnergiehandelVraag" component={EnergiehandelVraagScreen} />
+        <Stack.Screen name="OverzichtZakelijkAdvies" component={OverzichtZakelijkAdviesScreen} />
+        <Stack.Screen name="PeakShaving" component={PeakShavingScreen} />
+        <Stack.Screen name="PeakNoodstroomVraag" component={PeakNoodstroomVraagScreen} />
+        <Stack.Screen name="PeakEnergieHandelVraag" component={PeakEnergieHandelVraagScreen} />
+        <Stack.Screen name="ZakelijkAdviesPeak" component={ZakelijkAdviesPeakScreen} />
+        <Stack.Screen name="Netcongestie" component={Netcongestie} />
+        <Stack.Screen name="NetcongestieNoodstroomVraag" component={NetcongestieNoodstroomVraag} />
+        <Stack.Screen name="NetcongestieEnergiehandelVraag" component={NetcongestieEnergiehandelVraag} />
+        <Stack.Screen name="ZakelijkAdviesNetcongestie" component={ZakelijkAdviesNetcongestie} />
+        <Stack.Screen name="Noodstroomvoorziening" component={Noodstroomvoorziening} />
+        <Stack.Screen name="NoodstroomEnergiehandelVraag" component={NoodstroomEnergiehandelVraagScreen} />
+        <Stack.Screen name="ZakelijkAdviesNoodstroom" component={ZakelijkAdviesNoodstroom} />
+        <Stack.Screen name="LoadShifting" component={LoadShifting} />
+        <Stack.Screen name="LoadShiftingNoodstroomVraag" component={LoadShiftingNoodstroomVraagScreen} />
+        <Stack.Screen name="LoadShiftingEnergiehandelVraag" component={LoadShiftingEnergiehandelVraagScreen} />
+        <Stack.Screen name="ZakelijkAdviesLoadShifting" component={ZakelijkAdviesLoadShiftingScreen} />
+        <Stack.Screen name="EnergieHandel" component={EnergieHandel} />
+        <Stack.Screen name="HandelNoodstroomVraag" component={HandelNoodstroomVraagScreen} />
+        <Stack.Screen name="ZakelijkAdviesHandel" component={ZakelijkAdviesHandelScreen} />
+        <Stack.Screen name="Specificaties64" component={Specificaties64Screen} />
+        <Stack.Screen name="Specificaties96" component={Specificaties96Screen} />
+        <Stack.Screen name="Specificaties232" component={Specificaties232Screen} />
+        <Stack.Screen name="Specificaties209" component={Specificaties209Screen} />
+        <Stack.Screen name="Specificaties501" component={Specificaties501Screen} />
+        <Stack.Screen name="Spec_van_particulierhv" component={Spec_van_particulierhv} />
+        <Stack.Screen name="Spec_LV_particulier" component={Spec_LV_particulier} />
       </Stack.Navigator>
     </NavigationContainer>
   );

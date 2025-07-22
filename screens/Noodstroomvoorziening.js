@@ -14,7 +14,7 @@ export default function Noodstroomvoorziening({ navigation }) {
     const t = parseFloat(backupTijd);
     if (!isNaN(v) && !isNaN(t) && v > 0 && t > 0) {
       const kwh1 = (v * t) / 0.9;
-      navigation.navigate('NoodstroomEnergiehandelVraag', { kwh1 });
+      navigation.navigate('ZakelijkAdviesNoodstroom', { kwh1 });
     } else {
       alert('Vul geldige waarden in.');
     }

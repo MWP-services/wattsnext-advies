@@ -29,7 +29,7 @@ export default function LoadShiftingNoodstroomVraagScreen({ navigation, route })
     if (!isNaN(v) && !isNaN(t) && v > 0 && t > 0) {
       const kwh2 = (v * t) / 0.9; // efficiëntie 90%
       console.log("LoadShifting kwh2:", kwh2);
-      navigation.navigate('LoadShiftingEnergiehandelVraag', { kwh1, kwh2 });
+      navigation.navigate('ZakelijkAdviesLoadShifting', { kwh1, kwh2 });
     } else {
       alert("Vul geldige waarden in.");
     }
