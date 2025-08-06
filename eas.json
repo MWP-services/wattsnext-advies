@@ -1,21 +1,19 @@
 {
   "cli": {
-    "version": ">= 16.8.0",
-    "appVersionSource": "remote"
+    "version": ">= 3.3.0"
   },
   "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal"
-    },
-    "preview": {
-      "distribution": "internal"
-    },
     "production": {
       "autoIncrement": true
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "appleApiKeyPath": "./keys/AuthKey_DH3S4P4792.p8",
+        "appleApiKeyId": "DH3S4P4792",
+        "appleApiKeyIssuerId": "9c924912-211a-4a1e-bd74-f9cd458b3177"
+      }
+    }
   }
 }
