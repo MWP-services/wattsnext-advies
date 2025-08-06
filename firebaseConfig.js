@@ -1,9 +1,8 @@
 import { initializeApp } from 'firebase/app';
-import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getFirestore } from 'firebase/firestore';
+import { getAuth, initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Jouw Firebase configuratie
 const firebaseConfig = {
   apiKey: "AIzaSyDKyDdlzMzyYR38XR8iukaQHDcyKq-20BQ",
   authDomain: "wattsnext-auth.firebaseapp.com",
@@ -14,15 +13,21 @@ const firebaseConfig = {
   measurementId: "G-CV0MS0XQ27"
 };
 
-// Init Firebase
 const app = initializeApp(firebaseConfig);
 
-// Init Auth met persistentie via AsyncStorage (voor React Native)
-const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(AsyncStorage),
-});
+let auth;
 
-// Init Firestore (voor klantgegevens)
+// ✅ Kies auth-methode afhankelijk van platform
+if (typeof window !== 'undefined') {
+  // Web: gebruik standaard getAuth()
+  auth = getAuth(app);
+} else {
+  // React Native: gebruik AsyncStorage persistentie
+  auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(AsyncStorage),
+  });
+}
+
 const db = getFirestore(app);
 
 export { auth, db };
