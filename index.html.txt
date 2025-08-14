@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WattsNext Advies – Support</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f9f9f9;
+        }
+        h1, h2 {
+            color: #1a73e8;
+        }
+        a {
+            color: #1a73e8;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul {
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>WattsNext Advies – Support</h1>
+
+    <p>Bedankt voor het downloaden van WattsNext Advies! Met deze app krijg je persoonlijk energieadvies en vind je eenvoudig de juiste thuis- of zakelijke batterijoplossing. Op deze pagina vind je antwoorden op veelgestelde vragen en hoe je contact kunt opnemen als je hulp nodig hebt.</p>
+
+    <h2>Veelgestelde vragen</h2>
+
+    <p><strong>Wat is WattsNext Advies?</strong><br>
+    WattsNext Advies is een interactieve app die je helpt de optimale energieopslag voor jouw situatie te bepalen. Door enkele korte vragen (ben je particulier of zakelijk, wat voor aansluiting heb je, welke zekering) krijg je direct een persoonlijk advies met een passende batterij.</p>
+
+    <p><strong>Hoe werkt het startadvies?</strong></p>
+    <ul>
+        <li>Tik op <em>Start Advies</em> in het beginscherm.</li>
+        <li>Kies of je de batterij thuis (particulier) of zakelijk wilt gebruiken.</li>
+        <li>Selecteer je type aansluiting (1-fase of 3-fase) en de bijbehorende zekering.</li>
+        <li>De app toont vervolgens een persoonlijk advies inclusief aanbevolen capaciteit.</li>
+    </ul>
+
+    <p><strong>Kan ik de specificaties van de aanbevolen batterij bekijken?</strong><br>
+    Ja, na het advies vind je een knop <em>Bekijk specificaties</em> waarmee je naar een overzicht gaat met technische details van het aanbevolen systeem.</p>
+
+    <h2>Neem contact op</h2>
+    <p>
+        📧 E-mail: <a href="mailto:micha.honkoop@gmail.com">micha.honkoop@gmail.com</a><br>
+        📞 Telefoon: 06 81651650 (ma–vr 9.00–17.00)<br>
+        📍 Adres: WattsNext Energy Solutions, Energieweg 1, 1234 AB Leeuwarden
+    </p>
+    <p>We streven ernaar om vragen binnen één werkdag te beantwoorden. Vermeld bij e-mail je toesteltype en de versie van de app zodat we je sneller kunnen helpen.</p>
+
+    <h2>Over ons</h2>
+    <p>WattsNext Energy Solutions levert slimme opslagoplossingen voor zowel particulieren als bedrijven. Met WattsNext Advies maken we energieadvies toegankelijker en helpen we Nederland duurzamer te worden.</p>
+</body>
+</html>
