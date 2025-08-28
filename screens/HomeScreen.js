@@ -16,14 +16,20 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* Achtergrondlaag */}
       <Image
         source={require('../assets/achtergrond.png')}
         style={styles.backgroundImage}
       />
 
-      {/* Voorgrond: content */}
       <SafeAreaView style={styles.safeArea}>
+        {/* Terugknop */}
+        <TouchableOpacity
+          onPress={() => navigation.replace('LoginScreen')}
+          style={styles.backTopLeft}
+        >
+          <Text style={styles.backText}>← Terug naar log-in</Text>
+        </TouchableOpacity>
+
         <View style={styles.content}>
           <Image
             source={require('../assets/logo.png')}
@@ -96,5 +102,20 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontWeight: '600',
+  },
+  backTopLeft: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    backgroundColor: '#ffffffcc',
+    borderRadius: 10,
+    zIndex: 10,
+  },
+  backText: {
+    color: '#1a73e8',
+    fontSize: 16,
+    fontWeight: '500',
   },
 });

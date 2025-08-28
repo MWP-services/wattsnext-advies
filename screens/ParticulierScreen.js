@@ -1,58 +1,68 @@
 import React from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity,
-  ImageBackground, SafeAreaView
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ImageBackground,
+  SafeAreaView,
+  Platform,
 } from 'react-native';
 
 export default function ParticulierScreen({ navigation }) {
   return (
-   <ImageBackground
-  source={require('../assets/achtergrond.png')}
-  style={styles.background}
-  resizeMode="contain" // 🔄 of probeer ook "stretch"
-  imageStyle={styles.imageStyle} // 🔧 web-only tweak
->
-
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.container}>
-          <Text style={styles.title}>Wat voor aansluiting heb je thuis?</Text>
-
+    <View style={styles.container}>
+      <ImageBackground
+        source={require('../assets/achtergrond.png')}
+        style={styles.backgroundImage}
+        resizeMode={Platform.OS === 'web' ? 'contain' : 'cover'}
+      >
+        <SafeAreaView style={styles.safeArea}>
+          {/* Terugknop */}
           <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('Fase 1', { aansluiting: '1-fase' })}
+            onPress={() => navigation.replace('LoginScreen')}
+            style={styles.backTopLeft}
           >
-            <Text style={styles.buttonText}>1-fase aansluiting</Text>
+            <Text style={styles.backText}>← Terug naar log-in</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('Fase 3', { aansluiting: '3-fase' })}
-          >
-            <Text style={styles.buttonText}>3-fase aansluiting</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    </ImageBackground>
+          <View style={styles.content}>
+            <Text style={styles.title}>Wat voor aansluiting heb je thuis?</Text>
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => navigation.navigate('Fase 1', { aansluiting: '1-fase' })}
+            >
+              <Text style={styles.buttonText}>1-fase aansluiting</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => navigation.navigate('Fase 3', { aansluiting: '3-fase' })}
+            >
+              <Text style={styles.buttonText}>3-fase aansluiting</Text>
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
+      </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
- background: {
-  flex: 1,
-  width: '100%',
-  height: '100%',
-  justifyContent: 'center',
-  alignItems: 'center',
-},
-
-imageStyle: {
-  resizeMode: 'contain',
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-},
-
   container: {
+    flex: 1,
+  },
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+  safeArea: {
+    flex: 1,
+    position: 'relative',
+  },
+  content: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -76,5 +86,20 @@ imageStyle: {
   buttonText: {
     color: '#fff',
     fontSize: 18,
+  },
+  backTopLeft: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    backgroundColor: '#ffffffcc',
+    borderRadius: 10,
+    zIndex: 10,
+  },
+  backText: {
+    color: '#1a73e8',
+    fontSize: 16,
+    fontWeight: '500',
   },
 });

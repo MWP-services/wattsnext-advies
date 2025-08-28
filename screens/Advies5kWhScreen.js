@@ -27,7 +27,7 @@ export default function Advies5kWhScreen({ navigation }) {
 
           <TouchableOpacity
             style={styles.specButton}
-            onPress={() => navigation.navigate('spec_LV_particulier')}
+            onPress={() => navigation.navigate('Spec_LV_particulier')}
           >
             <Text style={styles.specButtonText}>Bekijk specificaties</Text>
           </TouchableOpacity>
