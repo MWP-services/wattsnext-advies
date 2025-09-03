@@ -4,7 +4,7 @@ import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
 export default function Spec_HV_particulier() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Specificaties 7.5 kWh Hoog</Text>
+      <Text style={styles.title}>Specificaties Hoog voltage</Text>
       <Image
         source={require('../assets/spec-HV-particulier.png')}
         style={styles.image}

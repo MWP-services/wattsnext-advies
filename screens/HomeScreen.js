@@ -1,3 +1,4 @@
+// screens/HomeScreen.js
 import React from 'react';
 import {
   View,
@@ -16,16 +17,20 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
+      {/* Achtergrondlaag */}
       <Image
         source={require('../assets/achtergrond.png')}
         style={styles.backgroundImage}
       />
 
+      {/* Voorgrond: content */}
       <SafeAreaView style={styles.safeArea}>
         {/* Terugknop */}
         <TouchableOpacity
           onPress={() => navigation.replace('LoginScreen')}
           style={styles.backTopLeft}
+          accessibilityRole="button"
+          accessibilityLabel="Terug naar log-in"
         >
           <Text style={styles.backText}>← Terug naar log-in</Text>
         </TouchableOpacity>
@@ -42,15 +47,35 @@ export default function HomeScreen({ navigation }) {
             ]}
             resizeMode="contain"
           />
+
           <Text style={[styles.title, { fontSize: width > 768 ? 36 : 24 }]}>
             WattsNext Advies
           </Text>
+
+          {/* Start Advies */}
           <TouchableOpacity
             style={[styles.button, { width: width > 768 ? 300 : '80%' }]}
             onPress={() => navigation.navigate('Stap 1')}
+            accessibilityRole="button"
+            accessibilityLabel="Start Advies"
           >
             <Text style={[styles.buttonText, { fontSize: width > 768 ? 20 : 18 }]}>
               Start Advies
+            </Text>
+          </TouchableOpacity>
+
+          {/* Spacing */}
+          <View style={{ height: 16 }} />
+
+          {/* NIEUW: Account beheren */}
+          <TouchableOpacity
+            style={[styles.secondaryButton, { width: width > 768 ? 300 : '80%' }]}
+            onPress={() => navigation.navigate('AccountBeheren')}
+            accessibilityRole="button"
+            accessibilityLabel="Account beheren"
+          >
+            <Text style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}>
+              Account beheren
             </Text>
           </TouchableOpacity>
         </View>
@@ -70,6 +95,7 @@ const styles = StyleSheet.create({
     left: 0,
     width: '100%',
     height: '100%',
+    // Op web liever 'contain' om uitrekken te voorkomen, native 'cover' voor full-bleed
     resizeMode: Platform.OS === 'web' ? 'contain' : 'cover',
     zIndex: -1,
   },
@@ -101,6 +127,18 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
+    fontWeight: '600',
+  },
+  secondaryButton: {
+    backgroundColor: '#ffffffee',
+    padding: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#f7941e',
+  },
+  secondaryButtonText: {
+    color: '#f7941e',
     fontWeight: '600',
   },
   backTopLeft: {
