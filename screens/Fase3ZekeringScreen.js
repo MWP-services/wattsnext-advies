@@ -5,20 +5,30 @@ import { useRoute } from '@react-navigation/native';
 export default function Fase3ZekeringScreen({ navigation }) {
   const route = useRoute();
   const aansluiting = route.params?.aansluiting || '3-fase';
+  const clientType = route.params?.clientType || 'Particulier';
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welke zekering heeft je 3-fase aansluiting?</Text>
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Persoonsgegevens', { aansluiting })}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('Persoonsgegevens', { aansluiting, clientType, zekering: '16A' })}
+      >
         <Text style={styles.buttonText}>16A</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Persoonsgegevens', { aansluiting })}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('Persoonsgegevens', { aansluiting, clientType, zekering: '25A' })}
+      >
         <Text style={styles.buttonText}>25A</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Persoonsgegevens', { aansluiting })}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('Persoonsgegevens', { aansluiting, clientType, zekering: '32A' })}
+      >
         <Text style={styles.buttonText}>32A</Text>
       </TouchableOpacity>
     </View>

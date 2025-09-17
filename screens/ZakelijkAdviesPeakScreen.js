@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
+import AdviceEmailButton from '../components/AdviceEmailButton';
+import { createAdvicePayload } from '../utils/createAdvicePayload';
 
 export default function ZakelijkAdviesPeakScreen({ route, navigation }) {
   const { kwh1, kwh2 = 0, kwh3 = 0 } = route.params;
@@ -29,6 +31,27 @@ export default function ZakelijkAdviesPeakScreen({ route, navigation }) {
     image = require('../assets/5-MW-ZAKELIJK.png');
   }
 
+  const emailPayload = useMemo(
+    () =>
+      createAdvicePayload({
+        routeParams: route?.params,
+        client: { type: 'Zakelijk', company: route?.params?.clientCompany },
+        advice: {
+          title: 'Peak Shaving advies',
+          summary: `Totale energiebehoefte: ${totaleBehoefte.toFixed(1)} kWh`,
+          capacity: advies,
+          connection: 'Hoog voltage',
+          image,
+          inputs: {
+            verbruik: totaleBehoefte.toFixed(1),
+            overige: `kWh invoer: ${kwh1}, ${kwh2}, ${kwh3}`,
+          },
+        },
+        reference: { prefix: 'ZAK-PEAK' },
+      }),
+    [advies, image, kwh1, kwh2, kwh3, route?.params, totaleBehoefte]
+  );
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Advies op maat</Text>
@@ -38,6 +61,8 @@ export default function ZakelijkAdviesPeakScreen({ route, navigation }) {
       {image && (
         <Image source={image} style={styles.image} resizeMode="contain" />
       )}
+
+      <AdviceEmailButton payload={emailPayload} style={styles.emailButton} />
 
       <TouchableOpacity
         style={styles.button}
@@ -91,5 +116,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 16,
+  },
+  emailButton: {
+    marginTop: 24,
   },
 });

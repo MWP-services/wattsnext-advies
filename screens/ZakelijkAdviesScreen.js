@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import AdviceEmailButton from '../components/AdviceEmailButton';
+import { createAdvicePayload } from '../utils/createAdvicePayload';
 
 export default function ZakelijkAdviesScreen({ navigation, route }) {
   const { kwh1, kwh2, kwh3 } = route.params;
@@ -26,6 +28,27 @@ export default function ZakelijkAdviesScreen({ navigation, route }) {
     image = require('../assets/5-MW-ZAKELIJK.png');
   }
 
+  const emailPayload = useMemo(
+    () =>
+      createAdvicePayload({
+        routeParams: route?.params,
+        client: { type: 'Zakelijk', company: route?.params?.clientCompany },
+        advice: {
+          title: 'Zakelijk advies op maat',
+          summary: `Benodigd vermogen: ${k0.toFixed(2)} kWh`,
+          capacity: advies,
+          connection: 'Hoog voltage',
+          image,
+          inputs: {
+            verbruik: k0.toFixed(2),
+            overige: `Invoer kWh: ${kwh1}, ${kwh2}, ${kwh3}`,
+          },
+        },
+        reference: { prefix: 'ZAK-ADV' },
+      }),
+    [advies, image, k0, kwh1, kwh2, kwh3, route?.params]
+  );
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Advies op maat</Text>
@@ -33,6 +56,8 @@ export default function ZakelijkAdviesScreen({ navigation, route }) {
       <Text style={styles.text}>Aanbevolen oplossing: {advies}</Text>
 
       {image && <Image source={image} style={styles.image} resizeMode="contain" />}
+
+      <AdviceEmailButton payload={emailPayload} style={styles.emailButton} />
 
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Specificaties')}>
         <Text style={styles.buttonText}>Bekijk specificaties</Text>
@@ -78,5 +103,8 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  emailButton: {
+    marginTop: 24,
   },
 });

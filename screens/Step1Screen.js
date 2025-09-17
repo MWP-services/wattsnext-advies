@@ -8,14 +8,14 @@ export default function Step2Screen({ navigation }) {
 
       <TouchableOpacity
         style={styles.button}
-onPress={() => navigation.navigate('Particulier')}
+        onPress={() => navigation.navigate('Particulier', { clientType: 'Particulier' })}
       >
         <Text style={styles.buttonText}>Particulier</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.button}
-onPress={() => navigation.navigate('ZakelijkDoel')}
+        onPress={() => navigation.navigate('ZakelijkDoel', { clientType: 'Zakelijk' })}
       >
         <Text style={styles.buttonText}>Zakelijk</Text>
       </TouchableOpacity>

@@ -1,7 +1,33 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import AdviceEmailButton from '../components/AdviceEmailButton';
+import { createAdvicePayload } from '../utils/createAdvicePayload';
 
-export default function Advies5kWhScreen({ navigation }) {
+const adviceImage = require('../assets/5-KWH-ADVIES.jpg');
+
+export default function Advies5kWhScreen({ navigation, route }) {
+  const emailPayload = useMemo(
+    () =>
+      createAdvicePayload({
+        routeParams: route?.params,
+        client: { type: 'Particulier' },
+        advice: {
+          title: 'Persoonlijk Advies',
+          summary: 'Je hebt gekozen voor een 1-fase aansluiting met een 16A zekering.',
+          capacity: route?.params?.adviesCapacity ?? '5 kWh batterijopslag',
+          connection: route?.params?.aansluiting ?? '1-fase',
+          image: adviceImage,
+          inputs: {
+            verbruik: route?.params?.verbruik,
+            vermogenWp: route?.params?.vermogenWp,
+            aantalPanelen: route?.params?.aantalPanelen,
+          },
+        },
+        reference: { prefix: 'ADV-5' },
+      }),
+    [route?.params]
+  );
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Persoonlijk Advies</Text>
@@ -11,10 +37,12 @@ export default function Advies5kWhScreen({ navigation }) {
       </Text>
 
       <Image
-        source={require('../assets/5-KWH-ADVIES.jpg')} // vervang door .webp als dat nodig is
+        source={adviceImage} // vervang door .webp als dat nodig is
         style={styles.image}
         resizeMode="contain"
       />
+
+      <AdviceEmailButton payload={emailPayload} style={styles.emailButton} />
 
       <TouchableOpacity style={styles.specButton} onPress={() => navigation.navigate('5 kWh Specificaties')}>
         <Text style={styles.specButtonText}>Bekijk specificaties</Text>
@@ -66,5 +94,8 @@ const styles = StyleSheet.create({
   specButtonText: {
     color: '#fff',
     fontSize: 16
+  },
+  emailButton: {
+    marginTop: 24,
   }
 });
