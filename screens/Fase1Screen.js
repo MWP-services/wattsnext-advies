@@ -5,22 +5,39 @@ import { useRoute } from '@react-navigation/native';
 export default function Fase1Screen({ navigation }) {
   const route = useRoute();
   const aansluiting = route.params?.aansluiting || '1-fase'; // fallback voor zekerheid
+  const clientType = route.params?.clientType || 'Particulier';
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welke zekering heeft je 1-fase aansluiting?</Text>
 
       {/* 16A verwijst naar vast 5 kWh advies → geen aansluiting nodig */}
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Advies 5 kWh')}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() =>
+          navigation.navigate('Advies 5 kWh', {
+            aansluiting,
+            clientType,
+            zekering: '16A',
+            adviesCapacity: '5 kWh batterijopslag',
+          })
+        }
+      >
         <Text style={styles.buttonText}>16A</Text>
       </TouchableOpacity>
 
       {/* Deze twee verwijzen naar Persoonsgegevens + aansluiting meesturen */}
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Persoonsgegevens', { aansluiting })}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('Persoonsgegevens', { aansluiting, clientType, zekering: '25A' })}
+      >
         <Text style={styles.buttonText}>25A</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Persoonsgegevens', { aansluiting })}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('Persoonsgegevens', { aansluiting, clientType, zekering: '32A' })}
+      >
         <Text style={styles.buttonText}>32A</Text>
       </TouchableOpacity>
     </View>

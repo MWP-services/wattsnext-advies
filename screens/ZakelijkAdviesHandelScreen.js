@@ -1,4 +1,7 @@
+import React, { useMemo } from 'react';
 import { Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
+import AdviceEmailButton from '../components/AdviceEmailButton';
+import { createAdvicePayload } from '../utils/createAdvicePayload';
 
 export default function ZakelijkAdviesHandelScreen({ navigation, route }) {
   const { kwh1, kwh2 = 0 } = route.params;
@@ -31,6 +34,27 @@ export default function ZakelijkAdviesHandelScreen({ navigation, route }) {
     image = require('../assets/5-MW-ZAKELIJK.png');
   }
 
+  const emailPayload = useMemo(
+    () =>
+      createAdvicePayload({
+        routeParams: route?.params,
+        client: { type: 'Zakelijk', company: route?.params?.clientCompany },
+        advice: {
+          title: 'Advies: Handel op energiemarkten',
+          summary: `Totale energiebehoefte: ${totaleBehoefte.toFixed(1)} kWh`,
+          capacity: advies,
+          connection: 'Hoog voltage',
+          image,
+          inputs: {
+            verbruik: totaleBehoefte.toFixed(1),
+            overige: `kWh invoer: ${kwh1}, ${kwh2}`,
+          },
+        },
+        reference: { prefix: 'ZAK-HAN' },
+      }),
+    [advies, image, kwh1, kwh2, route?.params, totaleBehoefte]
+  );
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Advies: Handel op energiemarkten</Text>
@@ -40,6 +64,8 @@ export default function ZakelijkAdviesHandelScreen({ navigation, route }) {
       {image && (
         <Image source={image} style={styles.image} resizeMode="contain" />
       )}
+
+      <AdviceEmailButton payload={emailPayload} style={styles.emailButton} />
 
       <TouchableOpacity
         style={styles.button}
@@ -59,4 +85,7 @@ const styles = StyleSheet.create({
   image: { width: '100%', height: 250, marginVertical: 20 },
   button: { backgroundColor: '#f7941e', padding: 14, borderRadius: 10, width: '100%', alignItems: 'center' },
   buttonText: { color: '#fff', fontSize: 16 },
+  emailButton: {
+    marginTop: 24,
+  },
 });

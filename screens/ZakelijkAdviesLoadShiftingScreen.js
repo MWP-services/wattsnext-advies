@@ -1,6 +1,8 @@
 // screens/ZakelijkAdviesLoadShiftingScreen.js
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import AdviceEmailButton from '../components/AdviceEmailButton';
+import { createAdvicePayload } from '../utils/createAdvicePayload';
 
 export default function ZakelijkAdviesLoadShiftingScreen({ route, navigation }) {
   const { kwh1 = 0, kwh2 = 0, kwh3 = 0 } = route.params;
@@ -32,6 +34,27 @@ export default function ZakelijkAdviesLoadShiftingScreen({ route, navigation }) 
     image = require('../assets/5-MW-ZAKELIJK.png');
   }
 
+  const emailPayload = useMemo(
+    () =>
+      createAdvicePayload({
+        routeParams: route?.params,
+        client: { type: 'Zakelijk', company: route?.params?.clientCompany },
+        advice: {
+          title: 'Advies Load Shifting',
+          summary: `Totale energiebehoefte: ${totaleBehoefte.toFixed(1)} kWh`,
+          capacity: advies,
+          connection: 'Hoog voltage',
+          image,
+          inputs: {
+            verbruik: totaleBehoefte.toFixed(1),
+            overige: `kWh invoer: ${kwh1}, ${kwh2}, ${kwh3}`,
+          },
+        },
+        reference: { prefix: 'ZAK-LS' },
+      }),
+    [advies, image, kwh1, kwh2, kwh3, route?.params, totaleBehoefte]
+  );
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Advies Load Shifting</Text>
@@ -41,6 +64,8 @@ export default function ZakelijkAdviesLoadShiftingScreen({ route, navigation }) 
       {image && (
         <Image source={image} style={styles.image} resizeMode="contain" />
       )}
+
+      <AdviceEmailButton payload={emailPayload} style={styles.emailButton} />
 
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ZakelijkDoel')}>
         <Text style={styles.buttonText}>Terug naar Start</Text>
@@ -85,5 +110,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 16,
+  },
+  emailButton: {
+    marginTop: 24,
   },
 });

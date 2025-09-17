@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import AdviceEmailButton from '../components/AdviceEmailButton';
+import { createAdvicePayload } from '../utils/createAdvicePayload';
 
 export default function OverzichtZakelijkAdviesScreen({ route, navigation }) {
   const { kwh1, kwh2, energiehandel } = route.params;
@@ -19,6 +21,27 @@ export default function OverzichtZakelijkAdviesScreen({ route, navigation }) {
   // Kies eerste optie die groter of gelijk is aan totaalbehoefte
   const gekozen = zakelijkeOpties.find(optie => kwhTotaal <= optie.capaciteit) || { naam: 'Meer dan 20 kWh nodig', afbeelding: null };
 
+  const emailPayload = useMemo(
+    () =>
+      createAdvicePayload({
+        routeParams: route?.params,
+        client: { type: 'Zakelijk', company: route?.params?.clientCompany },
+        advice: {
+          title: 'Zakelijk Advies',
+          summary: `Benodigd totaal: ${kwhTotaal.toFixed(1)} kWh`,
+          capacity: gekozen.naam,
+          connection: route?.params?.aansluiting ?? '—',
+          image: gekozen.afbeelding,
+          inputs: {
+            verbruik: kwhTotaal.toFixed(1),
+            overige: energiehandel ? `Energiehandel: ${energiehandel}` : undefined,
+          },
+        },
+        reference: { prefix: 'ZAK-OVZ' },
+      }),
+    [energiehandel, gekozen.afbeelding, gekozen.naam, kwhTotaal, route?.params]
+  );
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Zakelijk Advies</Text>
@@ -33,6 +56,8 @@ export default function OverzichtZakelijkAdviesScreen({ route, navigation }) {
       {energiehandel && (
         <Text style={styles.subtext}>Energiehandel gewenst: {energiehandel}</Text>
       )}
+
+      <AdviceEmailButton payload={emailPayload} style={styles.emailButton} />
 
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
         <Text style={styles.buttonText}>Terug naar begin</Text>
@@ -69,5 +94,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 18
+  },
+  emailButton: {
+    marginTop: 24,
   }
 });

@@ -5,6 +5,8 @@ import { useRoute } from '@react-navigation/native';
 export default function PersoonsgegevensScreen({ navigation }) {
   const route = useRoute();
   const aansluiting = route.params?.aansluiting;
+  const clientType = route.params?.clientType || 'Particulier';
+  const zekering = route.params?.zekering || '—';
 
   const [verbruik, setVerbruik] = useState('');
   const [vermogenWp, setVermogenWp] = useState('');
@@ -15,7 +17,9 @@ export default function PersoonsgegevensScreen({ navigation }) {
       verbruik,
       vermogenWp,
       aantalPanelen,
-      aansluiting
+      aansluiting,
+      clientType,
+      zekering,
     });
   };
 

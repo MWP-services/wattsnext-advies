@@ -1,7 +1,34 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import AdviceEmailButton from '../components/AdviceEmailButton';
+import { createAdvicePayload } from '../utils/createAdvicePayload';
 
-export default function Advies10Laag({ navigation }) {
+const adviceImage = require('../assets/10-KWH-ADVIES-LAAG.jpg');
+
+export default function Advies10Laag({ navigation, route }) {
+  const emailPayload = useMemo(
+    () =>
+      createAdvicePayload({
+        routeParams: route?.params,
+        client: { type: 'Particulier' },
+        advice: {
+          title: 'Persoonlijk Advies',
+          summary:
+            'Je hebt een 1-fase aansluiting. Op basis van je gegevens adviseren wij:',
+          capacity: route?.params?.adviesCapacity ?? '10 kWh batterijopslag (Laag Voltage)',
+          connection: route?.params?.aansluiting ?? '1-fase',
+          image: adviceImage,
+          inputs: {
+            verbruik: route?.params?.verbruik,
+            vermogenWp: route?.params?.vermogenWp,
+            aantalPanelen: route?.params?.aantalPanelen,
+          },
+        },
+        reference: { prefix: 'ADV-10L' },
+      }),
+    [route?.params]
+  );
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Persoonlijk Advies</Text>
@@ -11,10 +38,12 @@ export default function Advies10Laag({ navigation }) {
       <Text style={styles.advice}>10 kWh batterijopslag (Laag Voltage)</Text>
 
       <Image
-        source={require('../assets/10-KWH-ADVIES-LAAG.jpg')}
+        source={adviceImage}
         style={styles.image}
         resizeMode="contain"
       />
+
+      <AdviceEmailButton payload={emailPayload} style={styles.emailButton} />
 
       <TouchableOpacity style={styles.specButton} onPress={() => navigation.navigate('Specificaties')}>
         <Text style={styles.specButtonText}>Bekijk specificaties</Text>
@@ -65,5 +94,8 @@ const styles = StyleSheet.create({
   specButtonText: {
     color: '#fff',
     fontSize: 16
+  },
+  emailButton: {
+    marginTop: 24,
   }
 });

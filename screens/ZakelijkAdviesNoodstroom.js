@@ -1,6 +1,8 @@
 // screens/ZakelijkAdviesNoodstroom.js
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import AdviceEmailButton from '../components/AdviceEmailButton';
+import { createAdvicePayload } from '../utils/createAdvicePayload';
 
 export default function ZakelijkAdviesNoodstroom({ route, navigation }) {
   const { kwh1, kwh2 } = route.params;
@@ -26,6 +28,27 @@ export default function ZakelijkAdviesNoodstroom({ route, navigation }) {
     afbeelding = require('../assets/5-MW-ZAKELIJK.png');
   }
 
+  const emailPayload = useMemo(
+    () =>
+      createAdvicePayload({
+        routeParams: route?.params,
+        client: { type: 'Zakelijk', company: route?.params?.clientCompany },
+        advice: {
+          title: 'Advies Noodstroomvoorziening',
+          summary: `Benodigde opslagcapaciteit: ${totaalKwh.toFixed(1)} kWh`,
+          capacity: advies,
+          connection: 'Hoog voltage',
+          image: afbeelding,
+          inputs: {
+            verbruik: totaalKwh.toFixed(1),
+            overige: `kWh invoer: ${kwh1}, ${kwh2}`,
+          },
+        },
+        reference: { prefix: 'ZAK-NS' },
+      }),
+    [afbeelding, advies, kwh1, kwh2, route?.params, totaalKwh]
+  );
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Advies Noodstroomvoorziening</Text>
@@ -33,6 +56,8 @@ export default function ZakelijkAdviesNoodstroom({ route, navigation }) {
       <Text style={styles.result}>Aanbevolen oplossing: {advies}</Text>
 
       <Image source={afbeelding} style={styles.image} resizeMode="contain" />
+
+      <AdviceEmailButton payload={emailPayload} style={styles.emailButton} />
 
       <TouchableOpacity
         style={styles.button}
@@ -81,5 +106,8 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600'
+  },
+  emailButton: {
+    marginTop: 24,
   }
 });
