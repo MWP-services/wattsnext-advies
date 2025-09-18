@@ -29,9 +29,11 @@ export default function LoginScreen({ navigation }) {
     }
   };
 
+  // >>> Belangrijk voor App Review (4.2.2 + 5.1.1):
+  // Toon direct de interactieve Adviseur zonder account.
   const handleGuest = () => {
     console.log('Doorgaan als gast');
-    navigation.replace('Particulier');
+    navigation.reset({ index: 0, routes: [{ name: 'AdvisorWizard' }] });
   };
 
   return (
@@ -43,6 +45,8 @@ export default function LoginScreen({ navigation }) {
       <Image
         source={require('../assets/achtergrond.png')}
         style={styles.backgroundImage}
+        accessible
+        accessibilityLabel="Achtergrond"
       />
 
       <SafeAreaView style={styles.safeArea}>
@@ -55,8 +59,14 @@ export default function LoginScreen({ navigation }) {
               marginBottom: 40,
             }}
             resizeMode="contain"
+            accessible
+            accessibilityLabel="WattsNext logo"
           />
-          <Text style={[styles.title, { fontSize: width > 768 ? 32 : 24 }]}>
+
+          <Text
+            style={[styles.title, { fontSize: width > 768 ? 32 : 24 }]}
+            accessibilityRole="header"
+          >
             Inloggen
           </Text>
 
@@ -67,6 +77,10 @@ export default function LoginScreen({ navigation }) {
             onChangeText={setEmail}
             style={styles.input}
             autoCapitalize="none"
+            keyboardType="email-address"
+            textContentType="emailAddress"
+            accessibilityLabel="Vul je e-mailadres in"
+            testID="emailInput"
           />
 
           <TextInput
@@ -76,21 +90,43 @@ export default function LoginScreen({ navigation }) {
             onChangeText={setWachtwoord}
             style={styles.input}
             secureTextEntry
+            textContentType="password"
+            accessibilityLabel="Vul je wachtwoord in"
+            testID="passwordInput"
           />
 
-          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleLogin}
+            accessibilityRole="button"
+            accessibilityLabel="Log in"
+            testID="loginButton"
+          >
             <Text style={styles.buttonText}>Log in</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => navigation.navigate('RegisterScreen')}
             style={styles.link}
+            accessibilityRole="button"
+            accessibilityLabel="Ga naar registreren"
+            testID="registerLink"
           >
             <Text style={styles.linkText}>Nog geen account? Registreer hier</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.guestButton} onPress={handleGuest}>
+          {/* Doorgaan als gast → directe toegang tot Adviseur */}
+          <TouchableOpacity
+            style={styles.guestButton}
+            onPress={handleGuest}
+            accessibilityRole="button"
+            accessibilityLabel="Doorgaan als gast, ga direct naar de Thuisbatterij-Adviseur"
+            testID="guestButton"
+          >
             <Text style={styles.guestButtonText}>Doorgaan als gast</Text>
+            <Text style={styles.guestHint}>
+              Je kunt de app ook zonder account gebruiken
+            </Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -164,6 +200,11 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 16,
   },
+  guestHint: {
+    marginTop: 6,
+    color: '#f1f1f1',
+    fontSize: 12,
+  },
   link: {
     marginTop: 16,
   },
@@ -172,3 +213,4 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
 });
+Compare
