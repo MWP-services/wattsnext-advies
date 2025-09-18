@@ -54,6 +54,7 @@ import Spec_LV_particulier from './screens/Spec_LV_particulier';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import AccountBeherenScreen from './screens/AccountBeherenScreen';
+import SavedAdvicesScreen from './screens/SavedAdvicesScreen';
 import Toast from 'react-native-toast-message';
 
 const Stack = createNativeStackNavigator();
@@ -65,6 +66,7 @@ export default function App() {
         <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        <Stack.Screen name="SavedAdvices" component={SavedAdvicesScreen} />
         <Stack.Screen name="Stap 1" component={Step1Screen} />
         <Stack.Screen name="Particulier" component={ParticulierScreen} />
         <Stack.Screen name="Fase 1" component={Fase1Screen} />
