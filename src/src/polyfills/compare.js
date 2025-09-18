@@ -1,8 +1,6 @@
-// index.js — zonder expo-router
+// src/polyfills/compare.js
 
-import 'react-native-gesture-handler';
-
-// --- POLYFILL voor 'Compare' (tijdelijk; later weghalen als je de bron hebt gefikst) ---
+// -- Intl.Collator: .Compare vs .compare
 try {
   if (global.Intl?.Collator) {
     const proto = global.Intl.Collator.prototype;
@@ -10,8 +8,9 @@ try {
       proto.Compare = proto.compare;
     }
   }
-} catch {}
+} catch { /* ignore */ }
 
+// -- String prototype: .Compare(a) → localeCompare
 try {
   // eslint-disable-next-line no-extend-native
   if (!String.prototype.Compare) {
@@ -19,27 +18,25 @@ try {
       return String(this).localeCompare(String(other), 'nl');
     };
   }
-} catch {}
+} catch { /* ignore */ }
 
+// -- String static: String.Compare(a,b)
 try {
   if (!String.Compare) {
     String.Compare = (a, b) => String(a).localeCompare(String(b), 'nl');
   }
-} catch {}
+} catch { /* ignore */ }
 
+// -- Number static: Number.Compare(a,b)
 try {
   if (!Number.Compare) {
     Number.Compare = (a, b) => Number(a) - Number(b);
   }
-} catch {}
+} catch { /* ignore */ }
 
+// -- Date static: Date.Compare(a,b)
 try {
   if (!Date.Compare) {
     Date.Compare = (a, b) => new Date(a).getTime() - new Date(b).getTime();
   }
-} catch {}
-// --- EINDE POLYFILL ---
-
-import { registerRootComponent } from 'expo';
-const App = require('./App').default; // laad App ná de polyfills
-registerRootComponent(App);
+} catch { /* ignore */ }

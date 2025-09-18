@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+// screens/AdvisorWizardScreen.js
+import React, { useMemo, useState } from 'react';
 import { View, Text, TextInput, Pressable, ScrollView } from 'react-native';
 
 const Field = ({ label, value, setValue, keyboardType = 'numeric' }) => (
@@ -15,7 +16,6 @@ const Field = ({ label, value, setValue, keyboardType = 'numeric' }) => (
 );
 
 export default function AdvisorWizardScreen({ navigation }) {
-  const [, setRoute] = useState(navigation.getState().routes.find(r => r.name === 'AdvisorWizard') || {});
   const [phase, setPhase] = useState('3-fase');   // '1-fase' of '3-fase'
   const [annualUse, setAnnualUse] = useState('3500'); // kWh/jaar
   const [pvAnnual, setPvAnnual] = useState('2500');   // kWh/jaar
@@ -81,17 +81,17 @@ export default function AdvisorWizardScreen({ navigation }) {
         <Text style={{ color: '#6b7280', marginTop: 8 }}>* Indicatief o.b.v. 60% directe zelfconsumptie.</Text>
       </View>
 
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 16 }}>
-          <Pressable
-            onPress={goOfferte}
-            style={{
-              paddingVertical: 12,
-              paddingHorizontal: 20,
-              borderRadius: 10,
-              backgroundColor: '#2563eb',
-            }}
-          >
-            <Text style={{ color: 'white', fontWeight: '700' }}>Vraag offerte aan</Text>
-          </Pressable>
-          </View>
-      </ScrollView>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 16 }}>
+        <Pressable onPress={goOfferte} style={btn()}>
+          <Text style={btnTxt()}>Offerte aanvragen</Text>
+        </Pressable>
+      </View>
+    </ScrollView>
+  );
+}
+
+const btn = () => ({
+  paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12,
+  backgroundColor: '#111827', borderWidth: 1, borderColor: '#111827'
+});
+const btnTxt = () => ({ color: 'white', fontWeight: '600' });

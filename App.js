@@ -55,6 +55,8 @@ import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import AccountBeherenScreen from './screens/AccountBeherenScreen';
 import Toast from 'react-native-toast-message';
+import AdvisorWizardScreen from './screens/AdvisorWizardScreen';
+import OfferteAanvraagScreen from './screens/OfferteaanvraagScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -115,6 +117,8 @@ export default function App() {
         <Stack.Screen name="Spec_HV_particulier" component={Spec_HV_particulier} />
         <Stack.Screen name="Spec_LV_particulier" component={Spec_LV_particulier} />
           <Stack.Screen name="AccountBeheren" component={AccountBeherenScreen} />
+          <Stack.Screen name="AdvisorWizard" component={AdvisorWizardScreen} options={{ title: 'Thuisbatterij-Adviseur' }} />
+  <Stack.Screen name="OfferteAanvraag" component={OfferteAanvraagScreen} options={{ title: 'Offerte aanvragen' }} />
       </Stack.Navigator>
           <Toast />
     </NavigationContainer>
