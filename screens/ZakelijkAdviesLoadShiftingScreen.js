@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, ImageBackground, SafeAreaView } from 'react-native';
+import SaveAdviceButton from '../components/SaveAdviceButton';
 
 export default function ZakelijkAdviesLoadShiftingScreen({ route, navigation }) {
   const { kwh1 = 0, kwh2 = 0, kwh3 = 0 } = route.params;
@@ -67,6 +68,14 @@ export default function ZakelijkAdviesLoadShiftingScreen({ route, navigation }) 
           >
             <Text style={styles.buttonText}>Bekijk specificaties</Text>
           </TouchableOpacity>
+
+          <SaveAdviceButton
+            advice={{
+              id: `zakelijk-loadshifting-${specificatieScreen}`,
+              title: `Load Shifting advies: ${advies}`,
+              summary: `Totale energiebehoefte: ${totaleBehoefte.toFixed(1)} kWh. Aanbevolen oplossing: ${advies}.`,
+            }}
+          />
         </ScrollView>
       </SafeAreaView>
     </ImageBackground>
