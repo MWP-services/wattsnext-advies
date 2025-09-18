@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground, SafeAreaView } from 'react-native';
+import SaveAdviceButton from '../components/SaveAdviceButton';
 
 export default function Advies10Laag({ navigation }) {
   return (
@@ -30,6 +31,14 @@ export default function Advies10Laag({ navigation }) {
           >
             <Text style={styles.specButtonText}>Bekijk specificaties</Text>
           </TouchableOpacity>
+
+          <SaveAdviceButton
+            advice={{
+              id: 'particulier-10kwh-laag',
+              title: 'Advies 10 kWh (Laag Voltage)',
+              summary: 'Advies voor 10 kWh batterijopslag met laag voltage configuratie.',
+            }}
+          />
         </View>
       </SafeAreaView>
     </ImageBackground>

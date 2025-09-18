@@ -78,6 +78,17 @@ export default function HomeScreen({ navigation }) {
               Account beheren
             </Text>
           </TouchableOpacity>
+
+          <View style={{ height: 16 }} />
+
+          <TouchableOpacity
+            style={[styles.secondaryButton, { width: width > 768 ? 300 : '80%' }]}
+            onPress={() => navigation.navigate('SavedAdvices')}
+            accessibilityRole="button"
+            accessibilityLabel="Bekijk opgeslagen adviezen"
+          >
+            <Text style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}>Opgeslagen adviezen</Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     </View>

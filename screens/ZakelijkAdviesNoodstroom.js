@@ -9,6 +9,7 @@ import {
   ImageBackground,
   SafeAreaView,
 } from 'react-native';
+import SaveAdviceButton from '../components/SaveAdviceButton';
 
 export default function ZakelijkAdviesNoodstroom({ route, navigation }) {
   const { kwh1, kwh2 } = route.params;
@@ -70,6 +71,14 @@ export default function ZakelijkAdviesNoodstroom({ route, navigation }) {
           >
             <Text style={styles.buttonText}>Bekijk specificaties</Text>
           </TouchableOpacity>
+
+          <SaveAdviceButton
+            advice={{
+              id: `zakelijk-noodstroom-${specificatieScreen}`,
+              title: `Noodstroom advies: ${advies}`,
+              summary: `Benodigde opslagcapaciteit: ${totaalKwh.toFixed(1)} kWh. Aanbevolen oplossing: ${advies}.`,
+            }}
+          />
         </ScrollView>
       </SafeAreaView>
     </ImageBackground>
