@@ -11,6 +11,7 @@ import {
   Linking,
   Alert,
 } from 'react-native';
+import SaveAdviceButton from '../components/SaveAdviceButton';
 
 export default function OverzichtZakelijkAdviesScreen({ route, navigation }) {
   const { kwh1, kwh2, energiehandel } = route.params;
@@ -33,6 +34,14 @@ export default function OverzichtZakelijkAdviesScreen({ route, navigation }) {
     naam: 'Meer dan 20 kWh nodig',
     afbeelding: null,
   };
+
+  const adviesId = useMemo(() => {
+    if (!gekozen.naam) {
+      return 'zakelijk-overzicht';
+    }
+
+    return `zakelijk-overzicht-${gekozen.naam.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+  }, [gekozen.naam]);
 
   const emailSubject = useMemo(
     () => 'Afspraak inplannen - Wattsnext zakelijk advies',
@@ -106,6 +115,16 @@ export default function OverzichtZakelijkAdviesScreen({ route, navigation }) {
               Energiehandel gewenst: {energiehandel}
             </Text>
           )}
+
+          <SaveAdviceButton
+            advice={{
+              id: adviesId,
+              title: `Zakelijk advies overzicht: ${gekozen.naam}`,
+              summary: `Totaal vermogen: ${kwhTotaal.toFixed(1)} kWh.${
+                energiehandel ? ` Energiehandel: ${energiehandel}.` : ''
+              }`,
+            }}
+          />
 
           <TouchableOpacity
             style={[styles.button, styles.emailButton]}
