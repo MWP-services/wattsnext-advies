@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -7,13 +7,17 @@ import {
   Image,
   ImageBackground,
   SafeAreaView,
-  ScrollView
+  ScrollView,
+  Linking,
+  Alert,
 } from 'react-native';
 
 export default function OverzichtZakelijkAdviesScreen({ route, navigation }) {
   const { kwh1, kwh2, energiehandel } = route.params;
 
-  const kwhTotaal = parseFloat(kwh1) + parseFloat(kwh2);
+  const [showEmailFormat, setShowEmailFormat] = useState(false);
+
+  const kwhTotaal = (Number(kwh1) || 0) + (Number(kwh2) || 0);
 
   // Zakelijk aanbod (alle hoog voltage)
   const zakelijkeOpties = [
@@ -25,7 +29,58 @@ export default function OverzichtZakelijkAdviesScreen({ route, navigation }) {
     { capaciteit: 20, naam: '20 kWh Zakelijk', afbeelding: require('../assets/20-KWH-ADVIES.jpg') },
   ];
 
-  const gekozen = zakelijkeOpties.find(optie => kwhTotaal <= optie.capaciteit) || { naam: 'Meer dan 20 kWh nodig', afbeelding: null };
+  const gekozen = zakelijkeOpties.find(optie => kwhTotaal <= optie.capaciteit) || {
+    naam: 'Meer dan 20 kWh nodig',
+    afbeelding: null,
+  };
+
+  const emailSubject = useMemo(
+    () => 'Afspraak inplannen - Wattsnext zakelijk advies',
+    []
+  );
+
+  const emailBody = useMemo(() => {
+    const regels = [
+      'Beste Rick,',
+      '',
+      'Graag plan ik een afspraak in om het volgende zakelijk energieopslagadvies te bespreken:',
+      `- Benodigd totaal vermogen: ${kwhTotaal.toFixed(1)} kWh`,
+      `- Aanbevolen oplossing: ${gekozen.naam}`,
+    ];
+
+    if (energiehandel) {
+      regels.push(`- Energiehandel gewenst: ${energiehandel}`);
+    }
+
+    regels.push(
+      '',
+      'Laat me weten welke momenten voor jou passen, dan prik ik graag een afspraak.',
+      '',
+      'Met vriendelijke groet,',
+      '[Je naam]',
+    );
+
+    return regels.join('\n');
+  }, [energiehandel, gekozen.naam, kwhTotaal]);
+
+  const mailtoLink = useMemo(
+    () =>
+      `mailto:r.oskam@wattsnext.energy?subject=${encodeURIComponent(
+        emailSubject
+      )}&body=${encodeURIComponent(emailBody)}`,
+    [emailBody, emailSubject]
+  );
+
+  const handleOpenEmail = useCallback(async () => {
+    try {
+      await Linking.openURL(mailtoLink);
+    } catch (error) {
+      Alert.alert(
+        'E-mail openen mislukt',
+        'Open je mailapp en stuur Rick handmatig via r.oskam@wattsnext.energy.'
+      );
+    }
+  }, [mailtoLink]);
 
   return (
     <ImageBackground
@@ -47,10 +102,39 @@ export default function OverzichtZakelijkAdviesScreen({ route, navigation }) {
           <Text style={styles.advies}>{gekozen.naam}</Text>
 
           {energiehandel && (
-            <Text style={styles.subtext}>Energiehandel gewenst: {energiehandel}</Text>
+            <Text style={styles.subtext}>
+              Energiehandel gewenst: {energiehandel}
+            </Text>
           )}
 
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
+          <TouchableOpacity
+            style={[styles.button, styles.emailButton]}
+            onPress={() => setShowEmailFormat(value => !value)}
+          >
+            <Text style={styles.buttonText}>
+              {showEmailFormat ? 'Verberg e-mailformat' : 'Toon e-mailformat'}
+            </Text>
+          </TouchableOpacity>
+
+          {showEmailFormat && (
+            <View style={styles.emailCard}>
+              <Text style={styles.emailTitle}>Mail Rick Oskam</Text>
+              <Text style={styles.emailAddress}>r.oskam@wattsnext.energy</Text>
+              <Text style={styles.emailText}>{emailBody}</Text>
+
+              <TouchableOpacity
+                style={[styles.button, styles.mailButton]}
+                onPress={handleOpenEmail}
+              >
+                <Text style={styles.buttonText}>Open e-mail</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('Home')}
+          >
             <Text style={styles.buttonText}>Terug naar begin</Text>
           </TouchableOpacity>
         </ScrollView>
@@ -109,9 +193,42 @@ imageStyle: {
     borderRadius: 10,
     width: '100%',
     alignItems: 'center',
+    marginTop: 10,
+  },
+  emailButton: {
+    backgroundColor: '#3eaf4f',
+  },
+  mailButton: {
+    backgroundColor: '#1f6f34',
+    marginTop: 16,
   },
   buttonText: {
     color: '#fff',
     fontSize: 18,
+  },
+  emailCard: {
+    width: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 12,
+    padding: 20,
+    marginTop: 16,
+  },
+  emailTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 6,
+    color: '#3eaf4f',
+    textAlign: 'center',
+  },
+  emailAddress: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  emailText: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: '#333',
   },
 });
