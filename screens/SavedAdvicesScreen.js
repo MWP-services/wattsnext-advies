@@ -172,7 +172,7 @@ export default function SavedAdvicesScreen() {
     <View style={styles.card}>
       <Text style={styles.cardTitle}>{item.title}</Text>
       {item.summary ? <Text style={styles.cardSummary}>{item.summary}</Text> : null}
-      {item.savedAt || item.updatedAt ? (
+      {(item.savedAt || item.updatedAt) ? (
         <Text style={styles.cardDate}>
           Opgeslagen op: {formatTimestamp(item.updatedAt || item.savedAt)}
         </Text>
@@ -225,4 +225,17 @@ const styles = StyleSheet.create({
   background: { flex: 1, width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' },
   imageStyle: { resizeMode: 'contain', position: 'absolute', width: '100%', height: '100%' },
   container: { flex: 1, padding: 24 },
-  title: { fontSize: 24, fontWeight: 'bold', color: '#3eaf4f', textAlign: 'center',
+  title: { fontSize: 24, fontWeight: 'bold', color: '#3eaf4f', textAlign: 'center', marginBottom: 8 },
+  subtitle: { fontSize: 16, textAlign: 'center', marginBottom: 24 },
+  loader: { marginTop: 32 },
+  emptyState: { backgroundColor: 'rgba(255, 255, 255, 0.9)', borderRadius: 12, padding: 24, alignItems: 'center' },
+  emptyTitle: { fontSize: 18, fontWeight: '600', marginBottom: 8, color: '#3eaf4f' },
+  emptyText: { fontSize: 16, textAlign: 'center', color: '#333' },
+  listContent: { paddingBottom: 24, gap: 16 },
+  emailButton: { backgroundColor: '#1f6f34', borderRadius: 8, paddingVertical: 14, paddingHorizontal: 20, alignItems: 'center', justifyContent: 'center', marginBottom: 24 },
+  emailButtonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  card: { backgroundColor: 'rgba(255, 255, 255, 0.95)', borderRadius: 12, padding: 20 },
+  cardTitle: { fontSize: 18, fontWeight: '700', color: '#1f6f34', marginBottom: 8 },
+  cardSummary: { fontSize: 16, color: '#333', marginBottom: 6 },
+  cardDate: { fontSize: 14, color: '#666' },
+});
