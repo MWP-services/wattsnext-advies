@@ -18,6 +18,55 @@ import { SAVED_ADVICES_STORAGE_KEY } from '../components/SaveAdviceButton';
 const SALES_EMAIL_ADDRESS = 'r.oskam@wattsnext.energy';
 const EMAIL_SUBJECT = 'Afspraak inplannen naar aanleiding van mijn advies';
 
+function normalizeSavedAdvices(value) {
+  if (!value) {
+    return [];
+  }
+
+  const rawEntries = Array.isArray(value)
+    ? value
+    : typeof value === 'object'
+      ? Object.values(value)
+      : [];
+
+  const seen = new Map();
+
+  rawEntries
+    .filter(Boolean)
+    .forEach((entry, index) => {
+      const idCandidate = entry?.id ?? entry?.key ?? `advice-${index}`;
+      const normalised = {
+        ...entry,
+        id: String(idCandidate),
+        title:
+          typeof entry?.title === 'string' && entry.title.trim().length > 0
+            ? entry.title.trim()
+            : 'Advies',
+        summary:
+          typeof entry?.summary === 'string' && entry.summary.trim().length > 0
+            ? entry.summary.trim()
+            : '',
+        savedAt: entry?.savedAt ?? entry?.timestamp ?? null,
+        updatedAt: entry?.updatedAt ?? null,
+      };
+
+      const existing = seen.get(normalised.id);
+      if (!existing) {
+        seen.set(normalised.id, normalised);
+        return;
+      }
+
+      const existingTime = new Date(existing.updatedAt || existing.savedAt || 0).getTime();
+      const candidateTime = new Date(normalised.updatedAt || normalised.savedAt || 0).getTime();
+
+      if (candidateTime >= existingTime) {
+        seen.set(normalised.id, normalised);
+      }
+    });
+
+  return Array.from(seen.values());
+}
+
 function formatTimestamp(value) {
   if (!value) {
     return '';
@@ -100,16 +149,13 @@ export default function SavedAdvicesScreen() {
       }
 
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        const sorted = [...parsed].sort((a, b) => {
-          const timeA = new Date(a.updatedAt || a.savedAt || 0).getTime();
-          const timeB = new Date(b.updatedAt || b.savedAt || 0).getTime();
-          return timeB - timeA;
-        });
-        setAdvices(sorted);
-      } else {
-        setAdvices([]);
-      }
+      const normalised = normalizeSavedAdvices(parsed);
+      const sorted = [...normalised].sort((a, b) => {
+        const timeA = new Date(a.updatedAt || a.savedAt || 0).getTime();
+        const timeB = new Date(b.updatedAt || b.savedAt || 0).getTime();
+        return timeB - timeA;
+      });
+      setAdvices(sorted);
     } catch (error) {
       console.error('Adviezen ophalen mislukt', error);
       setAdvices([]);
@@ -125,14 +171,6 @@ export default function SavedAdvicesScreen() {
   );
 
   const handleComposeEmail = useCallback(async () => {
-    if (!advices || advices.length === 0) {
-      Alert.alert(
-        'Geen adviezen beschikbaar',
-        'Sla eerst een advies op voordat u een e-mail opstelt.'
-      );
-      return;
-    }
-
     const mailtoUrl = `mailto:${SALES_EMAIL_ADDRESS}?subject=${encodeURIComponent(
       EMAIL_SUBJECT
     )}&body=${encodeURIComponent(buildEmailBody(advices))}`;
@@ -199,7 +237,7 @@ export default function SavedAdvicesScreen() {
           ) : (
             <FlatList
               data={advices}
-              keyExtractor={item => item.id}
+              keyExtractor={(item, index) => item.id || `advice-${index}`}
               renderItem={renderAdvice}
               contentContainerStyle={styles.listContent}
             />
