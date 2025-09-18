@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ImageBackground, SafeAreaView } from 'react-native';
+import SaveAdviceButton from '../components/SaveAdviceButton';
 
 export default function ZakelijkAdviesHandelScreen({ route, navigation }) {
   const { kwh1, kwh2 = 0 } = route.params;
@@ -52,6 +53,14 @@ export default function ZakelijkAdviesHandelScreen({ route, navigation }) {
           >
             <Text style={styles.buttonText}>Bekijk specificaties</Text>
           </TouchableOpacity>
+
+          <SaveAdviceButton
+            advice={{
+              id: `zakelijk-handel-${specificatieScreen}`,
+              title: `Energiehandel advies: ${advies}`,
+              summary: `Totale energiebehoefte: ${totaleBehoefte.toFixed(2)} kWh. Aanbevolen oplossing: ${advies}.`,
+            }}
+          />
         </ScrollView>
       </SafeAreaView>
     </ImageBackground>

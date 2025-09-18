@@ -7,8 +7,9 @@ import {
   ScrollView,
   TouchableOpacity,
   ImageBackground,
-  SafeAreaView
+  SafeAreaView,
 } from 'react-native';
+import SaveAdviceButton from '../components/SaveAdviceButton';
 
 export default function ZakelijkAdviesNetcongestie({ navigation, route }) {
   const { kwh1, kwh2 = 0, kwh3 = 0 } = route.params;
@@ -70,6 +71,14 @@ export default function ZakelijkAdviesNetcongestie({ navigation, route }) {
           >
             <Text style={styles.buttonText}>Bekijk specificaties</Text>
           </TouchableOpacity>
+
+          <SaveAdviceButton
+            advice={{
+              id: `zakelijk-netcongestie-${specificatieScreen}`,
+              title: `Netcongestie advies: ${advies}`,
+              summary: `Benodigd vermogen: ${totaleBehoefte.toFixed(2)} kWh. Aanbevolen oplossing: ${advies}.`,
+            }}
+          />
         </ScrollView>
       </SafeAreaView>
     </ImageBackground>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground, SafeAreaView } from 'react-native';
+import SaveAdviceButton from '../components/SaveAdviceButton';
 
 export default function Advies17_5Hoog({ navigation }) {
   return (
@@ -28,6 +29,14 @@ export default function Advies17_5Hoog({ navigation }) {
           >
             <Text style={styles.specButtonText}>Bekijk specificaties</Text>
           </TouchableOpacity>
+
+          <SaveAdviceButton
+            advice={{
+              id: 'particulier-17_5kwh-hoog',
+              title: 'Advies 17,5 kWh (Hoog Voltage)',
+              summary: 'Advies voor 17,5 kWh batterijopslag met hoog voltage configuratie.',
+            }}
+          />
         </View>
       </SafeAreaView>
     </ImageBackground>
