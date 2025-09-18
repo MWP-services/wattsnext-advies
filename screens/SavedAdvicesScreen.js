@@ -18,17 +18,17 @@ import { SAVED_ADVICES_STORAGE_KEY } from '../components/SaveAdviceButton';
 const SALES_EMAIL_ADDRESS = 'r.oskam@wattsnext.energy';
 const EMAIL_SUBJECT = 'Afspraak inplannen naar aanleiding van mijn advies';
 
-function normalizeSavedAdvices(value: any) {
+function normalizeSavedAdvices(value) {
   if (!value) return [];
   const rawEntries = Array.isArray(value)
     ? value
-    : typeof value === 'object'
+    : (value && typeof value === 'object')
     ? Object.values(value)
     : [];
 
-  const seen = new Map<string, any>();
+  const seen = new Map();
 
-  rawEntries.filter(Boolean).forEach((entry: any, index: number) => {
+  rawEntries.filter(Boolean).forEach((entry, index) => {
     const idCandidate = entry?.id ?? entry?.key ?? `advice-${index}`;
     const normalised = {
       ...entry,
@@ -52,13 +52,15 @@ function normalizeSavedAdvices(value: any) {
     }
     const existingTime = new Date(existing.updatedAt || existing.savedAt || 0).getTime();
     const candidateTime = new Date(normalised.updatedAt || normalised.savedAt || 0).getTime();
-    if (candidateTime >= existingTime) seen.set(normalised.id, normalised);
+    if (candidateTime >= existingTime) {
+      seen.set(normalised.id, normalised);
+    }
   });
 
   return Array.from(seen.values());
 }
 
-function formatTimestamp(value?: string) {
+function formatTimestamp(value) {
   if (!value) return '';
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
@@ -70,7 +72,7 @@ function formatTimestamp(value?: string) {
   return `${day}-${month}-${year} ${hours}:${minutes}`;
 }
 
-function buildEmailBody(advices: any[]) {
+function buildEmailBody(advices) {
   if (!advices || advices.length === 0) {
     return [
       'Beste Wattsnext team,',
@@ -115,7 +117,7 @@ function buildEmailBody(advices: any[]) {
 }
 
 export default function SavedAdvicesScreen() {
-  const [advices, setAdvices] = useState<any[]>([]);
+  const [advices, setAdvices] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const loadAdvices = useCallback(async () => {
@@ -152,6 +154,7 @@ export default function SavedAdvicesScreen() {
     const mailtoUrl = `mailto:${SALES_EMAIL_ADDRESS}?subject=${encodeURIComponent(
       EMAIL_SUBJECT
     )}&body=${encodeURIComponent(buildEmailBody(advices))}`;
+
     try {
       const supported = await Linking.canOpenURL(mailtoUrl);
       if (!supported) {
@@ -165,7 +168,7 @@ export default function SavedAdvicesScreen() {
     }
   }, [advices]);
 
-  const renderAdvice = ({ item }: { item: any }) => (
+  const renderAdvice = ({ item }) => (
     <View style={styles.card}>
       <Text style={styles.cardTitle}>{item.title}</Text>
       {item.summary ? <Text style={styles.cardSummary}>{item.summary}</Text> : null}
@@ -222,17 +225,4 @@ const styles = StyleSheet.create({
   background: { flex: 1, width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' },
   imageStyle: { resizeMode: 'contain', position: 'absolute', width: '100%', height: '100%' },
   container: { flex: 1, padding: 24 },
-  title: { fontSize: 24, fontWeight: 'bold', color: '#3eaf4f', textAlign: 'center', marginBottom: 8 },
-  subtitle: { fontSize: 16, textAlign: 'center', marginBottom: 24 },
-  loader: { marginTop: 32 },
-  emptyState: { backgroundColor: 'rgba(255, 255, 255, 0.9)', borderRadius: 12, padding: 24, alignItems: 'center' },
-  emptyTitle: { fontSize: 18, fontWeight: '600', marginBottom: 8, color: '#3eaf4f' },
-  emptyText: { fontSize: 16, textAlign: 'center', color: '#333' },
-  listContent: { paddingBottom: 24, gap: 16 },
-  emailButton: { backgroundColor: '#1f6f34', borderRadius: 8, paddingVertical: 14, paddingHorizontal: 20, alignItems: 'center', justifyContent: 'center', marginBottom: 24 },
-  emailButtonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  card: { backgroundColor: 'rgba(255, 255, 255, 0.95)', borderRadius: 12, padding: 20 },
-  cardTitle: { fontSize: 18, fontWeight: '700', color: '#1f6f34', marginBottom: 8 },
-  cardSummary: { fontSize: 16, color: '#333', marginBottom: 6 },
-  cardDate: { fontSize: 14, color: '#666' },
-});
+  title: { fontSize: 24, fontWeight: 'bold', color: '#3eaf4f', textAlign: 'center',
