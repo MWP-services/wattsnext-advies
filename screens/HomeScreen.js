@@ -72,6 +72,7 @@ function formatDateLabel(dateString) {
 }
 
 
+
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 
 
@@ -176,12 +177,15 @@ function formatDateLabel(dateString) {
   }
 }
 
+
 export default function HomeScreen({ navigation }) {
   const { width } = useWindowDimensions();
   const today = useMemo(() => new Date(), []);
   const todayString = useMemo(() => toLocalDateKey(today), [today]);
 
+
   const todayString = useMemo(() => today.toISOString().split('T')[0], [today]);
+
 
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
@@ -265,6 +269,7 @@ export default function HomeScreen({ navigation }) {
 
 
 
+
   const markedDates = useMemo(() => {
     const marks = {};
 
@@ -297,6 +302,7 @@ export default function HomeScreen({ navigation }) {
 
     return marks;
   }, [bookedSlots, selectedDate]);
+
 
 
 
@@ -353,7 +359,7 @@ export default function HomeScreen({ navigation }) {
           contactEmail: userEmail,
           createdAt: serverTimestamp(),
         });
-=======
+
       const existing = await getDoc(appointmentRef);
       if (existing.exists()) {
         Alert.alert(
@@ -371,6 +377,7 @@ export default function HomeScreen({ navigation }) {
         contactName: trimmedName,
         contactEmail: userEmail,
         createdAt: serverTimestamp(),
+
 
       });
 
@@ -414,11 +421,13 @@ export default function HomeScreen({ navigation }) {
         );
       }
 
+
       console.error('Fout bij het plannen van een afspraak', error);
       Alert.alert(
         'Er ging iets mis',
         'Het is niet gelukt om de afspraak te plannen. Probeer het later opnieuw.'
       );
+
 
     } finally {
       setSubmitting(false);
@@ -531,7 +540,11 @@ export default function HomeScreen({ navigation }) {
                 <CalendarWidget
 
 
+                <CalendarWidget
+
+
                 <AppointmentCalendar
+
 
                   today={today}
                   selectedDate={selectedDate}
@@ -539,6 +552,7 @@ export default function HomeScreen({ navigation }) {
                   bookedSlots={bookedSlots}
                   totalSlotsPerDay={TIME_SLOTS.length}
                 />
+
 
 
 
@@ -559,6 +573,7 @@ export default function HomeScreen({ navigation }) {
                     textDayHeaderFontWeight: '600',
                   }}
                 />
+
 
 
                 {selectedDate ? (
