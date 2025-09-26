@@ -21,10 +21,9 @@ codex/fix-runtime-error-for-compare-property
 import {
   collection,
   doc,
-  getDoc,
   onSnapshot,
+  runTransaction,
   serverTimestamp,
-  setDoc,
 } from 'firebase/firestore';
 
 import { auth, db } from '../firebaseConfig';
@@ -270,23 +269,21 @@ export default function HomeScreen({ navigation }) {
     setSubmitting(true);
 
     try {
-      const existing = await getDoc(appointmentRef);
-      if (existing.exists()) {
-        Alert.alert(
-          'Tijdslot niet beschikbaar',
-          'Dit tijdslot is zojuist geboekt. Kies een andere tijd.'
-        );
-        return;
-      }
+      await runTransaction(db, async (transaction) => {
+        const existing = await transaction.get(appointmentRef);
+        if (existing.exists()) {
+          throw new Error('slot-taken');
+        }
 
-      await setDoc(appointmentRef, {
-        date: selectedDate,
-        time: selectedTime,
-        location: locationType,
-        address: trimmedAddress,
-        contactName: trimmedName,
-        contactEmail: userEmail,
-        createdAt: serverTimestamp(),
+        transaction.set(appointmentRef, {
+          date: selectedDate,
+          time: selectedTime,
+          location: locationType,
+          address: trimmedAddress,
+          contactName: trimmedName,
+          contactEmail: userEmail,
+          createdAt: serverTimestamp(),
+        });
       });
 
       const emailResult = await sendAppointmentEmails({
@@ -316,11 +313,18 @@ export default function HomeScreen({ navigation }) {
       setCustomAddress('');
       setLocationType('office');
     } catch (error) {
-      console.error('Fout bij het plannen van een afspraak', error);
-      Alert.alert(
-        'Er ging iets mis',
-        'Het is niet gelukt om de afspraak te plannen. Probeer het later opnieuw.'
-      );
+      if (error?.message === 'slot-taken') {
+        Alert.alert(
+          'Tijdslot niet beschikbaar',
+          'Dit tijdslot is zojuist geboekt. Kies een andere tijd.'
+        );
+      } else {
+        console.error('Fout bij het plannen van een afspraak', error);
+        Alert.alert(
+          'Er ging iets mis',
+          'Het is niet gelukt om de afspraak te plannen. Probeer het later opnieuw.'
+        );
+      }
     } finally {
       setSubmitting(false);
     }
