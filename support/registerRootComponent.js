@@ -1,10 +1,14 @@
 import { AppRegistry, Platform } from 'react-native';
+
 import appConfig from '../app.json';
 
 const appName =
   (appConfig && typeof appConfig === 'object' && appConfig.expo?.name) ||
   appConfig?.name ||
   'main';
+=======
+import { name as appName } from '../app.json';
+
 
 const APP_REGISTRATION_NAMES = Array.from(
   new Set(['main', appName].filter(Boolean))
