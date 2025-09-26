@@ -17,7 +17,7 @@ import {
 codex/add-interactive-appointment-calendar-to-homepage-cq2wdm
 
 import { Calendar, LocaleConfig } from 'react-native-calendars';
-codex/fix-runtime-error-for-compare-property
+
 import {
   collection,
   doc,
@@ -78,7 +78,7 @@ LocaleConfig.locales.nl = {
   today: 'Vandaag',
 };
 LocaleConfig.defaultLocale = 'nl';
-codex/fix-runtime-error-for-compare-property
+
 
 const TIME_SLOTS = (() => {
   const slots = [];
@@ -435,7 +435,8 @@ export default function HomeScreen({ navigation }) {
                   onSelectDate={(dateString) => setSelectedDate(dateString)}
                   bookedSlots={bookedSlots}
                   totalSlotsPerDay={TIME_SLOTS.length}
-=======
+                />
+
                 <Calendar
                   minDate={todayString}
                   markedDates={markedDates}
@@ -452,7 +453,6 @@ export default function HomeScreen({ navigation }) {
                     textMonthFontWeight: '600',
                     textDayHeaderFontWeight: '600',
                   }}
-
                 />
 
                 {selectedDate ? (
