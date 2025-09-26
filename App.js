@@ -57,6 +57,8 @@ import AccountBeherenScreen from './screens/AccountBeherenScreen';
 import SavedAdvicesScreen from './screens/SavedAdvicesScreen';
 import Toast from 'react-native-toast-message';
 
+
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {

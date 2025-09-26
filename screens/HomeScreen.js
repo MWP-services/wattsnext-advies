@@ -13,181 +13,31 @@ import {
   TextInput,
   Alert,
   ActivityIndicator,
-
 } from "react-native";
-
-} from 'react-native';
-import {
-  collection,
-  doc,
-  onSnapshot,
-  runTransaction,
-  serverTimestamp,
-} from 'firebase/firestore';
-
-import { auth, db } from '../firebaseConfig';
-import {
-  isEmailConfigured,
-  sendAppointmentEmails,
-} from '../support/email';
-import CalendarWidget from '../components/AppointmentCalendar';
-
-function toLocalDateKey(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
-
-const TIME_SLOTS = (() => {
-  const slots = [];
-  for (let hour = 9; hour <= 17; hour += 1) {
-    for (let minute = 0; minute < 60; minute += 30) {
-      if (hour === 17 && minute > 0) {
-        break;
-      }
-      slots.push(
-        `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`
-      );
-    }
-  }
-  return slots;
-})();
-
-const OFFICE_ADDRESS = 'Industrieweg 6, Stolwijk';
-
-function formatDateLabel(dateString) {
-  if (!dateString) {
-    return '';
-  }
-
-  try {
-    const formatter = new Intl.DateTimeFormat('nl-NL', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-    return formatter.format(new Date(`${dateString}T12:00:00`));
-  } catch (error) {
-    return dateString;
-  }
-}
-
-
-
-
-
-
-import { Calendar, LocaleConfig } from 'react-native-calendars';
-
-
-
-import {
-  collection,
-  doc,
-  onSnapshot,
-  runTransaction,
-  serverTimestamp,
-
-} from "firebase/firestore";
 
 import { auth, db } from "../firebaseConfig";
 import { isEmailConfigured, sendAppointmentEmails } from "../support/email";
-import AppointmentCalendar from "../components/AppointmentCalendar";
+import AppointmentCalendar from "../components/AppointmentCalendar"; // <— FIX: juiste import/naam
+
+import { LocaleConfig } from "react-native-calendars"; // <— FIX: verwijder ongebruikte Calendar import
+
+import {
+  collection,
+  doc,
+  onSnapshot,
+  runTransaction,
+  serverTimestamp,
+} from "firebase/firestore"; // <— FIX: verwijder ongebruikte getDoc/setDoc
 
 function toLocalDateKey(date) {
-  const localDate = new Date(date);
-  localDate.setHours(0, 0, 0, 0);
-  const year = localDate.getFullYear();
-  const month = String(localDate.getMonth() + 1).padStart(2, "0");
-  const day = String(localDate.getDate()).padStart(2, "0");
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
 
-  setDoc,
-} from 'firebase/firestore';
-
-import { auth, db } from '../firebaseConfig';
-import {
-  isEmailConfigured,
-  sendAppointmentEmails,
-} from '../support/email';
-
-import AppointmentCalendar from '../components/AppointmentCalendar';
-
-
-import AppointmentCalendar from '../components/AppointmentCalendar';
-
-
-LocaleConfig.locales.nl = {
-  monthNames: [
-    'januari',
-    'februari',
-    'maart',
-    'april',
-    'mei',
-    'juni',
-    'juli',
-    'augustus',
-    'september',
-    'oktober',
-    'november',
-    'december',
-  ],
-  monthNamesShort: [
-    'jan',
-    'feb',
-    'mrt',
-    'apr',
-    'mei',
-    'jun',
-    'jul',
-    'aug',
-    'sep',
-    'okt',
-    'nov',
-    'dec',
-  ],
-  dayNames: [
-    'zondag',
-    'maandag',
-    'dinsdag',
-    'woensdag',
-    'donderdag',
-    'vrijdag',
-    'zaterdag',
-  ],
-  dayNamesShort: ['zo', 'ma', 'di', 'wo', 'do', 'vr', 'za'],
-  today: 'Vandaag',
-};
-LocaleConfig.defaultLocale = 'nl';
-
-
-
-
-const TIME_SLOTS = (() => {
-  const slots = [];
-  for (let hour = 9; hour <= 17; hour += 1) {
-    for (let minute = 0; minute < 60; minute += 30) {
-      if (hour === 17 && minute > 0) {
-        break;
-      }
-      slots.push(
-        `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`,
-      );
-    }
-  }
-  return slots;
-})();
-
-const OFFICE_ADDRESS = "Industrieweg 6, Stolwijk";
-
 function formatDateLabel(dateString) {
-  if (!dateString) {
-    return "";
-  }
-
+  if (!dateString) return "";
   try {
     const formatter = new Intl.DateTimeFormat("nl-NL", {
       weekday: "long",
@@ -196,12 +46,68 @@ function formatDateLabel(dateString) {
       day: "numeric",
     });
     return formatter.format(new Date(`${dateString}T12:00:00`));
-  } catch (error) {
+  } catch (_e) {
     return dateString;
   }
 }
 
+// Locale NL voor react-native-calendars
+LocaleConfig.locales.nl = {
+  monthNames: [
+    "januari",
+    "februari",
+    "maart",
+    "april",
+    "mei",
+    "juni",
+    "juli",
+    "augustus",
+    "september",
+    "oktober",
+    "november",
+    "december",
+  ],
+  monthNamesShort: [
+    "jan",
+    "feb",
+    "mrt",
+    "apr",
+    "mei",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "okt",
+    "nov",
+  ],
+  dayNames: [
+    "zondag",
+    "maandag",
+    "dinsdag",
+    "woensdag",
+    "donderdag",
+    "vrijdag",
+    "zaterdag",
+  ],
+  dayNamesShort: ["zo", "ma", "di", "wo", "do", "vr", "za"],
+  today: "Vandaag",
+};
+LocaleConfig.defaultLocale = "nl";
 
+const TIME_SLOTS = (() => {
+  const slots = [];
+  for (let hour = 9; hour <= 17; hour += 1) {
+    for (let minute = 0; minute < 60; minute += 30) {
+      if (hour === 17 && minute > 0) break;
+      slots.push(
+        `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`
+      );
+    }
+  }
+  return slots;
+})();
+
+const OFFICE_ADDRESS = "Industrieweg 6, Stolwijk";
 
 export default function HomeScreen({ navigation }) {
   const { width } = useWindowDimensions();
@@ -213,45 +119,26 @@ export default function HomeScreen({ navigation }) {
   const [locationType, setLocationType] = useState("office");
   const [customAddress, setCustomAddress] = useState("");
   const [contactName, setContactName] = useState(
-    auth.currentUser?.displayName || "",
+    auth.currentUser?.displayName || ""
   );
-
-
-
-
-
-  const todayString = useMemo(() => today.toISOString().split('T')[0], [today]);
-
-
-
-
-  const [selectedDate, setSelectedDate] = useState('');
-  const [selectedTime, setSelectedTime] = useState('');
-  const [locationType, setLocationType] = useState('office');
-  const [customAddress, setCustomAddress] = useState('');
-  const [contactName, setContactName] = useState(auth.currentUser?.displayName || '');
 
   const [bookedSlots, setBookedSlots] = useState({});
   const [loadingSlots, setLoadingSlots] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const userEmail = auth.currentUser?.email || "";
 
+  // Realtime beschikbaarheid inladen
   useEffect(() => {
     const appointmentsRef = collection(db, "appointments");
+
     const unsubscribe = onSnapshot(
       appointmentsRef,
       (snapshot) => {
         const nextSlots = {};
-
         snapshot.forEach((docSnap) => {
           const data = docSnap.data();
-          if (!data?.date || !data?.time) {
-            return;
-          }
-
-          if (!nextSlots[data.date]) {
-            nextSlots[data.date] = new Set();
-          }
+          if (!data?.date || !data?.time) return;
+          if (!nextSlots[data.date]) nextSlots[data.date] = new Set();
           nextSlots[data.date].add(data.time);
         });
 
@@ -259,7 +146,7 @@ export default function HomeScreen({ navigation }) {
           Object.entries(nextSlots).map(([date, value]) => [
             date,
             Array.from(value).sort(),
-          ]),
+          ])
         );
 
         setBookedSlots(formatted);
@@ -269,92 +156,37 @@ export default function HomeScreen({ navigation }) {
         console.error("Fout bij het ophalen van afspraken", error);
         setBookedSlots({});
         setLoadingSlots(false);
-      },
+      }
     );
 
     return unsubscribe;
   }, []);
 
+  // reset tijd bij datumwissel
   useEffect(() => {
     setSelectedTime("");
   }, [selectedDate]);
 
   const availableTimes = useMemo(() => {
-    if (!selectedDate) {
-      return [];
-    }
-
+    if (!selectedDate) return [];
     const bookedForDay = bookedSlots[selectedDate] || [];
     const now = new Date();
 
     return TIME_SLOTS.filter((slot) => {
-      if (bookedForDay.includes(slot)) {
-        return false;
-      }
+      if (bookedForDay.includes(slot)) return false;
 
       if (selectedDate === todayString) {
         const [hour, minute] = slot.split(":").map(Number);
         const slotDate = new Date();
         slotDate.setHours(hour, minute, 0, 0);
-        if (slotDate <= now) {
-          return false;
-        }
+        if (slotDate <= now) return false;
       }
 
       return true;
     });
   }, [bookedSlots, selectedDate, todayString]);
 
-
   const locationLabel = locationType === "home" ? "Thuis" : "Bij WattsNext";
-
-
-
-
-
-
-
-  const markedDates = useMemo(() => {
-    const marks = {};
-
-    Object.entries(bookedSlots).forEach(([date, times]) => {
-      const fullyBooked = times.length >= TIME_SLOTS.length;
-      if (fullyBooked) {
-        marks[date] = {
-          disabled: true,
-          disableTouchEvent: true,
-          marked: true,
-          dotColor: '#d9534f',
-        };
-      } else {
-        marks[date] = {
-          ...(marks[date] || {}),
-          marked: true,
-          dotColor: '#1f6f34',
-        };
-      }
-    });
-
-    if (selectedDate) {
-      marks[selectedDate] = {
-        ...(marks[selectedDate] || {}),
-        selected: true,
-        selectedColor: '#f7941e',
-        selectedTextColor: '#fff',
-      };
-    }
-
-    return marks;
-  }, [bookedSlots, selectedDate]);
-
-
-
-
-
-
-
-  const locationLabel = locationType === 'home' ? 'Thuis' : 'Bij WattsNext';
-
   const appointmentAddress =
     locationType === "home" && customAddress.trim()
       ? customAddress.trim()
@@ -368,23 +200,18 @@ export default function HomeScreen({ navigation }) {
         selectedTime &&
         contactName.trim() &&
         userEmail &&
-        (locationType === "office" || customAddress.trim()),
+        (locationType === "office" || customAddress.trim())
     ) && !submitting;
 
   const handleSubmitAppointment = async () => {
-    if (!canSubmit) {
-      return;
-    }
+    if (!canSubmit) return;
 
     const trimmedName = contactName.trim();
     const trimmedAddress =
       locationType === "home" ? customAddress.trim() : OFFICE_ADDRESS;
 
     if (locationType === "home" && !trimmedAddress) {
-      Alert.alert(
-        "Adres ontbreekt",
-        "Voer een adres in voor de afspraak thuis.",
-      );
+      Alert.alert("Adres ontbreekt", "Voer een adres in voor de afspraak thuis.");
       return;
     }
 
@@ -392,16 +219,14 @@ export default function HomeScreen({ navigation }) {
     const appointmentRef = doc(db, "appointments", slotId);
 
     setSubmitting(true);
-
     try {
-
-      await runTransaction(db, async (transaction) => {
-        const existing = await transaction.get(appointmentRef);
-        if (existing.exists()) {
+      // Atomisch reserveren via transactie
+      await runTransaction(db, async (tx) => {
+        const snap = await tx.get(appointmentRef);
+        if (snap.exists()) {
           throw new Error("slot-taken");
         }
-
-        transaction.set(appointmentRef, {
+        tx.set(appointmentRef, {
           date: selectedDate,
           time: selectedTime,
           location: locationType,
@@ -410,56 +235,9 @@ export default function HomeScreen({ navigation }) {
           contactEmail: userEmail,
           createdAt: serverTimestamp(),
         });
-
-
-
-
-
-
-
-
-      await runTransaction(db, async (transaction) => {
-        const snapshot = await transaction.get(appointmentRef);
-        if (snapshot.exists()) {
-          throw new Error('slot-unavailable');
-        }
-
-        transaction.set(appointmentRef, {
-          date: selectedDate,
-          time: selectedTime,
-          location: locationType,
-          address: trimmedAddress,
-          contactName: trimmedName,
-          contactEmail: userEmail,
-          createdAt: serverTimestamp(),
-        });
-
-
-
-
-      const existing = await getDoc(appointmentRef);
-      if (existing.exists()) {
-        Alert.alert(
-          'Tijdslot niet beschikbaar',
-          'Dit tijdslot is zojuist geboekt. Kies een andere tijd.'
-        );
-        return;
-      }
-
-      await setDoc(appointmentRef, {
-        date: selectedDate,
-        time: selectedTime,
-        location: locationType,
-        address: trimmedAddress,
-        contactName: trimmedName,
-        contactEmail: userEmail,
-        createdAt: serverTimestamp(),
-
-
-
-
       });
 
+      // E-mails buiten de transactie
       const emailResult = await sendAppointmentEmails({
         clientEmail: userEmail,
         clientName: trimmedName,
@@ -477,56 +255,28 @@ export default function HomeScreen({ navigation }) {
       } else {
         Alert.alert(
           "Afspraak ingepland",
-          "Je ontvangt zo een bevestiging in de mail. WattsNext wordt ook op de hoogte gebracht.",
+          "Je ontvangt zo een bevestiging in de mail. WattsNext wordt ook op de hoogte gebracht."
         );
       }
 
+      // Form reset
       setSelectedDate("");
       setSelectedTime("");
       setCustomAddress("");
       setLocationType("office");
     } catch (error) {
-
       if (error?.message === "slot-taken") {
         Alert.alert(
           "Tijdslot niet beschikbaar",
-          "Dit tijdslot is zojuist geboekt. Kies een andere tijd.",
+          "Dit tijdslot is zojuist geboekt. Kies een andere tijd."
         );
       } else {
         console.error("Fout bij het plannen van een afspraak", error);
         Alert.alert(
           "Er ging iets mis",
-          "Het is niet gelukt om de afspraak te plannen. Probeer het later opnieuw.",
+          "Het is niet gelukt om de afspraak te plannen. Probeer het later opnieuw."
         );
       }
-
-      if (error?.message === 'slot-unavailable') {
-        Alert.alert(
-          'Tijdslot niet beschikbaar',
-          'Dit tijdslot is zojuist geboekt. Kies een andere tijd.'
-        );
-      } else {
-        console.error('Fout bij het plannen van een afspraak', error);
-        Alert.alert(
-          'Er ging iets mis',
-          'Het is niet gelukt om de afspraak te plannen. Probeer het later opnieuw.'
-        );
-      }
-
-
-
-
-
-      console.error('Fout bij het plannen van een afspraak', error);
-      Alert.alert(
-        'Er ging iets mis',
-        'Het is niet gelukt om de afspraak te plannen. Probeer het later opnieuw.'
-      );
-
-
-
-
-
     } finally {
       setSubmitting(false);
     }
@@ -593,12 +343,9 @@ export default function HomeScreen({ navigation }) {
             {/* Spacing */}
             <View style={{ height: 16 }} />
 
-            {/* NIEUW: Account beheren */}
+            {/* Account beheren */}
             <TouchableOpacity
-              style={[
-                styles.secondaryButton,
-                { width: width > 768 ? 300 : "80%" },
-              ]}
+              style={[styles.secondaryButton, { width: width > 768 ? 300 : "80%" }]}
               onPress={() => navigation.navigate("AccountBeheren")}
               accessibilityRole="button"
               accessibilityLabel="Account beheren"
@@ -616,10 +363,7 @@ export default function HomeScreen({ navigation }) {
             <View style={{ height: 16 }} />
 
             <TouchableOpacity
-              style={[
-                styles.secondaryButton,
-                { width: width > 768 ? 300 : "80%" },
-              ]}
+              style={[styles.secondaryButton, { width: width > 768 ? 300 : "80%" }]}
               onPress={() => navigation.navigate("SavedAdvices")}
               accessibilityRole="button"
               accessibilityLabel="Bekijk opgeslagen adviezen"
@@ -636,16 +380,12 @@ export default function HomeScreen({ navigation }) {
           </View>
 
           <View
-            style={[
-              styles.schedulerCard,
-              { width: width > 992 ? "70%" : "100%" },
-            ]}
+            style={[styles.schedulerCard, { width: width > 992 ? "70%" : "100%" }]}
           >
             <Text style={styles.schedulerTitle}>Plan direct een afspraak</Text>
             <Text style={styles.schedulerSubtitle}>
               Kies een datum, selecteer een tijd tussen 09:00 en 17:00 en geef
-              aan of we bij jou langskomen of dat je liever op kantoor
-              afspreekt.
+              aan of we bij jou langskomen of dat je liever op kantoor afspreekt.
             </Text>
 
             {loadingSlots ? (
@@ -655,72 +395,20 @@ export default function HomeScreen({ navigation }) {
               </View>
             ) : (
               <>
-
-
-
-                <CalendarWidget
-
-
-                <CalendarWidget
-
-
-                <CalendarWidget
-
-
-                <CalendarWidget
-
-
-                <CalendarWidget
-
-
-
                 <AppointmentCalendar
-
-
-
-
                   today={today}
                   selectedDate={selectedDate}
                   onSelectDate={(dateString) => setSelectedDate(dateString)}
                   bookedSlots={bookedSlots}
                   totalSlotsPerDay={TIME_SLOTS.length}
-
-
                 />
-
-
-
-
-
-
-                <Calendar
-                  minDate={todayString}
-                  markedDates={markedDates}
-                  onDayPress={(day) => setSelectedDate(day.dateString)}
-                  enableSwipeMonths
-                  theme={{
-                    todayTextColor: '#f7941e',
-                    arrowColor: '#f7941e',
-                    textDayFontFamily: Platform.select({
-                      ios: 'System',
-                      android: 'Roboto',
-                      default: 'sans-serif',
-                    }),
-                    textMonthFontWeight: '600',
-                    textDayHeaderFontWeight: '600',
-                  }}
-
-                />
-
-
 
                 {selectedDate ? (
                   <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Beschikbare tijden</Text>
                     {availableTimes.length === 0 ? (
                       <Text style={styles.emptyMessage}>
-                        Alle tijdsloten zijn bezet op deze dag. Kies een andere
-                        datum.
+                        Alle tijdsloten zijn bezet op deze dag. Kies een andere datum.
                       </Text>
                     ) : (
                       <View style={styles.timeGrid}>
@@ -753,8 +441,7 @@ export default function HomeScreen({ navigation }) {
                   </View>
                 ) : (
                   <Text style={styles.emptyMessage}>
-                    Selecteer eerst een datum in de kalender om beschikbare
-                    tijden te zien.
+                    Selecteer eerst een datum in de kalender om beschikbare tijden te zien.
                   </Text>
                 )}
 
@@ -764,16 +451,14 @@ export default function HomeScreen({ navigation }) {
                     <TouchableOpacity
                       style={[
                         styles.locationButton,
-                        locationType === "office" &&
-                          styles.locationButtonActive,
+                        locationType === "office" && styles.locationButtonActive,
                       ]}
                       onPress={() => setLocationType("office")}
                     >
                       <Text
                         style={[
                           styles.locationButtonText,
-                          locationType === "office" &&
-                            styles.locationButtonTextActive,
+                          locationType === "office" && styles.locationButtonTextActive,
                         ]}
                       >
                         WattsNext kantoor
@@ -789,8 +474,7 @@ export default function HomeScreen({ navigation }) {
                       <Text
                         style={[
                           styles.locationButtonText,
-                          locationType === "home" &&
-                            styles.locationButtonTextActive,
+                          locationType === "home" && styles.locationButtonTextActive,
                         ]}
                       >
                         Afspraak thuis
@@ -829,8 +513,8 @@ export default function HomeScreen({ navigation }) {
                   </Text>
                   {!userEmail && (
                     <Text style={styles.warningText}>
-                      We konden geen e-mailadres vinden. Log opnieuw in om een
-                      afspraak te kunnen plannen.
+                      We konden geen e-mailadres vinden. Log opnieuw in om een afspraak
+                      te kunnen plannen.
                     </Text>
                   )}
                 </View>
@@ -855,9 +539,7 @@ export default function HomeScreen({ navigation }) {
                   </Text>
                   <Text style={styles.summaryRow}>
                     <Text style={styles.summaryLabel}>Adres:</Text>{" "}
-                    <Text style={styles.summaryValue}>
-                      {appointmentAddress}
-                    </Text>
+                    <Text style={styles.summaryValue}>{appointmentAddress}</Text>
                   </Text>
                 </View>
 
@@ -874,9 +556,7 @@ export default function HomeScreen({ navigation }) {
                   {submitting ? (
                     <ActivityIndicator color="#fff" />
                   ) : (
-                    <Text style={styles.submitButtonText}>
-                      Afspraak bevestigen
-                    </Text>
+                    <Text style={styles.submitButtonText}>Afspraak bevestigen</Text>
                   )}
                 </TouchableOpacity>
               </>
@@ -899,7 +579,6 @@ const styles = StyleSheet.create({
     left: 0,
     width: "100%",
     height: "100%",
-    // Op web liever 'contain' om uitrekken te voorkomen, native 'cover' voor full-bleed
     resizeMode: Platform.OS === "web" ? "contain" : "cover",
     zIndex: -1,
   },
