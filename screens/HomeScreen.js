@@ -75,6 +75,7 @@ function formatDateLabel(dateString) {
 
 
 
+
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 
 
@@ -181,11 +182,11 @@ function formatDateLabel(dateString) {
 
 
 
-
 export default function HomeScreen({ navigation }) {
   const { width } = useWindowDimensions();
   const today = useMemo(() => new Date(), []);
   const todayString = useMemo(() => toLocalDateKey(today), [today]);
+
 
 
 
@@ -317,6 +318,7 @@ export default function HomeScreen({ navigation }) {
 
 
 
+
   const locationLabel = locationType === 'home' ? 'Thuis' : 'Bij WattsNext';
   const appointmentAddress =
     locationType === 'home' && customAddress.trim()
@@ -360,6 +362,7 @@ export default function HomeScreen({ navigation }) {
 
 
 
+
       await runTransaction(db, async (transaction) => {
         const snapshot = await transaction.get(appointmentRef);
         if (snapshot.exists()) {
@@ -375,6 +378,7 @@ export default function HomeScreen({ navigation }) {
           contactEmail: userEmail,
           createdAt: serverTimestamp(),
         });
+
 
 
 
@@ -442,11 +446,14 @@ export default function HomeScreen({ navigation }) {
 
 
 
+
+
       console.error('Fout bij het plannen van een afspraak', error);
       Alert.alert(
         'Er ging iets mis',
         'Het is niet gelukt om de afspraak te plannen. Probeer het later opnieuw.'
       );
+
 
 
 
@@ -557,6 +564,9 @@ export default function HomeScreen({ navigation }) {
               </View>
             ) : (
               <>
+
+                <CalendarWidget
+
 
                 <CalendarWidget
 

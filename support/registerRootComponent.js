@@ -1,4 +1,8 @@
 
+const ReactNative = require('react-native');
+const { Platform } = ReactNative;
+
+
 const { AppRegistry, Platform } = require('react-native');
 
 
@@ -15,6 +19,8 @@ const primaryAppName =
 
 
 
+
+
 import { AppRegistry, Platform } from 'react-native';
 import appConfig from '../app.json';
 
@@ -27,9 +33,11 @@ const appName =
 
 
 
+
   (appConfig && typeof appConfig === 'object' && appConfig.expo?.name) ||
   appConfig?.name ||
   'main';
+
 
 
 const APP_REGISTRATION_NAMES = Array.from(
@@ -37,6 +45,10 @@ const APP_REGISTRATION_NAMES = Array.from(
 );
 
 function registerRootComponent(Component) {
+
+  APP_REGISTRATION_NAMES.forEach((name) => {
+    ReactNative.AppRegistry.registerComponent(name, () => Component);
+
 
 
 const APP_REGISTRATION_NAMES = Array.from(
@@ -58,12 +70,19 @@ export default function registerRootComponent(Component) {
 
   APP_REGISTRATION_NAMES.forEach((name) => {
     AppRegistry.registerComponent(name, () => Component);
+
   });
 
   if (Platform.OS === 'web' && typeof document !== 'undefined') {
     const rootTag =
       document.getElementById('root') ||
       document.getElementById('main') ||
+
+      document.getElementById(primaryAppName);
+
+    if (rootTag) {
+      ReactNative.AppRegistry.runApplication(APP_REGISTRATION_NAMES[0], {
+
 
       document.getElementById(primaryAppName);
 
@@ -82,11 +101,16 @@ export default function registerRootComponent(Component) {
 
     if (rootTag) {
       AppRegistry.runApplication(APP_REGISTRATION_NAMES[0], {
+
         rootTag,
       });
     }
   }
 }
+
+
+module.exports = registerRootComponent;
+module.exports.default = registerRootComponent;
 
 
 module.exports = registerRootComponent;
