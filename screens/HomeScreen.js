@@ -13,13 +13,83 @@ import {
   TextInput,
   Alert,
   ActivityIndicator,
+
 } from "react-native";
+
+} from 'react-native';
 import {
   collection,
   doc,
   onSnapshot,
   runTransaction,
   serverTimestamp,
+} from 'firebase/firestore';
+
+import { auth, db } from '../firebaseConfig';
+import {
+  isEmailConfigured,
+  sendAppointmentEmails,
+} from '../support/email';
+import CalendarWidget from '../components/AppointmentCalendar';
+
+function toLocalDateKey(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+const TIME_SLOTS = (() => {
+  const slots = [];
+  for (let hour = 9; hour <= 17; hour += 1) {
+    for (let minute = 0; minute < 60; minute += 30) {
+      if (hour === 17 && minute > 0) {
+        break;
+      }
+      slots.push(
+        `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`
+      );
+    }
+  }
+  return slots;
+})();
+
+const OFFICE_ADDRESS = 'Industrieweg 6, Stolwijk';
+
+function formatDateLabel(dateString) {
+  if (!dateString) {
+    return '';
+  }
+
+  try {
+    const formatter = new Intl.DateTimeFormat('nl-NL', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+    return formatter.format(new Date(`${dateString}T12:00:00`));
+  } catch (error) {
+    return dateString;
+  }
+}
+
+
+
+
+
+
+import { Calendar, LocaleConfig } from 'react-native-calendars';
+
+
+
+import {
+  collection,
+  doc,
+  onSnapshot,
+  runTransaction,
+  serverTimestamp,
+
 } from "firebase/firestore";
 
 import { auth, db } from "../firebaseConfig";
@@ -34,6 +104,67 @@ function toLocalDateKey(date) {
   const day = String(localDate.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
+
+  setDoc,
+} from 'firebase/firestore';
+
+import { auth, db } from '../firebaseConfig';
+import {
+  isEmailConfigured,
+  sendAppointmentEmails,
+} from '../support/email';
+
+import AppointmentCalendar from '../components/AppointmentCalendar';
+
+
+import AppointmentCalendar from '../components/AppointmentCalendar';
+
+
+LocaleConfig.locales.nl = {
+  monthNames: [
+    'januari',
+    'februari',
+    'maart',
+    'april',
+    'mei',
+    'juni',
+    'juli',
+    'augustus',
+    'september',
+    'oktober',
+    'november',
+    'december',
+  ],
+  monthNamesShort: [
+    'jan',
+    'feb',
+    'mrt',
+    'apr',
+    'mei',
+    'jun',
+    'jul',
+    'aug',
+    'sep',
+    'okt',
+    'nov',
+    'dec',
+  ],
+  dayNames: [
+    'zondag',
+    'maandag',
+    'dinsdag',
+    'woensdag',
+    'donderdag',
+    'vrijdag',
+    'zaterdag',
+  ],
+  dayNamesShort: ['zo', 'ma', 'di', 'wo', 'do', 'vr', 'za'],
+  today: 'Vandaag',
+};
+LocaleConfig.defaultLocale = 'nl';
+
+
+
 
 const TIME_SLOTS = (() => {
   const slots = [];
@@ -70,10 +201,13 @@ function formatDateLabel(dateString) {
   }
 }
 
+
+
 export default function HomeScreen({ navigation }) {
   const { width } = useWindowDimensions();
   const today = useMemo(() => new Date(), []);
   const todayString = useMemo(() => toLocalDateKey(today), [today]);
+
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [locationType, setLocationType] = useState("office");
@@ -81,6 +215,22 @@ export default function HomeScreen({ navigation }) {
   const [contactName, setContactName] = useState(
     auth.currentUser?.displayName || "",
   );
+
+
+
+
+
+  const todayString = useMemo(() => today.toISOString().split('T')[0], [today]);
+
+
+
+
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedTime, setSelectedTime] = useState('');
+  const [locationType, setLocationType] = useState('office');
+  const [customAddress, setCustomAddress] = useState('');
+  const [contactName, setContactName] = useState(auth.currentUser?.displayName || '');
+
   const [bookedSlots, setBookedSlots] = useState({});
   const [loadingSlots, setLoadingSlots] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -155,7 +305,56 @@ export default function HomeScreen({ navigation }) {
     });
   }, [bookedSlots, selectedDate, todayString]);
 
+
   const locationLabel = locationType === "home" ? "Thuis" : "Bij WattsNext";
+
+
+
+
+
+
+
+  const markedDates = useMemo(() => {
+    const marks = {};
+
+    Object.entries(bookedSlots).forEach(([date, times]) => {
+      const fullyBooked = times.length >= TIME_SLOTS.length;
+      if (fullyBooked) {
+        marks[date] = {
+          disabled: true,
+          disableTouchEvent: true,
+          marked: true,
+          dotColor: '#d9534f',
+        };
+      } else {
+        marks[date] = {
+          ...(marks[date] || {}),
+          marked: true,
+          dotColor: '#1f6f34',
+        };
+      }
+    });
+
+    if (selectedDate) {
+      marks[selectedDate] = {
+        ...(marks[selectedDate] || {}),
+        selected: true,
+        selectedColor: '#f7941e',
+        selectedTextColor: '#fff',
+      };
+    }
+
+    return marks;
+  }, [bookedSlots, selectedDate]);
+
+
+
+
+
+
+
+  const locationLabel = locationType === 'home' ? 'Thuis' : 'Bij WattsNext';
+
   const appointmentAddress =
     locationType === "home" && customAddress.trim()
       ? customAddress.trim()
@@ -195,6 +394,7 @@ export default function HomeScreen({ navigation }) {
     setSubmitting(true);
 
     try {
+
       await runTransaction(db, async (transaction) => {
         const existing = await transaction.get(appointmentRef);
         if (existing.exists()) {
@@ -210,6 +410,54 @@ export default function HomeScreen({ navigation }) {
           contactEmail: userEmail,
           createdAt: serverTimestamp(),
         });
+
+
+
+
+
+
+
+
+      await runTransaction(db, async (transaction) => {
+        const snapshot = await transaction.get(appointmentRef);
+        if (snapshot.exists()) {
+          throw new Error('slot-unavailable');
+        }
+
+        transaction.set(appointmentRef, {
+          date: selectedDate,
+          time: selectedTime,
+          location: locationType,
+          address: trimmedAddress,
+          contactName: trimmedName,
+          contactEmail: userEmail,
+          createdAt: serverTimestamp(),
+        });
+
+
+
+
+      const existing = await getDoc(appointmentRef);
+      if (existing.exists()) {
+        Alert.alert(
+          'Tijdslot niet beschikbaar',
+          'Dit tijdslot is zojuist geboekt. Kies een andere tijd.'
+        );
+        return;
+      }
+
+      await setDoc(appointmentRef, {
+        date: selectedDate,
+        time: selectedTime,
+        location: locationType,
+        address: trimmedAddress,
+        contactName: trimmedName,
+        contactEmail: userEmail,
+        createdAt: serverTimestamp(),
+
+
+
+
       });
 
       const emailResult = await sendAppointmentEmails({
@@ -238,6 +486,7 @@ export default function HomeScreen({ navigation }) {
       setCustomAddress("");
       setLocationType("office");
     } catch (error) {
+
       if (error?.message === "slot-taken") {
         Alert.alert(
           "Tijdslot niet beschikbaar",
@@ -250,6 +499,34 @@ export default function HomeScreen({ navigation }) {
           "Het is niet gelukt om de afspraak te plannen. Probeer het later opnieuw.",
         );
       }
+
+      if (error?.message === 'slot-unavailable') {
+        Alert.alert(
+          'Tijdslot niet beschikbaar',
+          'Dit tijdslot is zojuist geboekt. Kies een andere tijd.'
+        );
+      } else {
+        console.error('Fout bij het plannen van een afspraak', error);
+        Alert.alert(
+          'Er ging iets mis',
+          'Het is niet gelukt om de afspraak te plannen. Probeer het later opnieuw.'
+        );
+      }
+
+
+
+
+
+      console.error('Fout bij het plannen van een afspraak', error);
+      Alert.alert(
+        'Er ging iets mis',
+        'Het is niet gelukt om de afspraak te plannen. Probeer het later opnieuw.'
+      );
+
+
+
+
+
     } finally {
       setSubmitting(false);
     }
@@ -378,13 +655,64 @@ export default function HomeScreen({ navigation }) {
               </View>
             ) : (
               <>
+
+
+
+                <CalendarWidget
+
+
+                <CalendarWidget
+
+
+                <CalendarWidget
+
+
+                <CalendarWidget
+
+
+                <CalendarWidget
+
+
+
                 <AppointmentCalendar
+
+
+
+
                   today={today}
                   selectedDate={selectedDate}
                   onSelectDate={(dateString) => setSelectedDate(dateString)}
                   bookedSlots={bookedSlots}
                   totalSlotsPerDay={TIME_SLOTS.length}
+
+
                 />
+
+
+
+
+
+
+                <Calendar
+                  minDate={todayString}
+                  markedDates={markedDates}
+                  onDayPress={(day) => setSelectedDate(day.dateString)}
+                  enableSwipeMonths
+                  theme={{
+                    todayTextColor: '#f7941e',
+                    arrowColor: '#f7941e',
+                    textDayFontFamily: Platform.select({
+                      ios: 'System',
+                      android: 'Roboto',
+                      default: 'sans-serif',
+                    }),
+                    textMonthFontWeight: '600',
+                    textDayHeaderFontWeight: '600',
+                  }}
+
+                />
+
+
 
                 {selectedDate ? (
                   <View style={styles.section}>
