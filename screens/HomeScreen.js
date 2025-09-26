@@ -14,9 +14,10 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-codex/add-interactive-appointment-calendar-to-homepage-cq2wdm
+
 
 import { Calendar, LocaleConfig } from 'react-native-calendars';
+
 
 import {
   collection,
@@ -32,7 +33,10 @@ import {
   isEmailConfigured,
   sendAppointmentEmails,
 } from '../support/email';
-codex/add-interactive-appointment-calendar-to-homepage-cq2wdm
+
+import AppointmentCalendar from '../components/AppointmentCalendar';
+
+
 import AppointmentCalendar from '../components/AppointmentCalendar';
 
 
@@ -78,6 +82,7 @@ LocaleConfig.locales.nl = {
   today: 'Vandaag',
 };
 LocaleConfig.defaultLocale = 'nl';
+
 
 
 const TIME_SLOTS = (() => {
@@ -198,7 +203,7 @@ export default function HomeScreen({ navigation }) {
     });
   }, [bookedSlots, selectedDate, todayString]);
 
- codex/add-interactive-appointment-calendar-to-homepage-cq2wdm
+
 
   const markedDates = useMemo(() => {
     const marks = {};
@@ -232,6 +237,7 @@ export default function HomeScreen({ navigation }) {
 
     return marks;
   }, [bookedSlots, selectedDate]);
+
 
   const locationLabel = locationType === 'home' ? 'Thuis' : 'Bij WattsNext';
   const appointmentAddress =
