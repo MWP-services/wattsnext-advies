@@ -1,22 +1,5 @@
 // Global polyfills used before the app boots
 
-// Sommige omgevingen (zoals de Expo Go app) verwachten dat er een globale
-// `codex` referentie bestaat. Wanneer die ontbreekt, gooit Hermes een
-// `ReferenceError: Property 'codex' doesn't exist` voordat de app kan
-// registreren. Definieer een no-op placeholder zodat het laden niet stukloopt.
-if (typeof globalThis.codex === 'undefined') {
-  globalThis.codex = {};
-}
-
-// Zorg er ook voor dat er een globale variabele `codex` bestaat in de
-// JavaScript-runtime. Het gebruik van `var` bindt de naam aan de globale scope
-// zonder bestaande implementaties te overschrijven.
-// eslint-disable-next-line no-var
-if (typeof codex === 'undefined') {
-  // eslint-disable-next-line no-var
-  var codex = globalThis.codex;
-}
-
 // Some dependencies (e.g. Firebase on Hermes) try to call a global `Compare`
 // helper. Hermes does not expose this function, so provide a minimal
 // implementation that mirrors the behaviour of `Intl.Collator#compare`.
