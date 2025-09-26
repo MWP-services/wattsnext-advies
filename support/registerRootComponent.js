@@ -1,4 +1,9 @@
 
+import { registerRootComponent } from "expo";
+import App from "../App";
+registerRootComponent(App);
+
+
 const ReactNative = require('react-native');
 const { Platform } = ReactNative;
 
