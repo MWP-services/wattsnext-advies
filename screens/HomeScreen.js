@@ -14,10 +14,10 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-
+codex/add-interactive-appointment-calendar-to-homepage-cq2wdm
 
 import { Calendar, LocaleConfig } from 'react-native-calendars';
-
+codex/fix-runtime-error-for-compare-property
 import {
   collection,
   doc,
@@ -32,9 +32,7 @@ import {
   isEmailConfigured,
   sendAppointmentEmails,
 } from '../support/email';
-
-import AppointmentCalendar from '../components/AppointmentCalendar';
-
+codex/add-interactive-appointment-calendar-to-homepage-cq2wdm
 import AppointmentCalendar from '../components/AppointmentCalendar';
 
 
@@ -80,6 +78,7 @@ LocaleConfig.locales.nl = {
   today: 'Vandaag',
 };
 LocaleConfig.defaultLocale = 'nl';
+codex/fix-runtime-error-for-compare-property
 
 const TIME_SLOTS = (() => {
   const slots = [];
@@ -199,7 +198,7 @@ export default function HomeScreen({ navigation }) {
     });
   }, [bookedSlots, selectedDate, todayString]);
 
-
+ codex/add-interactive-appointment-calendar-to-homepage-cq2wdm
 
   const markedDates = useMemo(() => {
     const marks = {};
@@ -233,7 +232,6 @@ export default function HomeScreen({ navigation }) {
 
     return marks;
   }, [bookedSlots, selectedDate]);
-
 
   const locationLabel = locationType === 'home' ? 'Thuis' : 'Bij WattsNext';
   const appointmentAddress =
@@ -436,7 +434,8 @@ export default function HomeScreen({ navigation }) {
                   selectedDate={selectedDate}
                   onSelectDate={(dateString) => setSelectedDate(dateString)}
                   bookedSlots={bookedSlots}
-
+                  totalSlotsPerDay={TIME_SLOTS.length}
+=======
                 <Calendar
                   minDate={todayString}
                   markedDates={markedDates}
@@ -453,7 +452,6 @@ export default function HomeScreen({ navigation }) {
                     textMonthFontWeight: '600',
                     textDayHeaderFontWeight: '600',
                   }}
-
 
                 />
 
