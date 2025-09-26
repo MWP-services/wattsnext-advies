@@ -181,6 +181,7 @@ function formatDateLabel(dateString) {
 
 
 
+
 export default function HomeScreen({ navigation }) {
   const { width } = useWindowDimensions();
   const today = useMemo(() => new Date(), []);
@@ -189,6 +190,7 @@ export default function HomeScreen({ navigation }) {
 
 
   const todayString = useMemo(() => today.toISOString().split('T')[0], [today]);
+
 
 
 
@@ -276,6 +278,7 @@ export default function HomeScreen({ navigation }) {
 
 
 
+
   const markedDates = useMemo(() => {
     const marks = {};
 
@@ -308,6 +311,7 @@ export default function HomeScreen({ navigation }) {
 
     return marks;
   }, [bookedSlots, selectedDate]);
+
 
 
 
@@ -354,6 +358,8 @@ export default function HomeScreen({ navigation }) {
 
 
 
+
+
       await runTransaction(db, async (transaction) => {
         const snapshot = await transaction.get(appointmentRef);
         if (snapshot.exists()) {
@@ -369,6 +375,7 @@ export default function HomeScreen({ navigation }) {
           contactEmail: userEmail,
           createdAt: serverTimestamp(),
         });
+
 
 
       const existing = await getDoc(appointmentRef);
@@ -388,6 +395,7 @@ export default function HomeScreen({ navigation }) {
         contactName: trimmedName,
         contactEmail: userEmail,
         createdAt: serverTimestamp(),
+
 
 
       });
@@ -559,7 +567,11 @@ export default function HomeScreen({ navigation }) {
                 <CalendarWidget
 
 
+                <CalendarWidget
+
+
                 <AppointmentCalendar
+
 
 
 
@@ -569,6 +581,7 @@ export default function HomeScreen({ navigation }) {
                   bookedSlots={bookedSlots}
                   totalSlotsPerDay={TIME_SLOTS.length}
                 />
+
 
 
 
