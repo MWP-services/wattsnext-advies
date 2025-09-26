@@ -73,6 +73,8 @@ function formatDateLabel(dateString) {
 
 
 
+
+
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 
 
@@ -178,13 +180,16 @@ function formatDateLabel(dateString) {
 }
 
 
+
 export default function HomeScreen({ navigation }) {
   const { width } = useWindowDimensions();
   const today = useMemo(() => new Date(), []);
   const todayString = useMemo(() => toLocalDateKey(today), [today]);
 
 
+
   const todayString = useMemo(() => today.toISOString().split('T')[0], [today]);
+
 
 
   const [selectedDate, setSelectedDate] = useState('');
@@ -270,6 +275,7 @@ export default function HomeScreen({ navigation }) {
 
 
 
+
   const markedDates = useMemo(() => {
     const marks = {};
 
@@ -302,6 +308,7 @@ export default function HomeScreen({ navigation }) {
 
     return marks;
   }, [bookedSlots, selectedDate]);
+
 
 
 
@@ -344,6 +351,9 @@ export default function HomeScreen({ navigation }) {
 
     try {
 
+
+
+
       await runTransaction(db, async (transaction) => {
         const snapshot = await transaction.get(appointmentRef);
         if (snapshot.exists()) {
@@ -359,6 +369,7 @@ export default function HomeScreen({ navigation }) {
           contactEmail: userEmail,
           createdAt: serverTimestamp(),
         });
+
 
       const existing = await getDoc(appointmentRef);
       if (existing.exists()) {
@@ -422,11 +433,13 @@ export default function HomeScreen({ navigation }) {
       }
 
 
+
       console.error('Fout bij het plannen van een afspraak', error);
       Alert.alert(
         'Er ging iets mis',
         'Het is niet gelukt om de afspraak te plannen. Probeer het later opnieuw.'
       );
+
 
 
     } finally {
@@ -543,7 +556,11 @@ export default function HomeScreen({ navigation }) {
                 <CalendarWidget
 
 
+                <CalendarWidget
+
+
                 <AppointmentCalendar
+
 
 
                   today={today}
@@ -552,6 +569,7 @@ export default function HomeScreen({ navigation }) {
                   bookedSlots={bookedSlots}
                   totalSlotsPerDay={TIME_SLOTS.length}
                 />
+
 
 
 
