@@ -14,6 +14,10 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
+codex/add-interactive-appointment-calendar-to-homepage-cq2wdm
+
+import { Calendar, LocaleConfig } from 'react-native-calendars';
+codex/fix-runtime-error-for-compare-property
 import {
   collection,
   doc,
@@ -28,7 +32,53 @@ import {
   isEmailConfigured,
   sendAppointmentEmails,
 } from '../support/email';
+codex/add-interactive-appointment-calendar-to-homepage-cq2wdm
 import AppointmentCalendar from '../components/AppointmentCalendar';
+
+
+LocaleConfig.locales.nl = {
+  monthNames: [
+    'januari',
+    'februari',
+    'maart',
+    'april',
+    'mei',
+    'juni',
+    'juli',
+    'augustus',
+    'september',
+    'oktober',
+    'november',
+    'december',
+  ],
+  monthNamesShort: [
+    'jan',
+    'feb',
+    'mrt',
+    'apr',
+    'mei',
+    'jun',
+    'jul',
+    'aug',
+    'sep',
+    'okt',
+    'nov',
+    'dec',
+  ],
+  dayNames: [
+    'zondag',
+    'maandag',
+    'dinsdag',
+    'woensdag',
+    'donderdag',
+    'vrijdag',
+    'zaterdag',
+  ],
+  dayNamesShort: ['zo', 'ma', 'di', 'wo', 'do', 'vr', 'za'],
+  today: 'Vandaag',
+};
+LocaleConfig.defaultLocale = 'nl';
+codex/fix-runtime-error-for-compare-property
 
 const TIME_SLOTS = (() => {
   const slots = [];
@@ -147,6 +197,41 @@ export default function HomeScreen({ navigation }) {
       return true;
     });
   }, [bookedSlots, selectedDate, todayString]);
+
+ codex/add-interactive-appointment-calendar-to-homepage-cq2wdm
+
+  const markedDates = useMemo(() => {
+    const marks = {};
+
+    Object.entries(bookedSlots).forEach(([date, times]) => {
+      const fullyBooked = times.length >= TIME_SLOTS.length;
+      if (fullyBooked) {
+        marks[date] = {
+          disabled: true,
+          disableTouchEvent: true,
+          marked: true,
+          dotColor: '#d9534f',
+        };
+      } else {
+        marks[date] = {
+          ...(marks[date] || {}),
+          marked: true,
+          dotColor: '#1f6f34',
+        };
+      }
+    });
+
+    if (selectedDate) {
+      marks[selectedDate] = {
+        ...(marks[selectedDate] || {}),
+        selected: true,
+        selectedColor: '#f7941e',
+        selectedTextColor: '#fff',
+      };
+    }
+
+    return marks;
+  }, [bookedSlots, selectedDate]);
 
   const locationLabel = locationType === 'home' ? 'Thuis' : 'Bij WattsNext';
   const appointmentAddress =
@@ -343,12 +428,31 @@ export default function HomeScreen({ navigation }) {
               </View>
             ) : (
               <>
+
                 <AppointmentCalendar
                   today={today}
                   selectedDate={selectedDate}
                   onSelectDate={(dateString) => setSelectedDate(dateString)}
                   bookedSlots={bookedSlots}
                   totalSlotsPerDay={TIME_SLOTS.length}
+=======
+                <Calendar
+                  minDate={todayString}
+                  markedDates={markedDates}
+                  onDayPress={(day) => setSelectedDate(day.dateString)}
+                  enableSwipeMonths
+                  theme={{
+                    todayTextColor: '#f7941e',
+                    arrowColor: '#f7941e',
+                    textDayFontFamily: Platform.select({
+                      ios: 'System',
+                      android: 'Roboto',
+                      default: 'sans-serif',
+                    }),
+                    textMonthFontWeight: '600',
+                    textDayHeaderFontWeight: '600',
+                  }}
+
                 />
 
                 {selectedDate ? (
