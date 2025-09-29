@@ -5,7 +5,6 @@ module.exports = function (api) {
     plugins: [
       // ...andere plugins
       'react-native-reanimated/plugin',
-      'react-native-worklets/plugin',
     ],
   };
 };
