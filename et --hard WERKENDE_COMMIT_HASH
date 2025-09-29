@@ -1,0 +1,77 @@
+[33m77eb378[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mcodex/fix-runtime-error-for-compare-property[m[33m, [m[1;31morigin/codex/fix-runtime-error-for-compare-property[m[33m)[m Merge pull request #25 from MWP-services/codex/fix-runtime-not-ready-error-on-npm-start-y6fsty
+[33m76f4351[m[33m ([m[1;31morigin/codex/fix-runtime-not-ready-error-on-npm-start-y6fsty[m[33m)[m Merge branch 'codex/fix-runtime-error-for-compare-property' into codex/fix-runtime-not-ready-error-on-npm-start-y6fsty
+[33m5f5cecf[m Pin react-native-worklets to Expo Go version
+[33m168619d[m Merge pull request #24 from MWP-services/codex/fix-runtime-not-ready-error-on-npm-start
+[33m5e62a4c[m[33m ([m[1;31morigin/codex/fix-runtime-not-ready-error-on-npm-start[m[33m)[m Fix registerRootComponent and align reanimated version
+[33m602db01[m 9/26
+[33mb76aae0[m Merge pull request #23 from MWP-services/codex/update-handlesubmitappointment-for-transactions
+[33ma638478[m[33m ([m[1;31morigin/codex/update-handlesubmitappointment-for-transactions[m[33m)[m Merge branch 'codex/fix-runtime-error-for-compare-property' into codex/update-handlesubmitappointment-for-transactions
+[33m6279f35[m Clean up root registration and resolve HomeScreen conflicts
+[33me257543[m Make appointment booking transactional
+[33m9583721[m Merge pull request #22 from MWP-services/codex/add-interactive-appointment-calendar-to-homepage-2fx96y
+[33m7c59058[m[33m ([m[1;31morigin/codex/add-interactive-appointment-calendar-to-homepage-2fx96y[m[33m)[m Merge branch 'codex/fix-runtime-error-for-compare-property' into codex/add-interactive-appointment-calendar-to-homepage-2fx96y
+[33mf922a2b[m fix: avoid duplicate AppRegistry declaration
+[33md02df4b[m Merge pull request #21 from MWP-services/codex/add-interactive-appointment-calendar-to-homepage-4z062y
+[33m3e46a78[m[33m ([m[1;31morigin/codex/add-interactive-appointment-calendar-to-homepage-4z062y[m[33m)[m Merge branch 'codex/fix-runtime-error-for-compare-property' into codex/add-interactive-appointment-calendar-to-homepage-4z062y
+[33m3beb56a[m fix: load register helper in cjs runtime
+[33ma26c5cd[m Merge pull request #20 from MWP-services/codex/add-interactive-appointment-calendar-to-homepage-drje9i
+[33mfbadb8a[m[33m ([m[1;31morigin/codex/add-interactive-appointment-calendar-to-homepage-drje9i[m[33m)[m Merge branch 'codex/fix-runtime-error-for-compare-property' into codex/add-interactive-appointment-calendar-to-homepage-drje9i
+[33m7e18b0b[m fix: load app config without ESM JSON import
+[33m6b18ae6[m Merge pull request #19 from MWP-services/codex/add-interactive-appointment-calendar-to-homepage-5f8mx2
+[33m9e30bd2[m[33m ([m[1;31morigin/codex/add-interactive-appointment-calendar-to-homepage-5f8mx2[m[33m)[m Merge branch 'codex/fix-runtime-error-for-compare-property' into codex/add-interactive-appointment-calendar-to-homepage-5f8mx2
+[33mc8b2cb0[m Avoid duplicate appName declaration in root registration
+[33md6869f4[m Merge pull request #18 from MWP-services/codex/add-interactive-appointment-calendar-to-homepage-a5n2gh
+[33m74d4ac8[m[33m ([m[1;31morigin/codex/add-interactive-appointment-calendar-to-homepage-a5n2gh[m[33m)[m Merge branch 'codex/fix-runtime-error-for-compare-property' into codex/add-interactive-appointment-calendar-to-homepage-a5n2gh
+[33mdc6488d[m Fix calendar import conflict and enforce atomic bookings
+[33m50bc351[m Merge pull request #17 from MWP-services/codex/add-interactive-appointment-calendar-to-homepage-koxjr7
+[33m4782dd5[m[33m ([m[1;31morigin/codex/add-interactive-appointment-calendar-to-homepage-koxjr7[m[33m)[m Merge branch 'codex/fix-runtime-error-for-compare-property' into codex/add-interactive-appointment-calendar-to-homepage-koxjr7
+[33mc411c5c[m Harden codex polyfill for native runtime
+[33mb46839c[m chore: update expo version to ^54.0.0 in package.json
+[33m2cfc7fb[m Merge pull request #16 from MWP-services/revert-15-codex/add-interactive-appointment-calendar-to-homepage-0060of
+[33m65409ae[m[33m ([m[1;31morigin/revert-15-codex/add-interactive-appointment-calendar-to-homepage-0060of[m[33m)[m Revert "Stabilize app bootstrap"
+[33m5989110[m Merge pull request #15 from MWP-services/codex/add-interactive-appointment-calendar-to-homepage-0060of
+[33mb34f011[m Merge branch 'codex/fix-runtime-error-for-compare-property' into codex/add-interactive-appointment-calendar-to-homepage-0060of
+[33mc85425e[m Stabilize app bootstrap
+[33m2d58449[m Merge pull request #14 from MWP-services/codex/add-interactive-appointment-calendar-to-homepage-cq2wdm
+[33m205ea10[m[33m ([m[1;31morigin/codex/add-interactive-appointment-calendar-to-homepage-cq2wdm[m[33m)[m Merge branch 'codex/fix-runtime-error-for-compare-property' into codex/add-interactive-appointment-calendar-to-homepage-cq2wdm
+[33mb496eec[m Replace calendar dependency with custom scheduler
+[33m965f9ed[m Merge pull request #13 from MWP-services/codex/add-interactive-appointment-calendar-to-homepage-75vnl9
+[33ma386603[m[33m ([m[1;31morigin/codex/add-interactive-appointment-calendar-to-homepage-75vnl9[m[33m)[m Handle registerRootComponent without expo runtime
+[33m386b724[m Merge pull request #12 from MWP-services/codex/add-interactive-appointment-calendar-to-homepage
+[33m6d581d4[m[33m ([m[1;31morigin/codex/add-interactive-appointment-calendar-to-homepage[m[33m)[m Add calendar-based appointment scheduling on home screen
+[33md345306[m sd
+[33maa53cf1[m Merge pull request #11 from MWP-services/codex/update-dependencies-for-expo-sdk-53
+[33m3aae95f[m[33m ([m[1;31morigin/codex/update-dependencies-for-expo-sdk-53[m[33m)[m Update Expo autolinking dependency
+[33m97b69e4[m Merge pull request #10 from MWP-services/codex/add-save-advice-button-and-list-page-vtjego
+[33m5bba259[m[33m ([m[1;31morigin/codex/add-save-advice-button-and-list-page-vtjego[m[33m)[m Merge branch 'codex/fix-runtime-error-for-compare-property' into codex/add-save-advice-button-and-list-page-vtjego
+[33ma8c80e5[m Refactor saved advices conditional rendering
+[33m2784d59[m Merge pull request #9 from MWP-services/codex/add-save-advice-button-and-list-page-syk2bo
+[33m8b23b28[m[33m ([m[1;31morigin/codex/add-save-advice-button-and-list-page-syk2bo[m[33m)[m Merge branch 'codex/fix-runtime-error-for-compare-property' into codex/add-save-advice-button-and-list-page-syk2bo
+[33m8ce9180[m Fix Flow syntax usage in saved advices screen
+[33m74ba79b[m Merge pull request #8 from MWP-services/codex/add-save-advice-button-and-list-page-28xsue
+[33m56eaa3b[m[33m ([m[1;31morigin/codex/add-save-advice-button-and-list-page-28xsue[m[33m)[m Merge branch 'codex/fix-runtime-error-for-compare-property' into codex/add-save-advice-button-and-list-page-28xsue
+[33mbe40348[m Normalize saved advices before displaying
+[33mab70a2c[m Add email scheduling shortcut to saved advices
+[33m6df91c8[m Merge pull request #7 from MWP-services/codex/add-save-advice-button-and-list-page
+[33mc6a61ff[m[33m ([m[1;31morigin/codex/add-save-advice-button-and-list-page[m[33m)[m Add saved advice flow and storage
+[33m14e468d[m Add email template button to business advice overview
+[33m84157d7[m Add Compare polyfill for Hermes
+[33m65b8960[m inlogscherm aangepas,a ccount verwijderen mogelijk bug fixres 03-9
+[33m94d4583[m gast knop toegevoegd + maintenance 28-8
+[33mcbb53ca[m Merge branch 'zakelijk' of https://github.com/MWP-services/wattsnext-advies into zakelijk
+[33mf11f903[m 27-8 logo aangepast
+[33m4feb703[m help pagina
+[33meed9490[m web compatibiliteit firebase 8/6
+[33md5e9536[m test
+[33m1b9e0c1[m log-in functie + energiehandel uit diverse schermen 22-7
+[33m9356130[m backround and login 19-7
+[33mc7a59e0[m login test 1
+[33m3088d03[m backround all screens 18-7
+[33mcc4fcd2[m backround load 18-7
+[33m716bf6c[m 18-7 backround reset
+[33m2dc5f6e[m backround test 2 18-7
+[33mc09db65[m backround fix test 18-7
+[33m004ffc2[m energiehandel (alleen schermen er uit) 7/17
+[33m6810d81[m peakshacing kwh aanpassing 17-7
+[33m3535060[m netcongestie aangepast (advies onvolledig)
+[33m5df2593[m spec s
