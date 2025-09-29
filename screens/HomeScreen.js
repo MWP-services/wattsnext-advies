@@ -238,26 +238,30 @@ export default function HomeScreen({ navigation }) {
       });
 
       // E-mails buiten de transactie
-      const emailResult = await sendAppointmentEmails({
-        clientEmail: userEmail,
-        clientName: trimmedName,
-        formattedDate,
-        time: selectedTime,
-        locationLabel,
-        address: trimmedAddress,
-      });
+    const emailResult = await sendAppointmentEmails({
+  clientEmail: userEmail,
+  clientName: trimmedName,
+  formattedDate,
+  time: selectedTime,
+  locationLabel,
+  address: trimmedAddress,
+});
 
-      if (!emailResult.success) {
-        const message = isEmailConfigured()
-          ? "De afspraak is ingepland, maar het versturen van de bevestigingsmail is mislukt."
-          : "De afspraak is ingepland. Configureer de EXPO_PUBLIC_EMAILJS_* variabelen om automatische e-mails te versturen.";
-        Alert.alert("Afspraak ingepland", message);
-      } else {
-        Alert.alert(
-          "Afspraak ingepland",
-          "Je ontvangt zo een bevestiging in de mail. WattsNext wordt ook op de hoogte gebracht."
-        );
-      }
+if (!emailResult.success) {
+  const firstErr = emailResult.results.find(r => !r.ok)?.error || 'onbekende fout';
+  console.log('EmailJS failure', emailResult);
+  Alert.alert(
+    "Afspraak ingepland",
+    isEmailConfigured()
+      ? `Bevestigingsmail verzenden mislukt:\n${firstErr}`
+      : "De afspraak is ingepland. Configureer de EXPO_PUBLIC_EMAILJS_* variabelen om automatische e-mails te versturen."
+  );
+} else {
+  Alert.alert(
+    "Afspraak ingepland",
+    "Je ontvangt zo een bevestiging in de mail. WattsNext wordt ook op de hoogte gebracht."
+  );
+}
 
       // Form reset
       setSelectedDate("");

@@ -1,11 +1,11 @@
 const EMAIL_ENDPOINT = 'https://api.emailjs.com/api/v1.0/email/send';
 
-const SERVICE_ID = process.env.EXPO_PUBLIC_EMAILJS_SERVICE_ID;
-const TEMPLATE_ID_CLIENT = process.env.EXPO_PUBLIC_EMAILJS_TEMPLATE_ID_CLIENT;
-const TEMPLATE_ID_TEAM = process.env.EXPO_PUBLIC_EMAILJS_TEMPLATE_ID_TEAM;
-const PUBLIC_KEY = process.env.EXPO_PUBLIC_EMAILJS_PUBLIC_KEY;
-const TEAM_EMAIL =
-  process.env.EXPO_PUBLIC_APPOINTMENT_TEAM_EMAIL || 'info@wattsnext.energy';
+const SERVICE_ID        = process.env.EXPO_PUBLIC_EMAILJS_SERVICE_ID?.trim();
+const TEMPLATE_ID_CLIENT= process.env.EXPO_PUBLIC_EMAILJS_TEMPLATE_ID_CLIENT?.trim();
+const TEMPLATE_ID_TEAM  = process.env.EXPO_PUBLIC_EMAILJS_TEMPLATE_ID_TEAM?.trim();
+const PUBLIC_KEY        = process.env.EXPO_PUBLIC_EMAILJS_PUBLIC_KEY?.trim();
+const TEAM_EMAIL        = (process.env.EXPO_PUBLIC_APPOINTMENT_TEAM_EMAIL?.trim() || 'micha.honkoop@gmail.com');
+
 
 export function isEmailConfigured() {
   return Boolean(
