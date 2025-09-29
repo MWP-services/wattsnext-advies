@@ -195,7 +195,7 @@ export default function SavedAdvicesScreen() {
           </Text>
 
           <TouchableOpacity style={styles.emailButton} onPress={handleComposeEmail}>
-            <Text style={styles.emailButtonText}>Plan een afspraak via e-mail</Text>
+            <Text style={styles.emailButtonText}>Stel een vraag via de e-mail</Text>
           </TouchableOpacity>
 
           {loading ? (
