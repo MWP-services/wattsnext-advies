@@ -6,16 +6,15 @@
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": false,
-
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-
-    "assetBundlePatterns": ["**/*"],
-
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.micha1846.wattsnextadvies",
@@ -23,7 +22,6 @@
         "ITSAppUsesNonExemptEncryption": false
       }
     },
-
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
@@ -32,24 +30,23 @@
       "edgeToEdgeEnabled": true,
       "package": "com.micha1846.wattsnextadvies"
     },
-
     "web": {
       "favicon": "./assets/favicon.png"
     },
-
     "extra": {
       "eas": {
         "projectId": "25dbfec2-b794-4c55-b33e-7f2d9e580900"
       }
     },
-
     "runtimeVersion": {
       "policy": "appVersion"
     },
-
     "updates": {
       "url": "https://u.expo.dev/25dbfec2-b794-4c55-b33e-7f2d9e580900",
       "enabled": true
-    }
+    },
+    "plugins": [
+      "expo-asset"
+    ]
   }
 }
