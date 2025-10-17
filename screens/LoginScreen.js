@@ -30,7 +30,7 @@ export default function LoginScreen({ navigation }) {
   };
 
   const handleGuest = () => {
-    console.log('Doorgaan als gast');
+    console.log('Doorgaan als gast (particuliere route)');
     navigation.replace('Particulier');
   };
 

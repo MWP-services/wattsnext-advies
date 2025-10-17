@@ -5,7 +5,29 @@
   },
   "build": {
     "production": {
+      "autoIncrement": true,
+      "channel": "production"
+    },
+    "preview": {
+      "distribution": "internal",
+      "channel": "preview",
       "autoIncrement": true
+    },
+    "devclient": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "channel": "dev",
+      "autoIncrement": true
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "ascApiKeyPath": "C:/Users/Micha/Documents/wattsnext-advies/AuthKey_DH3S4P4792.p8",
+        "ascApiKeyId": "DH3S4P4792",
+        "ascApiKeyIssuerId": "9c924912-211a-4a1e-bd74-f9cd458b3177",
+        "ascAppId": "6749598938"
+      }
     }
   }
 }
