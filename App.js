@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Asset } from 'expo-asset';
+import * as SplashScreen from 'expo-splash-screen';
 import HomeScreen from './screens/HomeScreen';
 import Step1Screen from './screens/Step1Screen';
 import ParticulierScreen from './screens/ParticulierScreen';
@@ -56,12 +58,41 @@ import RegisterScreen from './screens/RegisterScreen';
 import AccountBeherenScreen from './screens/AccountBeherenScreen';
 import SavedAdvicesScreen from './screens/SavedAdvicesScreen';
 import Toast from 'react-native-toast-message';
+import { imageAssets } from './assets/assetManifest';
 
 
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    (async () => {
+      try {
+        await SplashScreen.preventAutoHideAsync();
+        await Asset.loadAsync(imageAssets);
+      } catch (error) {
+        console.warn('Failed to preload image assets', error);
+      } finally {
+        if (isMounted) {
+          setIsReady(true);
+          await SplashScreen.hideAsync();
+        }
+      }
+    })();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  if (!isReady) {
+    return null;
+  }
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="LoginScreen">
