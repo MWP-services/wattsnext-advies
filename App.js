@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Asset } from 'expo-asset';
 import * as SplashScreen from 'expo-splash-screen';
+import { onAuthStateChanged } from 'firebase/auth';
 import HomeScreen from './screens/HomeScreen';
 import Step1Screen from './screens/Step1Screen';
 import ParticulierScreen from './screens/ParticulierScreen';
@@ -59,13 +60,16 @@ import AccountBeherenScreen from './screens/AccountBeherenScreen';
 import SavedAdvicesScreen from './screens/SavedAdvicesScreen';
 import Toast from 'react-native-toast-message';
 import { imageAssets } from './assets/assetManifest';
+import { auth } from './firebaseConfig';
 
 
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [isReady, setIsReady] = useState(false);
+  const [assetsLoaded, setAssetsLoaded] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [initialRoute, setInitialRoute] = useState('LoginScreen');
 
   useEffect(() => {
     let isMounted = true;
@@ -78,8 +82,7 @@ export default function App() {
         console.warn('Failed to preload image assets', error);
       } finally {
         if (isMounted) {
-          setIsReady(true);
-          await SplashScreen.hideAsync();
+          setAssetsLoaded(true);
         }
       }
     })();
@@ -89,13 +92,28 @@ export default function App() {
     };
   }, []);
 
-  if (!isReady) {
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setInitialRoute(user ? 'HomeScreen' : 'LoginScreen');
+      setAuthChecked(true);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    if (assetsLoaded && authChecked) {
+      SplashScreen.hideAsync();
+    }
+  }, [assetsLoaded, authChecked]);
+
+  if (!assetsLoaded || !authChecked) {
     return null;
   }
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="LoginScreen">
+      <Stack.Navigator initialRouteName={initialRoute}>
         <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
