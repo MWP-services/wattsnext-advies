@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   View,
   Text,
@@ -8,8 +9,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   ScrollView,
-  ImageBackground,
-  SafeAreaView
+  ImageBackground
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 

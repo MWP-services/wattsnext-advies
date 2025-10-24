@@ -1,4 +1,5 @@
 // screens/LoadShiftingEnergiehandelVraagScreen.js
+import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState } from 'react';
 import {
   View,
@@ -9,8 +10,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  ImageBackground,
-  SafeAreaView,
+  ImageBackground
 } from 'react-native';
 
 export default function LoadShiftingEnergiehandelVraagScreen({ navigation, route }) {
