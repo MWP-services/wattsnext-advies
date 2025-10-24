@@ -1,4 +1,5 @@
 // screens/HomeScreen.js
+import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useEffect, useMemo, useState } from "react";
 import {
   View,
@@ -6,13 +7,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  SafeAreaView,
   useWindowDimensions,
   Platform,
   ScrollView,
   TextInput,
   Alert,
-  ActivityIndicator,
+  ActivityIndicator
 } from "react-native";
 
 import { auth, db } from "../firebaseConfig";

@@ -1,4 +1,5 @@
 // screens/RegisterScreen.js
+import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState } from 'react';
 import {
   View,
@@ -7,14 +8,13 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  SafeAreaView,
   useWindowDimensions,
   Platform,
   KeyboardAvoidingView,
   ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
-  ActivityIndicator,
+  ActivityIndicator
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { createUserWithEmailAndPassword } from 'firebase/auth';

@@ -1,9 +1,16 @@
 // screens/NoodstroomEnergiehandelVraagScreen.js
+import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity,
-  StyleSheet, ScrollView, KeyboardAvoidingView, Platform,
-  ImageBackground, SafeAreaView
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  ImageBackground
 } from 'react-native';
 
 export default function NoodstroomEnergiehandelVraag({ navigation, route }) {

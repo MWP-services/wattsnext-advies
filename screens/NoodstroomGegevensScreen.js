@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-  View, Text, TextInput, StyleSheet,
-  TouchableOpacity, KeyboardAvoidingView,
-  Platform, ScrollView, ImageBackground, SafeAreaView
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  ImageBackground
 } from 'react-native';
 
 export default function NoodstroomGegevensScreen({ navigation, route }) {

@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   View,
   Text,
@@ -6,10 +7,9 @@ import {
   TouchableOpacity,
   Image,
   ImageBackground,
-  SafeAreaView,
   ScrollView,
   Linking,
-  Alert,
+  Alert
 } from 'react-native';
 import SaveAdviceButton from '../components/SaveAdviceButton';
 
