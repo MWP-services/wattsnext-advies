@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Asset } from 'expo-asset';
-import * as SplashScreen from 'expo-splash-screen';
+import * as SplashScreen from 'expo-splash-screen'; 
 import { onAuthStateChanged } from 'firebase/auth';
 import HomeScreen from './screens/HomeScreen';
 import Step1Screen from './screens/Step1Screen';
