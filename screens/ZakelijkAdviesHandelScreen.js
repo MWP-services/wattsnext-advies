@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ImageBackground, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ImageBackground } from 'react-native';
 import SaveAdviceButton from '../components/SaveAdviceButton';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ZakelijkAdviesHandelScreen({ route, navigation }) {
   const { kwh1, kwh2 = 0 } = route.params;

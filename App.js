@@ -76,7 +76,9 @@ export default function App() {
 
     (async () => {
       try {
-        await SplashScreen.preventAutoHideAsync();
+        if (SplashScreen?.preventAutoHideAsync) {
+          await SplashScreen.preventAutoHideAsync();
+        }
         await Asset.loadAsync(imageAssets);
       } catch (error) {
         console.warn('Failed to preload image assets', error);
@@ -103,7 +105,9 @@ export default function App() {
 
   useEffect(() => {
     if (assetsLoaded && authChecked) {
-      SplashScreen.hideAsync();
+      if (SplashScreen?.hideAsync) {
+        SplashScreen.hideAsync();
+      }
     }
   }, [assetsLoaded, authChecked]);
 
