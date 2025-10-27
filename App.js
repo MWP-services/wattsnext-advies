@@ -5,6 +5,7 @@ import { Asset } from 'expo-asset';
 import * as SplashScreen from 'expo-splash-screen'; 
 import { onAuthStateChanged } from 'firebase/auth';
 import HomeScreen from './screens/HomeScreen';
+import AgendaScreen from './screens/AgendaScreen';
 import Step1Screen from './screens/Step1Screen';
 import ParticulierScreen from './screens/ParticulierScreen';
 import Fase1Screen from './screens/Fase1Screen';
@@ -120,7 +121,8 @@ export default function App() {
       <Stack.Navigator initialRouteName={initialRoute}>
         <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-        <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Agenda" component={AgendaScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SavedAdvices" component={SavedAdvicesScreen} />
         <Stack.Screen name="Stap 1" component={Step1Screen} />
         <Stack.Screen name="Particulier" component={ParticulierScreen} />
