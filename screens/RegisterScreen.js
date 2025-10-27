@@ -26,22 +26,24 @@ export default function RegisterScreen({ navigation }) {
   const [password, setPassword] = useState('');
   const [naam, setNaam] = useState('');
   const [bedrijf, setBedrijf] = useState('');
-  const [kwh, setKwh] = useState('');
+  const [adres, setAdres] = useState('');
+  const [functietitel, setFunctietitel] = useState('');
+  const [telefoonnummer, setTelefoonnummer] = useState('');
   const [loading, setLoading] = useState(false);
   const { width } = useWindowDimensions();
 
   const handleRegister = async () => {
-    if (!email || !password || !naam || !bedrijf || !kwh) {
+    if (!email || !password || !naam || !bedrijf || !adres || !functietitel || !telefoonnummer) {
       Toast.show({ type: 'info', text1: 'Let op', text2: 'Vul alle velden in.' });
-      return;
-    }
-    const kwhVal = parseFloat(String(kwh).replace(',', '.'));
-    if (Number.isNaN(kwhVal) || kwhVal <= 0) {
-      Toast.show({ type: 'info', text1: 'Let op', text2: 'Voer een geldig positief getal in voor kWh.' });
       return;
     }
     if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
       Toast.show({ type: 'info', text1: 'Let op', text2: 'Voer een geldig e-mailadres in.' });
+      return;
+    }
+    const phoneTrimmed = telefoonnummer.trim();
+    if (!/^\+?[0-9 ()-]{6,}$/.test(phoneTrimmed)) {
+      Toast.show({ type: 'info', text1: 'Let op', text2: 'Voer een geldig telefoonnummer in.' });
       return;
     }
 
@@ -57,7 +59,9 @@ export default function RegisterScreen({ navigation }) {
         email: email.trim(),
         naam: naam.trim(),
         bedrijf: bedrijf.trim(),
-        stroomverbruik: kwhVal,
+        adres: adres.trim(),
+        functietitel: functietitel.trim(),
+        telefoonnummer: phoneTrimmed,
         aangemaaktOp: new Date(),
       }).catch((e) => console.log('Profiel write (background) fout:', e?.message));
 
@@ -101,11 +105,11 @@ export default function RegisterScreen({ navigation }) {
 
               <TextInput placeholder="Naam" value={naam} onChangeText={setNaam} style={styles.input} />
               <TextInput placeholder="Bedrijf" value={bedrijf} onChangeText={setBedrijf} style={styles.input} />
+              <TextInput placeholder="Adres" value={adres} onChangeText={setAdres} style={styles.input} />
               <TextInput
-                placeholder="Jaarlijks stroomverbruik (kWh)"
-                value={kwh}
-                onChangeText={setKwh}
-                keyboardType="decimal-pad"
+                placeholder="Functietitel"
+                value={functietitel}
+                onChangeText={setFunctietitel}
                 style={styles.input}
               />
               <TextInput
@@ -114,6 +118,13 @@ export default function RegisterScreen({ navigation }) {
                 onChangeText={setEmail}
                 keyboardType="email-address"
                 autoCapitalize="none"
+                style={styles.input}
+              />
+              <TextInput
+                placeholder="Telefoonnummer"
+                value={telefoonnummer}
+                onChangeText={setTelefoonnummer}
+                keyboardType="phone-pad"
                 style={styles.input}
               />
               <TextInput
