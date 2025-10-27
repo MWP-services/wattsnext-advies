@@ -1,8 +1,11 @@
 
+import React from "react";
+
 
 // screens/HomeScreen.js
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useEffect, useMemo, useRef, useState } from "react";
+
 
 import {
   View,
@@ -17,6 +20,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen({ navigation }) {
   const { width } = useWindowDimensions();
+
 
 
   const today = useMemo(() => new Date(), []);
@@ -197,6 +201,7 @@ if (!emailResult.success) {
   };
 
 
+
   const handleScrollToAgenda = () => {
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollTo({
@@ -251,6 +256,8 @@ if (!emailResult.success) {
                 accessibilityLabel="Start Advies"
               >
 
+
+
                 <Text style={[styles.buttonText, { fontSize: width > 768 ? 20 : 18 }]}>Start Advies</Text>
 
                 <Text
@@ -270,6 +277,11 @@ if (!emailResult.success) {
               >
                 <Text
                   style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}
+
+
+              >
+                <Text
+                  style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}
                 >
                   Account beheren
 
@@ -279,6 +291,7 @@ if (!emailResult.success) {
                     styles.secondaryButtonText,
                     { fontSize: width > 768 ? 18 : 16 },
                   ]}
+
                 >
                   Account beheren
                 </Text>
@@ -291,6 +304,7 @@ if (!emailResult.success) {
                 accessibilityLabel="Bekijk opgeslagen adviezen"
               >
                 <Text
+
                   style={[
                     styles.secondaryButtonText,
                     { fontSize: width > 768 ? 18 : 16 },
@@ -309,6 +323,7 @@ if (!emailResult.success) {
                 accessibilityLabel="Bekijk opgeslagen adviezen"
               >
                 <Text
+
                   style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}
                 >
                   Opgeslagen adviezen
@@ -323,6 +338,7 @@ if (!emailResult.success) {
               >
                 <Text
                   style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}
+
 
                 onPress={handleScrollToAgenda}
                 accessibilityRole="button"
@@ -517,6 +533,7 @@ if (!emailResult.success) {
                   accessibilityRole="button"
                   accessibilityLabel="Bevestig afspraak"
                   
+
                 >
                   Agenda
                 </Text>
@@ -603,6 +620,7 @@ const styles = StyleSheet.create({
     color: "#f7941e",
     fontWeight: "600",
   },
+
 
   backTopLeft: {
     position: "absolute",
