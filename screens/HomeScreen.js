@@ -1,6 +1,9 @@
+
+
 // screens/HomeScreen.js
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useEffect, useMemo, useRef, useState } from "react";
+
 import {
   View,
   Text,
@@ -8,109 +11,14 @@ import {
   TouchableOpacity,
   Image,
   useWindowDimensions,
-  Platform,
   ScrollView,
-  TextInput,
-  Alert,
-  ActivityIndicator
 } from "react-native";
-
-import { auth, db } from "../firebaseConfig";
-import { isEmailConfigured, sendAppointmentEmails } from "../support/email";
-import AppointmentCalendar from "../components/AppointmentCalendar"; // <— FIX: juiste import/naam
-
-import { LocaleConfig } from "react-native-calendars"; // <— FIX: verwijder ongebruikte Calendar import
-
-import {
-  collection,
-  doc,
-  onSnapshot,
-  runTransaction,
-  serverTimestamp,
-} from "firebase/firestore"; // <— FIX: verwijder ongebruikte getDoc/setDoc
-
-function toLocalDateKey(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
-function formatDateLabel(dateString) {
-  if (!dateString) return "";
-  try {
-    const formatter = new Intl.DateTimeFormat("nl-NL", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-    return formatter.format(new Date(`${dateString}T12:00:00`));
-  } catch (_e) {
-    return dateString;
-  }
-}
-
-// Locale NL voor react-native-calendars
-LocaleConfig.locales.nl = {
-  monthNames: [
-    "januari",
-    "februari",
-    "maart",
-    "april",
-    "mei",
-    "juni",
-    "juli",
-    "augustus",
-    "september",
-    "oktober",
-    "november",
-    "december",
-  ],
-  monthNamesShort: [
-    "jan",
-    "feb",
-    "mrt",
-    "apr",
-    "mei",
-    "jun",
-    "jul",
-    "aug",
-    "sep",
-    "okt",
-    "nov",
-  ],
-  dayNames: [
-    "zondag",
-    "maandag",
-    "dinsdag",
-    "woensdag",
-    "donderdag",
-    "vrijdag",
-    "zaterdag",
-  ],
-  dayNamesShort: ["zo", "ma", "di", "wo", "do", "vr", "za"],
-  today: "Vandaag",
-};
-LocaleConfig.defaultLocale = "nl";
-
-const TIME_SLOTS = (() => {
-  const slots = [];
-  for (let hour = 9; hour <= 17; hour += 1) {
-    for (let minute = 0; minute < 60; minute += 30) {
-      if (hour === 17 && minute > 0) break;
-      slots.push(
-        `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`
-      );
-    }
-  }
-  return slots;
-})();
-
-const OFFICE_ADDRESS = "Industrieweg 6, Stolwijk";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen({ navigation }) {
   const { width } = useWindowDimensions();
+
+
   const today = useMemo(() => new Date(), []);
   const todayString = useMemo(() => toLocalDateKey(today), [today]);
 
@@ -288,6 +196,7 @@ if (!emailResult.success) {
     }
   };
 
+
   const handleScrollToAgenda = () => {
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollTo({
@@ -299,15 +208,9 @@ if (!emailResult.success) {
 
   return (
     <View style={styles.container}>
-      {/* Achtergrondlaag */}
-      <Image
-        source={require("../assets/achtergrond.png")}
-        style={styles.backgroundImage}
-      />
+      <Image source={require("../assets/achtergrond.png")} style={styles.backgroundImage} />
 
-      {/* Voorgrond: content */}
       <SafeAreaView style={styles.safeArea}>
-        {/* Terugknop */}
         <TouchableOpacity
           onPress={() => navigation.replace("LoginScreen")}
           style={styles.backTopLeft}
@@ -338,9 +241,7 @@ if (!emailResult.success) {
               resizeMode="contain"
             />
 
-            <Text style={[styles.title, { fontSize: width > 768 ? 36 : 24 }]}>
-              WattsNext Advies
-            </Text>
+            <Text style={[styles.title, { fontSize: width > 768 ? 36 : 24 }]}>WattsNext Advies</Text>
 
             <View style={styles.buttonGrid}>
               <TouchableOpacity
@@ -349,11 +250,15 @@ if (!emailResult.success) {
                 accessibilityRole="button"
                 accessibilityLabel="Start Advies"
               >
+
+                <Text style={[styles.buttonText, { fontSize: width > 768 ? 20 : 18 }]}>Start Advies</Text>
+
                 <Text
                   style={[styles.buttonText, { fontSize: width > 768 ? 20 : 18 }]}
                 >
                   Start Advies
                 </Text>
+
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -361,6 +266,13 @@ if (!emailResult.success) {
                 onPress={() => navigation.navigate("AccountBeheren")}
                 accessibilityRole="button"
                 accessibilityLabel="Account beheren"
+
+              >
+                <Text
+                  style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}
+                >
+                  Account beheren
+
               >
                 <Text
                   style={[
@@ -385,11 +297,33 @@ if (!emailResult.success) {
                   ]}
                 >
                   Opgeslagen adviezen
+
                 </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={[styles.gridButton, styles.secondaryButton]}
+
+                onPress={() => navigation.navigate("SavedAdvices")}
+                accessibilityRole="button"
+                accessibilityLabel="Bekijk opgeslagen adviezen"
+              >
+                <Text
+                  style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}
+                >
+                  Opgeslagen adviezen
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.gridButton, styles.secondaryButton]}
+                onPress={() => navigation.navigate("Agenda")}
+                accessibilityRole="button"
+                accessibilityLabel="Ga naar agenda"
+              >
+                <Text
+                  style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}
+
                 onPress={handleScrollToAgenda}
                 accessibilityRole="button"
                 accessibilityLabel="Ga naar agenda"
@@ -582,15 +516,12 @@ if (!emailResult.success) {
                   disabled={!canSubmit}
                   accessibilityRole="button"
                   accessibilityLabel="Bevestig afspraak"
+                  
                 >
-                  {submitting ? (
-                    <ActivityIndicator color="#fff" />
-                  ) : (
-                    <Text style={styles.submitButtonText}>Afspraak bevestigen</Text>
-                  )}
-                </TouchableOpacity>
-              </>
-            )}
+                  Agenda
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -601,20 +532,19 @@ if (!emailResult.success) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: "relative",
+    backgroundColor: "#f0f4f8",
   },
   backgroundImage: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    resizeMode: Platform.OS === "web" ? "contain" : "cover",
-    zIndex: -1,
+    ...StyleSheet.absoluteFillObject,
+    width: undefined,
+    height: undefined,
+    resizeMode: "cover",
   },
   safeArea: {
     flex: 1,
   },
+
+
   scrollContent: {
     paddingBottom: 48,
     gap: 32,
@@ -673,6 +603,7 @@ const styles = StyleSheet.create({
     color: "#f7941e",
     fontWeight: "600",
   },
+
   backTopLeft: {
     position: "absolute",
     top: 10,
@@ -688,155 +619,63 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
   },
-  schedulerCard: {
-    backgroundColor: "#ffffffee",
-    borderRadius: 18,
-    padding: 24,
+  scrollContent: {
+    flexGrow: 1,
+    paddingTop: 40,
+    paddingBottom: 60,
+    alignItems: "center",
+    gap: 32,
+  },
+  content: {
     width: "100%",
     maxWidth: 900,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.1,
-    shadowRadius: 16,
-    elevation: 6,
-    gap: 20,
+    alignItems: "center",
+    gap: 32,
   },
-  schedulerTitle: {
-    fontSize: 24,
+  logo: {
+    marginBottom: 12,
+  },
+  title: {
     fontWeight: "700",
     color: "#1f6f34",
-  },
-  schedulerSubtitle: {
-    fontSize: 15,
-    color: "#333",
-    lineHeight: 22,
-  },
-  loadingWrapper: {
-    alignItems: "center",
-    gap: 12,
-    paddingVertical: 20,
-  },
-  loadingText: {
-    color: "#333",
-  },
-  section: {
-    gap: 12,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#1f6f34",
-  },
-  emptyMessage: {
-    color: "#555",
-    fontStyle: "italic",
-  },
-  timeGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 12,
-  },
-  timeSlot: {
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#1f6f34",
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    backgroundColor: "#fff",
-  },
-  timeSlotSelected: {
-    backgroundColor: "#1f6f34",
-  },
-  timeSlotText: {
-    color: "#1f6f34",
-    fontWeight: "600",
-  },
-  timeSlotTextSelected: {
-    color: "#fff",
-  },
-  locationRow: {
-    flexDirection: "row",
-    gap: 12,
-    flexWrap: "wrap",
-  },
-  locationButton: {
-    flexGrow: 1,
-    borderWidth: 1,
-    borderColor: "#f7941e",
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-    backgroundColor: "#fff",
-  },
-  locationButtonActive: {
-    backgroundColor: "#f7941e",
-  },
-  locationButtonText: {
-    color: "#f7941e",
-    fontWeight: "600",
     textAlign: "center",
   },
-  locationButtonTextActive: {
-    color: "#fff",
-  },
-  locationInfo: {
-    color: "#555",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#c7c7c7",
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    backgroundColor: "#fff",
-    color: "#000",
-  },
-  readonlyInput: {
-    marginTop: 8,
-    color: "#555",
-  },
-  warningText: {
-    color: "#d9534f",
-    marginTop: 6,
-  },
-  summaryCard: {
-    backgroundColor: "#f7f9f8",
-    borderRadius: 12,
-    padding: 16,
-    gap: 8,
-    borderWidth: 1,
-    borderColor: "#dfe7e3",
-  },
-  summaryTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#1f6f34",
-  },
-  summaryRow: {
+  buttonGrid: {
+    width: "100%",
     flexDirection: "row",
     flexWrap: "wrap",
-    color: "#333",
+    gap: 16,
+    justifyContent: "center",
   },
-  summaryLabel: {
-    fontWeight: "600",
-    color: "#1f6f34",
-  },
-  summaryValue: {
-    color: "#333",
-  },
-  submitButton: {
-    backgroundColor: "#1f6f34",
-    paddingVertical: 16,
-    borderRadius: 12,
+  gridButton: {
+    flexBasis: "45%",
+    minWidth: 160,
+    borderRadius: 16,
+    paddingVertical: 20,
+    paddingHorizontal: 16,
     alignItems: "center",
-    marginTop: 8,
+    justifyContent: "center",
   },
-  submitButtonDisabled: {
-    backgroundColor: "#9fb7a6",
+  button: {
+    backgroundColor: "#1f6f34",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 6,
   },
-  submitButtonText: {
+  buttonText: {
     color: "#fff",
-    fontSize: 18,
     fontWeight: "700",
+  },
+  secondaryButton: {
+    backgroundColor: "#ffffffdd",
+    borderWidth: 1,
+    borderColor: "#1f6f34",
+  },
+  secondaryButtonText: {
+    color: "#1f6f34",
+    fontWeight: "600",
+    textAlign: "center",
   },
 });
