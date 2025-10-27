@@ -1,13 +1,3 @@
-
-
-import React from "react";
-
-
-
-
-
-
-
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 
@@ -29,6 +19,8 @@ import {
 import { getAuth } from "firebase/auth";
 
 const auth = getAuth();
+
+const OFFICE_ADDRESS = "WattsNext Kantoor, Voorbeeldstraat 1, 1234 AB";
 
 export default function HomeScreen({ navigation }) {
   const { width } = useWindowDimensions();

@@ -1,9 +1,16 @@
+// App.js
+// 1) Firebase MOET als eerste geladen worden
+import './firebaseConfig';            // forceert init vóór alle andere imports
+import { auth } from './firebaseConfig';
+
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Asset } from 'expo-asset';
-import * as SplashScreen from 'expo-splash-screen'; 
+import * as SplashScreen from 'expo-splash-screen';
 import { onAuthStateChanged } from 'firebase/auth';
+
+// Screens pas hierna importeren
 import HomeScreen from './screens/HomeScreen';
 import AgendaScreen from './screens/AgendaScreen';
 import Step1Screen from './screens/Step1Screen';
@@ -59,11 +66,9 @@ import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import AccountBeherenScreen from './screens/AccountBeherenScreen';
 import SavedAdvicesScreen from './screens/SavedAdvicesScreen';
+
 import Toast from 'react-native-toast-message';
 import { imageAssets } from './assets/assetManifest';
-import { auth } from './firebaseConfig';
-
-
 
 const Stack = createNativeStackNavigator();
 
@@ -74,7 +79,6 @@ export default function App() {
 
   useEffect(() => {
     let isMounted = true;
-
     (async () => {
       try {
         if (SplashScreen?.preventAutoHideAsync) {
@@ -84,15 +88,10 @@ export default function App() {
       } catch (error) {
         console.warn('Failed to preload image assets', error);
       } finally {
-        if (isMounted) {
-          setAssetsLoaded(true);
-        }
+        if (isMounted) setAssetsLoaded(true);
       }
     })();
-
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false; };
   }, []);
 
   useEffect(() => {
@@ -100,7 +99,6 @@ export default function App() {
       setInitialRoute(user ? 'HomeScreen' : 'LoginScreen');
       setAuthChecked(true);
     });
-
     return unsubscribe;
   }, []);
 
@@ -112,9 +110,7 @@ export default function App() {
     }
   }, [assetsLoaded, authChecked]);
 
-  if (!assetsLoaded || !authChecked) {
-    return null;
-  }
+  if (!assetsLoaded || !authChecked) return null;
 
   return (
     <NavigationContainer>
@@ -173,9 +169,9 @@ export default function App() {
         <Stack.Screen name="Specificaties501" component={Specificaties501Screen} />
         <Stack.Screen name="Spec_HV_particulier" component={Spec_HV_particulier} />
         <Stack.Screen name="Spec_LV_particulier" component={Spec_LV_particulier} />
-          <Stack.Screen name="AccountBeheren" component={AccountBeherenScreen} />
+        <Stack.Screen name="AccountBeheren" component={AccountBeherenScreen} />
       </Stack.Navigator>
-          <Toast />
+      <Toast />
     </NavigationContainer>
   );
 }
