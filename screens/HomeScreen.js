@@ -1,6 +1,6 @@
 // screens/HomeScreen.js
 import { SafeAreaView } from 'react-native-safe-area-context';
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -114,6 +114,8 @@ export default function HomeScreen({ navigation }) {
   const today = useMemo(() => new Date(), []);
   const todayString = useMemo(() => toLocalDateKey(today), [today]);
 
+  const scrollViewRef = useRef(null);
+  const schedulerPositionRef = useRef(0);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [locationType, setLocationType] = useState("office");
@@ -286,6 +288,15 @@ if (!emailResult.success) {
     }
   };
 
+  const handleScrollToAgenda = () => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({
+        y: Math.max(schedulerPositionRef.current - 16, 0),
+        animated: true,
+      });
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* Achtergrondlaag */}
@@ -307,6 +318,7 @@ if (!emailResult.success) {
         </TouchableOpacity>
 
         <ScrollView
+          ref={scrollViewRef}
           contentContainerStyle={[
             styles.scrollContent,
             { paddingHorizontal: width > 768 ? 48 : 24 },
@@ -330,61 +342,75 @@ if (!emailResult.success) {
               WattsNext Advies
             </Text>
 
-            {/* Start Advies */}
-            <TouchableOpacity
-              style={[styles.button, { width: width > 768 ? 300 : "80%" }]}
-              onPress={() => navigation.navigate("Stap 1")}
-              accessibilityRole="button"
-              accessibilityLabel="Start Advies"
-            >
-              <Text
-                style={[styles.buttonText, { fontSize: width > 768 ? 20 : 18 }]}
+            <View style={styles.buttonGrid}>
+              <TouchableOpacity
+                style={[styles.gridButton, styles.button]}
+                onPress={() => navigation.navigate("Stap 1")}
+                accessibilityRole="button"
+                accessibilityLabel="Start Advies"
               >
-                Start Advies
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={[styles.buttonText, { fontSize: width > 768 ? 20 : 18 }]}
+                >
+                  Start Advies
+                </Text>
+              </TouchableOpacity>
 
-            {/* Spacing */}
-            <View style={{ height: 16 }} />
-
-            {/* Account beheren */}
-            <TouchableOpacity
-              style={[styles.secondaryButton, { width: width > 768 ? 300 : "80%" }]}
-              onPress={() => navigation.navigate("AccountBeheren")}
-              accessibilityRole="button"
-              accessibilityLabel="Account beheren"
-            >
-              <Text
-                style={[
-                  styles.secondaryButtonText,
-                  { fontSize: width > 768 ? 18 : 16 },
-                ]}
+              <TouchableOpacity
+                style={[styles.gridButton, styles.secondaryButton]}
+                onPress={() => navigation.navigate("AccountBeheren")}
+                accessibilityRole="button"
+                accessibilityLabel="Account beheren"
               >
-                Account beheren
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={[
+                    styles.secondaryButtonText,
+                    { fontSize: width > 768 ? 18 : 16 },
+                  ]}
+                >
+                  Account beheren
+                </Text>
+              </TouchableOpacity>
 
-            <View style={{ height: 16 }} />
-
-            <TouchableOpacity
-              style={[styles.secondaryButton, { width: width > 768 ? 300 : "80%" }]}
-              onPress={() => navigation.navigate("SavedAdvices")}
-              accessibilityRole="button"
-              accessibilityLabel="Bekijk opgeslagen adviezen"
-            >
-              <Text
-                style={[
-                  styles.secondaryButtonText,
-                  { fontSize: width > 768 ? 18 : 16 },
-                ]}
+              <TouchableOpacity
+                style={[styles.gridButton, styles.secondaryButton]}
+                onPress={() => navigation.navigate("SavedAdvices")}
+                accessibilityRole="button"
+                accessibilityLabel="Bekijk opgeslagen adviezen"
               >
-                Opgeslagen adviezen
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={[
+                    styles.secondaryButtonText,
+                    { fontSize: width > 768 ? 18 : 16 },
+                  ]}
+                >
+                  Opgeslagen adviezen
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.gridButton, styles.secondaryButton]}
+                onPress={handleScrollToAgenda}
+                accessibilityRole="button"
+                accessibilityLabel="Ga naar agenda"
+              >
+                <Text
+                  style={[
+                    styles.secondaryButtonText,
+                    { fontSize: width > 768 ? 18 : 16 },
+                  ]}
+                >
+                  Agenda
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           <View
             style={[styles.schedulerCard, { width: width > 992 ? "70%" : "100%" }]}
+            onLayout={(event) => {
+              schedulerPositionRef.current = event.nativeEvent.layout.y;
+            }}
           >
             <Text style={styles.schedulerTitle}>Plan direct een afspraak</Text>
             <Text style={styles.schedulerSubtitle}>
@@ -609,6 +635,21 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: "#3eaf4f",
     textAlign: "center",
+  },
+  buttonGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    marginTop: 12,
+  },
+  gridButton: {
+    width: "45%",
+    minWidth: 140,
+    maxWidth: 240,
+    marginHorizontal: 8,
+    marginVertical: 8,
+    justifyContent: "center",
+    alignSelf: "center",
   },
   button: {
     backgroundColor: "#f7941e",
