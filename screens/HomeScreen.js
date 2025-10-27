@@ -1,11 +1,13 @@
 
-import React from "react";
 
 import React from "react";
 
 
-// screens/HomeScreen.js
-import { SafeAreaView } from 'react-native-safe-area-context';
+
+
+
+
+
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 
@@ -18,14 +20,15 @@ import {
   Image,
   useWindowDimensions,
   ScrollView,
+  SafeAreaView,
+  TextInput,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
 
-import { SafeAreaView } from "react-native-safe-area-context";
+import { getAuth } from "firebase/auth";
 
-export default function HomeScreen({ navigation }) {
-  const { width } = useWindowDimensions();
-
-
+const auth = getAuth();
 
 export default function HomeScreen({ navigation }) {
   const { width } = useWindowDimensions();
@@ -33,6 +36,16 @@ export default function HomeScreen({ navigation }) {
 
 
   const today = useMemo(() => new Date(), []);
+
+  // Helper: produce a local date key in YYYY-MM-DD format (uses local timezone)
+  function toLocalDateKey(date) {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
   const todayString = useMemo(() => toLocalDateKey(today), [today]);
 
   const scrollViewRef = useRef(null);
@@ -265,15 +278,10 @@ if (!emailResult.success) {
                 accessibilityRole="button"
                 accessibilityLabel="Start Advies"
               >
-
-                <Text style={[styles.buttonText, { fontSize: width > 768 ? 20 : 18 }]}>Start Advies</Text>
-
-                <Text
-                  style={[styles.buttonText, { fontSize: width > 768 ? 20 : 18 }]}
-                >
+                <Text style={[styles.buttonText, { fontSize: width > 768 ? 20 : 18 }]}>
                   Start Advies
                 </Text>
-
+ 
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -281,25 +289,9 @@ if (!emailResult.success) {
                 onPress={() => navigation.navigate("AccountBeheren")}
                 accessibilityRole="button"
                 accessibilityLabel="Account beheren"
-
-              >
-                <Text
-                  style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}
-
-
-              >
-                <Text
-                  style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}
-                >
-                  Account beheren
-
-              >
-                <Text
-                  style={[
-                    styles.secondaryButtonText,
-                    { fontSize: width > 768 ? 18 : 16 },
-                  ]}
-                >
+ 
+ >
+                <Text style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}>
                   Account beheren
                 </Text>
               </TouchableOpacity>
@@ -310,44 +302,19 @@ if (!emailResult.success) {
                 accessibilityRole="button"
                 accessibilityLabel="Bekijk opgeslagen adviezen"
               >
-                <Text
-                  style={[
-                    styles.secondaryButtonText,
-                    { fontSize: width > 768 ? 18 : 16 },
-                  ]}
-                >
-                  Opgeslagen adviezen
-
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[styles.gridButton, styles.secondaryButton]}
-
-                onPress={() => navigation.navigate("SavedAdvices")}
-                accessibilityRole="button"
-                accessibilityLabel="Bekijk opgeslagen adviezen"
-              >
-                <Text
-                  style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}
-                >
+                <Text style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}>
                   Opgeslagen adviezen
                 </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={[styles.gridButton, styles.secondaryButton]}
-                onPress={() => navigation.navigate("Agenda")}
-                accessibilityRole="button"
-                accessibilityLabel="Ga naar agenda"
-              >
-                <Text
-                  style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}
-
+   
                 onPress={handleScrollToAgenda}
                 accessibilityRole="button"
                 accessibilityLabel="Ga naar agenda"
-              >                <Text style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}>
+              >
+                <Text style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}>
                   Agenda
                 </Text>
               </TouchableOpacity>
@@ -530,17 +497,19 @@ if (!emailResult.success) {
                   disabled={!canSubmit}
                   accessibilityRole="button"
                   accessibilityLabel="Bevestig afspraak"
-                  
-                >
-                  Agenda
-                </Text>
-              </TouchableOpacity>
-            </View>
+ 
+ >
+                  <Text style={[styles.submitButtonText, !canSubmit && styles.submitButtonTextDisabled]}>
+                    {submitting ? "Bezig..." : "Bevestig afspraak"}
+                  </Text>
+                </TouchableOpacity>
+              </>
+            )}
           </View>
-        </ScrollView>
-      </SafeAreaView>
-    </View>
-  );
+          </ScrollView>
+        </SafeAreaView>
+      </View>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -559,81 +528,7 @@ const styles = StyleSheet.create({
   },
 
 
-  scrollContent: {
-    paddingBottom: 48,
-    gap: 32,
-    alignItems: "center",
-  },
-  content: {
-    width: "100%",
-    maxWidth: 1200,
-    alignItems: "center",
-    gap: 16,
-    paddingTop: 32,
-  },
-  logo: {
-    marginBottom: 40,
-  },
-  title: {
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: "#3eaf4f",
-    textAlign: "center",
-  },
-  buttonGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    marginTop: 12,
-  },
-  gridButton: {
-    width: "45%",
-    minWidth: 140,
-    maxWidth: 240,
-    marginHorizontal: 8,
-    marginVertical: 8,
-    justifyContent: "center",
-    alignSelf: "center",
-  },
-  button: {
-    backgroundColor: "#f7941e",
-    padding: 16,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-  secondaryButton: {
-    backgroundColor: "#ffffffee",
-    padding: 14,
-    borderRadius: 10,
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#f7941e",
-  },
-  secondaryButtonText: {
-    color: "#f7941e",
-    fontWeight: "600",
-  },
 
-
-  backTopLeft: {
-    position: "absolute",
-    top: 10,
-    left: 10,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    backgroundColor: "#ffffffcc",
-    borderRadius: 10,
-    zIndex: 10,
-  },
-  backText: {
-    color: "#1a73e8",
-    fontSize: 16,
-    fontWeight: "500",
-  },
   scrollContent: {
     flexGrow: 1,
     paddingTop: 40,
@@ -643,18 +538,20 @@ const styles = StyleSheet.create({
   },
   content: {
     width: "100%",
-    maxWidth: 900,
+    maxWidth: 1200,
     alignItems: "center",
     gap: 32,
+    paddingTop: 32,
   },
   logo: {
-    marginBottom: 12,
+    marginBottom: 20,
   },
   title: {
     fontWeight: "700",
     color: "#1f6f34",
     textAlign: "center",
   },
+
   buttonGrid: {
     width: "100%",
     flexDirection: "row",
@@ -671,6 +568,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+
   button: {
     backgroundColor: "#1f6f34",
     shadowColor: "#000",
@@ -678,6 +576,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 12,
     elevation: 6,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 10,
   },
   buttonText: {
     color: "#fff",
@@ -687,10 +588,187 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffffdd",
     borderWidth: 1,
     borderColor: "#1f6f34",
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 10,
   },
   secondaryButtonText: {
     color: "#1f6f34",
     fontWeight: "600",
     textAlign: "center",
+  },
+
+  backTopLeft: {
+    position: "absolute",
+    top: 10,
+    left: 10,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    backgroundColor: "#ffffffcc",
+    borderRadius: 10,
+    zIndex: 10,
+  },
+  backText: {
+    color: "#1a73e8",
+    fontSize: 16,
+    fontWeight: "500",
+  },
+
+  /* Scheduler / appointment styles (basic coverage for used classes) */
+  schedulerCard: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 4,
+    alignSelf: "center",
+  },
+  schedulerTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    marginBottom: 6,
+    color: "#1f6f34",
+  },
+  schedulerSubtitle: {
+    color: "#556069",
+    marginBottom: 12,
+  },
+  loadingWrapper: {
+    alignItems: "center",
+    paddingVertical: 24,
+  },
+  loadingText: {
+    marginTop: 8,
+    color: "#556069",
+  },
+
+  section: {
+    marginTop: 16,
+  },
+  sectionTitle: {
+    fontWeight: "700",
+    marginBottom: 8,
+    color: "#1f6f34",
+  },
+  emptyMessage: {
+    color: "#666",
+  },
+
+  timeGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  timeSlot: {
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#e0e6ea",
+    margin: 4,
+    backgroundColor: "#fff",
+  },
+  timeSlotSelected: {
+    backgroundColor: "#1f6f34",
+    borderColor: "#1f6f34",
+  },
+  timeSlotText: {
+    color: "#1f6f34",
+  },
+  timeSlotTextSelected: {
+    color: "#fff",
+  },
+
+  locationRow: {
+    flexDirection: "row",
+    gap: 8,
+    marginTop: 8,
+  },
+  locationButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#e0e6ea",
+    backgroundColor: "#fff",
+  },
+  locationButtonActive: {
+    borderColor: "#1f6f34",
+    backgroundColor: "#eaf6ec",
+  },
+  locationButtonText: {
+    color: "#333",
+  },
+  locationButtonTextActive: {
+    color: "#1f6f34",
+    fontWeight: "700",
+  },
+  locationInfo: {
+    marginTop: 8,
+    color: "#666",
+  },
+
+  input: {
+    backgroundColor: "#fff",
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#e0e6ea",
+    color: "#111",
+    marginTop: 8,
+  },
+  readonlyInput: {
+    marginTop: 8,
+    color: "#333",
+  },
+  warningText: {
+    marginTop: 8,
+    color: "#b94600",
+  },
+
+  summaryCard: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 12,
+    marginTop: 12,
+    width: "100%",
+  },
+  summaryTitle: {
+    fontWeight: "700",
+    marginBottom: 8,
+  },
+  summaryRow: {
+    marginTop: 6,
+    color: "#333",
+  },
+  summaryLabel: {
+    fontWeight: "700",
+  },
+  summaryValue: {
+    color: "#333",
+  },
+
+  submitButton: {
+    marginTop: 14,
+    backgroundColor: "#f7941e",
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    borderRadius: 12,
+    alignItems: "center",
+  },
+  submitButtonDisabled: {
+    backgroundColor: "#f3b889",
+  },
+  submitButtonText: {
+    color: "#fff",
+    fontWeight: "700",
+  },
+  submitButtonTextDisabled: {
+    color: "#fff",
+    opacity: 0.9,
   },
 });
