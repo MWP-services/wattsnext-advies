@@ -97,6 +97,9 @@ function buildEmailBody(advices) {
   const details = advices.map((advice, i) => {
     const lines = [`${i + 1}. ${advice.title || 'Advies'}`];
     if (advice.summary) lines.push(`Samenvatting: ${advice.summary}`);
+    if (advice.companyName) lines.push(`Bedrijfsnaam: ${advice.companyName}`);
+    if (advice.companyAddress) lines.push(`Adres: ${advice.companyAddress}`);
+    if (advice.customerEmail) lines.push(`E-mailadres klant: ${advice.customerEmail}`);
     const ts = formatTimestamp(advice.updatedAt || advice.savedAt);
     if (ts) lines.push(`Opgeslagen op: ${ts}`);
     return lines.join('\n');
@@ -172,6 +175,15 @@ export default function SavedAdvicesScreen() {
     <View style={styles.card}>
       <Text style={styles.cardTitle}>{item.title}</Text>
       {item.summary ? <Text style={styles.cardSummary}>{item.summary}</Text> : null}
+      {item.companyName ? (
+        <Text style={styles.cardMeta}>Bedrijf: {item.companyName}</Text>
+      ) : null}
+      {item.companyAddress ? (
+        <Text style={styles.cardMeta}>Adres: {item.companyAddress}</Text>
+      ) : null}
+      {item.customerEmail ? (
+        <Text style={styles.cardMeta}>E-mail klant: {item.customerEmail}</Text>
+      ) : null}
       {(item.savedAt || item.updatedAt) ? (
         <Text style={styles.cardDate}>
           Opgeslagen op: {formatTimestamp(item.updatedAt || item.savedAt)}
@@ -237,5 +249,6 @@ const styles = StyleSheet.create({
   card: { backgroundColor: 'rgba(255, 255, 255, 0.95)', borderRadius: 12, padding: 20 },
   cardTitle: { fontSize: 18, fontWeight: '700', color: '#1f6f34', marginBottom: 8 },
   cardSummary: { fontSize: 16, color: '#333', marginBottom: 6 },
+  cardMeta: { fontSize: 14, color: '#333', marginBottom: 4 },
   cardDate: { fontSize: 14, color: '#666' },
 });
