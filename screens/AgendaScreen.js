@@ -66,12 +66,6 @@ export default function AgendaScreen({ navigation }) {
   const { width } = useWindowDimensions();
   const today = useMemo(() => new Date(), []);
 
-  const todayString = useMemo(() => {
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-
   const todayString = useMemo(() => toLocalDateKey(today), [today]);
 
 
