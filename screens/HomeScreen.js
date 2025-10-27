@@ -13,7 +13,7 @@ import {
   useWindowDimensions,
   ScrollView,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+
 
 export default function HomeScreen({ navigation }) {
   const { width } = useWindowDimensions();
@@ -250,12 +250,7 @@ if (!emailResult.success) {
                 accessibilityRole="button"
                 accessibilityLabel="Start Advies"
               >
-
-                <Text style={[styles.buttonText, { fontSize: width > 768 ? 20 : 18 }]}>Start Advies</Text>
-
-                <Text
-                  style={[styles.buttonText, { fontSize: width > 768 ? 20 : 18 }]}
-                >
+                <Text style={[styles.buttonText, { fontSize: width > 768 ? 20 : 18 }]}>
                   Start Advies
                 </Text>
 
@@ -267,19 +262,8 @@ if (!emailResult.success) {
                 accessibilityRole="button"
                 accessibilityLabel="Account beheren"
 
-              >
-                <Text
-                  style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}
-                >
-                  Account beheren
-
-              >
-                <Text
-                  style={[
-                    styles.secondaryButtonText,
-                    { fontSize: width > 768 ? 18 : 16 },
-                  ]}
-                >
+>
+                <Text style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}>
                   Account beheren
                 </Text>
               </TouchableOpacity>
@@ -290,50 +274,18 @@ if (!emailResult.success) {
                 accessibilityRole="button"
                 accessibilityLabel="Bekijk opgeslagen adviezen"
               >
-                <Text
-                  style={[
-                    styles.secondaryButtonText,
-                    { fontSize: width > 768 ? 18 : 16 },
-                  ]}
-                >
-                  Opgeslagen adviezen
-
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[styles.gridButton, styles.secondaryButton]}
-
-                onPress={() => navigation.navigate("SavedAdvices")}
-                accessibilityRole="button"
-                accessibilityLabel="Bekijk opgeslagen adviezen"
-              >
-                <Text
-                  style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}
-                >
+                <Text style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}>
                   Opgeslagen adviezen
                 </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={[styles.gridButton, styles.secondaryButton]}
-                onPress={() => navigation.navigate("Agenda")}
-                accessibilityRole="button"
-                accessibilityLabel="Ga naar agenda"
-              >
-                <Text
-                  style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}
-
+  
                 onPress={handleScrollToAgenda}
                 accessibilityRole="button"
                 accessibilityLabel="Ga naar agenda"
-              >
-                <Text
-                  style={[
-                    styles.secondaryButtonText,
-                    { fontSize: width > 768 ? 18 : 16 },
-                  ]}
-                >
+              >                <Text style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}>
                   Agenda
                 </Text>
               </TouchableOpacity>
@@ -516,12 +468,14 @@ if (!emailResult.success) {
                   disabled={!canSubmit}
                   accessibilityRole="button"
                   accessibilityLabel="Bevestig afspraak"
-                  
-                >
-                  Agenda
-                </Text>
-              </TouchableOpacity>
-            </View>
+
+>
+                  <Text style={styles.submitButtonText || { color: "#fff", fontWeight: "700" }}>
+                    Bevestig afspraak
+                  </Text>
+                </TouchableOpacity>
+              </>
+            )}
           </View>
         </ScrollView>
       </SafeAreaView>
