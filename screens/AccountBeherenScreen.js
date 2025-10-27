@@ -12,18 +12,12 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
-import {
-  getAuth,
-  deleteUser,
-  reauthenticateWithCredential,
-  EmailAuthProvider,
-} from 'firebase/auth';
+import { deleteUser, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
+import { auth } from '../firebaseConfig';
 
 export default function AccountBeherenScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState('');
-  const auth = getAuth();
-
   const tryDelete = async () => {
     const user = auth.currentUser;
     if (!user) {

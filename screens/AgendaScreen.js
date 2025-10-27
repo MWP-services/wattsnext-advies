@@ -28,12 +28,14 @@ const OFFICE_ADDRESS = "Industrieweg 6, Stolwijk";
 
 
 
+
 function toLocalDateKey(date) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
+
 
 
 function formatDateLabel(dateString) {
@@ -67,6 +69,7 @@ export default function AgendaScreen({ navigation }) {
   const today = useMemo(() => new Date(), []);
 
   const todayString = useMemo(() => toLocalDateKey(today), [today]);
+
 
 
   const [selectedDate, setSelectedDate] = useState("");
