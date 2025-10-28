@@ -1,119 +1,47 @@
-// screens/HomeScreen.js
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+
+
+
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Image,
-  SafeAreaView,
   useWindowDimensions,
-  Platform,
   ScrollView,
+  SafeAreaView,
   TextInput,
-  Alert,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 
-import { auth, db } from "../firebaseConfig";
-import { isEmailConfigured, sendAppointmentEmails } from "../support/email";
-import AppointmentCalendar from "../components/AppointmentCalendar"; // <— FIX: juiste import/naam
+import { getAuth } from "firebase/auth";
 
-import { LocaleConfig } from "react-native-calendars"; // <— FIX: verwijder ongebruikte Calendar import
+const auth = getAuth();
 
-import {
-  collection,
-  doc,
-  onSnapshot,
-  runTransaction,
-  serverTimestamp,
-} from "firebase/firestore"; // <— FIX: verwijder ongebruikte getDoc/setDoc
-
-function toLocalDateKey(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
-function formatDateLabel(dateString) {
-  if (!dateString) return "";
-  try {
-    const formatter = new Intl.DateTimeFormat("nl-NL", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-    return formatter.format(new Date(`${dateString}T12:00:00`));
-  } catch (_e) {
-    return dateString;
-  }
-}
-
-// Locale NL voor react-native-calendars
-LocaleConfig.locales.nl = {
-  monthNames: [
-    "januari",
-    "februari",
-    "maart",
-    "april",
-    "mei",
-    "juni",
-    "juli",
-    "augustus",
-    "september",
-    "oktober",
-    "november",
-    "december",
-  ],
-  monthNamesShort: [
-    "jan",
-    "feb",
-    "mrt",
-    "apr",
-    "mei",
-    "jun",
-    "jul",
-    "aug",
-    "sep",
-    "okt",
-    "nov",
-  ],
-  dayNames: [
-    "zondag",
-    "maandag",
-    "dinsdag",
-    "woensdag",
-    "donderdag",
-    "vrijdag",
-    "zaterdag",
-  ],
-  dayNamesShort: ["zo", "ma", "di", "wo", "do", "vr", "za"],
-  today: "Vandaag",
-};
-LocaleConfig.defaultLocale = "nl";
-
-const TIME_SLOTS = (() => {
-  const slots = [];
-  for (let hour = 9; hour <= 17; hour += 1) {
-    for (let minute = 0; minute < 60; minute += 30) {
-      if (hour === 17 && minute > 0) break;
-      slots.push(
-        `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`
-      );
-    }
-  }
-  return slots;
-})();
-
-const OFFICE_ADDRESS = "Industrieweg 6, Stolwijk";
+const OFFICE_ADDRESS = "WattsNext Kantoor, Voorbeeldstraat 1, 1234 AB";
 
 export default function HomeScreen({ navigation }) {
   const { width } = useWindowDimensions();
+
+
+
   const today = useMemo(() => new Date(), []);
+
+  // Helper: produce a local date key in YYYY-MM-DD format (uses local timezone)
+  function toLocalDateKey(date) {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
   const todayString = useMemo(() => toLocalDateKey(today), [today]);
 
+  const scrollViewRef = useRef(null);
+  const schedulerPositionRef = useRef(0);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [locationType, setLocationType] = useState("office");
@@ -286,17 +214,23 @@ if (!emailResult.success) {
     }
   };
 
+
+
+
+  const handleScrollToAgenda = () => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({
+        y: Math.max(schedulerPositionRef.current - 16, 0),
+        animated: true,
+      });
+    }
+  };
+
   return (
     <View style={styles.container}>
-      {/* Achtergrondlaag */}
-      <Image
-        source={require("../assets/achtergrond.png")}
-        style={styles.backgroundImage}
-      />
+      <Image source={require("../assets/achtergrond.png")} style={styles.backgroundImage} />
 
-      {/* Voorgrond: content */}
       <SafeAreaView style={styles.safeArea}>
-        {/* Terugknop */}
         <TouchableOpacity
           onPress={() => navigation.replace("LoginScreen")}
           style={styles.backTopLeft}
@@ -307,6 +241,7 @@ if (!emailResult.success) {
         </TouchableOpacity>
 
         <ScrollView
+          ref={scrollViewRef}
           contentContainerStyle={[
             styles.scrollContent,
             { paddingHorizontal: width > 768 ? 48 : 24 },
@@ -326,65 +261,63 @@ if (!emailResult.success) {
               resizeMode="contain"
             />
 
-            <Text style={[styles.title, { fontSize: width > 768 ? 36 : 24 }]}>
-              WattsNext Advies
-            </Text>
+            <Text style={[styles.title, { fontSize: width > 768 ? 36 : 24 }]}>WattsNext Advies</Text>
 
-            {/* Start Advies */}
-            <TouchableOpacity
-              style={[styles.button, { width: width > 768 ? 300 : "80%" }]}
-              onPress={() => navigation.navigate("Stap 1")}
-              accessibilityRole="button"
-              accessibilityLabel="Start Advies"
-            >
-              <Text
-                style={[styles.buttonText, { fontSize: width > 768 ? 20 : 18 }]}
+            <View style={styles.buttonGrid}>
+              <TouchableOpacity
+                style={[styles.gridButton, styles.button]}
+                onPress={() => navigation.navigate("Stap 1")}
+                accessibilityRole="button"
+                accessibilityLabel="Start Advies"
               >
-                Start Advies
-              </Text>
-            </TouchableOpacity>
+                <Text style={[styles.buttonText, { fontSize: width > 768 ? 20 : 18 }]}>
+                  Start Advies
+                </Text>
+ 
+              </TouchableOpacity>
 
-            {/* Spacing */}
-            <View style={{ height: 16 }} />
+              <TouchableOpacity
+                style={[styles.gridButton, styles.secondaryButton]}
+                onPress={() => navigation.navigate("AccountBeheren")}
+                accessibilityRole="button"
+                accessibilityLabel="Account beheren"
+ 
+ >
+                <Text style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}>
+                  Account beheren
+                </Text>
+              </TouchableOpacity>
 
-            {/* Account beheren */}
-            <TouchableOpacity
-              style={[styles.secondaryButton, { width: width > 768 ? 300 : "80%" }]}
-              onPress={() => navigation.navigate("AccountBeheren")}
-              accessibilityRole="button"
-              accessibilityLabel="Account beheren"
-            >
-              <Text
-                style={[
-                  styles.secondaryButtonText,
-                  { fontSize: width > 768 ? 18 : 16 },
-                ]}
+              <TouchableOpacity
+                style={[styles.gridButton, styles.secondaryButton]}
+                onPress={() => navigation.navigate("SavedAdvices")}
+                accessibilityRole="button"
+                accessibilityLabel="Bekijk opgeslagen adviezen"
               >
-                Account beheren
-              </Text>
-            </TouchableOpacity>
+                <Text style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}>
+                  Opgeslagen adviezen
+                </Text>
+              </TouchableOpacity>
 
-            <View style={{ height: 16 }} />
-
-            <TouchableOpacity
-              style={[styles.secondaryButton, { width: width > 768 ? 300 : "80%" }]}
-              onPress={() => navigation.navigate("SavedAdvices")}
-              accessibilityRole="button"
-              accessibilityLabel="Bekijk opgeslagen adviezen"
-            >
-              <Text
-                style={[
-                  styles.secondaryButtonText,
-                  { fontSize: width > 768 ? 18 : 16 },
-                ]}
+              <TouchableOpacity
+                style={[styles.gridButton, styles.secondaryButton]}
+   
+                onPress={handleScrollToAgenda}
+                accessibilityRole="button"
+                accessibilityLabel="Ga naar agenda"
               >
-                Opgeslagen adviezen
-              </Text>
-            </TouchableOpacity>
+                <Text style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}>
+                  Agenda
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           <View
             style={[styles.schedulerCard, { width: width > 992 ? "70%" : "100%" }]}
+            onLayout={(event) => {
+              schedulerPositionRef.current = event.nativeEvent.layout.y;
+            }}
           >
             <Text style={styles.schedulerTitle}>Plan direct een afspraak</Text>
             <Text style={styles.schedulerSubtitle}>
@@ -556,82 +489,107 @@ if (!emailResult.success) {
                   disabled={!canSubmit}
                   accessibilityRole="button"
                   accessibilityLabel="Bevestig afspraak"
-                >
-                  {submitting ? (
-                    <ActivityIndicator color="#fff" />
-                  ) : (
-                    <Text style={styles.submitButtonText}>Afspraak bevestigen</Text>
-                  )}
+ 
+ >
+                  <Text style={[styles.submitButtonText, !canSubmit && styles.submitButtonTextDisabled]}>
+                    {submitting ? "Bezig..." : "Bevestig afspraak"}
+                  </Text>
                 </TouchableOpacity>
               </>
             )}
           </View>
-        </ScrollView>
-      </SafeAreaView>
-    </View>
-  );
+          </ScrollView>
+        </SafeAreaView>
+      </View>
+    );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: "relative",
+    backgroundColor: "#f0f4f8",
   },
   backgroundImage: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    resizeMode: Platform.OS === "web" ? "contain" : "cover",
-    zIndex: -1,
+    ...StyleSheet.absoluteFillObject,
+    width: undefined,
+    height: undefined,
+    resizeMode: "cover",
   },
   safeArea: {
     flex: 1,
   },
+
+
+
   scrollContent: {
-    paddingBottom: 48,
-    gap: 32,
+    flexGrow: 1,
+    paddingTop: 40,
+    paddingBottom: 60,
     alignItems: "center",
+    gap: 32,
   },
   content: {
     width: "100%",
     maxWidth: 1200,
     alignItems: "center",
-    gap: 16,
+    gap: 32,
     paddingTop: 32,
   },
   logo: {
-    marginBottom: 40,
+    marginBottom: 20,
   },
   title: {
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: "#3eaf4f",
+    fontWeight: "700",
+    color: "#1f6f34",
     textAlign: "center",
   },
-  button: {
-    backgroundColor: "#f7941e",
-    padding: 16,
-    borderRadius: 10,
+
+  buttonGrid: {
+    width: "100%",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 16,
+    justifyContent: "center",
+  },
+  gridButton: {
+    flexBasis: "45%",
+    minWidth: 160,
+    borderRadius: 16,
+    paddingVertical: 20,
+    paddingHorizontal: 16,
     alignItems: "center",
+    justifyContent: "center",
+  },
+
+  button: {
+    backgroundColor: "#1f6f34",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 6,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 10,
   },
   buttonText: {
     color: "#fff",
-    fontWeight: "600",
+    fontWeight: "700",
   },
   secondaryButton: {
-    backgroundColor: "#ffffffee",
-    padding: 14,
-    borderRadius: 10,
-    alignItems: "center",
+    backgroundColor: "#ffffffdd",
     borderWidth: 1,
-    borderColor: "#f7941e",
+    borderColor: "#1f6f34",
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 10,
   },
   secondaryButtonText: {
-    color: "#f7941e",
+    color: "#1f6f34",
     fontWeight: "600",
+    textAlign: "center",
   },
+
   backTopLeft: {
     position: "absolute",
     top: 10,
@@ -647,155 +605,162 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
   },
+
+  /* Scheduler / appointment styles (basic coverage for used classes) */
   schedulerCard: {
-    backgroundColor: "#ffffffee",
-    borderRadius: 18,
-    padding: 24,
-    width: "100%",
-    maxWidth: 900,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 20,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.1,
-    shadowRadius: 16,
-    elevation: 6,
-    gap: 20,
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 4,
+    alignSelf: "center",
   },
   schedulerTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "700",
+    marginBottom: 6,
     color: "#1f6f34",
   },
   schedulerSubtitle: {
-    fontSize: 15,
-    color: "#333",
-    lineHeight: 22,
+    color: "#556069",
+    marginBottom: 12,
   },
   loadingWrapper: {
     alignItems: "center",
-    gap: 12,
-    paddingVertical: 20,
+    paddingVertical: 24,
   },
   loadingText: {
-    color: "#333",
+    marginTop: 8,
+    color: "#556069",
   },
+
   section: {
-    gap: 12,
+    marginTop: 16,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: "600",
+    fontWeight: "700",
+    marginBottom: 8,
     color: "#1f6f34",
   },
   emptyMessage: {
-    color: "#555",
-    fontStyle: "italic",
+    color: "#666",
   },
+
   timeGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 12,
+    gap: 8,
   },
   timeSlot: {
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#1f6f34",
     paddingVertical: 10,
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#e0e6ea",
+    margin: 4,
     backgroundColor: "#fff",
   },
   timeSlotSelected: {
     backgroundColor: "#1f6f34",
+    borderColor: "#1f6f34",
   },
   timeSlotText: {
     color: "#1f6f34",
-    fontWeight: "600",
   },
   timeSlotTextSelected: {
     color: "#fff",
   },
+
   locationRow: {
     flexDirection: "row",
-    gap: 12,
-    flexWrap: "wrap",
+    gap: 8,
+    marginTop: 8,
   },
   locationButton: {
-    flexGrow: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#f7941e",
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 10,
+    borderColor: "#e0e6ea",
     backgroundColor: "#fff",
   },
   locationButtonActive: {
-    backgroundColor: "#f7941e",
+    borderColor: "#1f6f34",
+    backgroundColor: "#eaf6ec",
   },
   locationButtonText: {
-    color: "#f7941e",
-    fontWeight: "600",
-    textAlign: "center",
+    color: "#333",
   },
   locationButtonTextActive: {
-    color: "#fff",
+    color: "#1f6f34",
+    fontWeight: "700",
   },
   locationInfo: {
-    color: "#555",
+    marginTop: 8,
+    color: "#666",
   },
+
   input: {
-    borderWidth: 1,
-    borderColor: "#c7c7c7",
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
     backgroundColor: "#fff",
-    color: "#000",
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#e0e6ea",
+    color: "#111",
+    marginTop: 8,
   },
   readonlyInput: {
     marginTop: 8,
-    color: "#555",
+    color: "#333",
   },
   warningText: {
-    color: "#d9534f",
-    marginTop: 6,
+    marginTop: 8,
+    color: "#b94600",
   },
+
   summaryCard: {
-    backgroundColor: "#f7f9f8",
-    borderRadius: 12,
-    padding: 16,
-    gap: 8,
-    borderWidth: 1,
-    borderColor: "#dfe7e3",
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 12,
+    marginTop: 12,
+    width: "100%",
   },
   summaryTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#1f6f34",
+    fontWeight: "700",
+    marginBottom: 8,
   },
   summaryRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
+    marginTop: 6,
     color: "#333",
   },
   summaryLabel: {
-    fontWeight: "600",
-    color: "#1f6f34",
+    fontWeight: "700",
   },
   summaryValue: {
     color: "#333",
   },
+
   submitButton: {
-    backgroundColor: "#1f6f34",
-    paddingVertical: 16,
+    marginTop: 14,
+    backgroundColor: "#f7941e",
+    paddingVertical: 14,
+    paddingHorizontal: 18,
     borderRadius: 12,
     alignItems: "center",
-    marginTop: 8,
   },
   submitButtonDisabled: {
-    backgroundColor: "#9fb7a6",
+    backgroundColor: "#f3b889",
   },
   submitButtonText: {
     color: "#fff",
-    fontSize: 18,
     fontWeight: "700",
+  },
+  submitButtonTextDisabled: {
+    color: "#fff",
+    opacity: 0.9,
   },
 });

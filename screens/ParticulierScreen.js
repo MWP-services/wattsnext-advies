@@ -1,12 +1,12 @@
 import React from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   ImageBackground,
-  SafeAreaView,
-  Platform,
+  Platform
 } from 'react-native';
 
 export default function ParticulierScreen({ navigation }) {

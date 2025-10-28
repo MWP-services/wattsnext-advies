@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   View,
   Text,
@@ -7,8 +8,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   ScrollView,
-  ImageBackground,
-  SafeAreaView
+  ImageBackground
 } from 'react-native';
 
 export default function ZakelijkOpslagScreen({ navigation }) {

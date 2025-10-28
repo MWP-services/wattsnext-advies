@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import { View, Text, ActivityIndicator, StyleSheet, ImageBackground, SafeAreaView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, ActivityIndicator, StyleSheet, ImageBackground } from 'react-native';
 
 export default function AdviesScreen() {
   const route = useRoute();

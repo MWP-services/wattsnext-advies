@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground } from 'react-native';
 import SaveAdviceButton from '../components/SaveAdviceButton';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Advies12_5Hoog({ navigation }) {
   return (

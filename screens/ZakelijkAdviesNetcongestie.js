@@ -1,4 +1,5 @@
 import React from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   View,
   Text,
@@ -6,8 +7,7 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  ImageBackground,
-  SafeAreaView,
+  ImageBackground
 } from 'react-native';
 import SaveAdviceButton from '../components/SaveAdviceButton';
 

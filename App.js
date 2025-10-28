@@ -1,9 +1,18 @@
+// App.js
+// 1) Firebase MOET als eerste geladen worden
+import './firebaseConfig';            // forceert init vóór alle andere imports
+import { auth } from './firebaseConfig';
+
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Asset } from 'expo-asset';
 import * as SplashScreen from 'expo-splash-screen';
+import { onAuthStateChanged } from 'firebase/auth';
+
+// Screens pas hierna importeren
 import HomeScreen from './screens/HomeScreen';
+import AgendaScreen from './screens/AgendaScreen';
 import Step1Screen from './screens/Step1Screen';
 import ParticulierScreen from './screens/ParticulierScreen';
 import Fase1Screen from './screens/Fase1Screen';
@@ -57,48 +66,59 @@ import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import AccountBeherenScreen from './screens/AccountBeherenScreen';
 import SavedAdvicesScreen from './screens/SavedAdvicesScreen';
+
 import Toast from 'react-native-toast-message';
 import { imageAssets } from './assets/assetManifest';
-
-
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [isReady, setIsReady] = useState(false);
+  const [assetsLoaded, setAssetsLoaded] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [initialRoute, setInitialRoute] = useState('LoginScreen');
 
   useEffect(() => {
     let isMounted = true;
-
     (async () => {
       try {
-        await SplashScreen.preventAutoHideAsync();
+        if (SplashScreen?.preventAutoHideAsync) {
+          await SplashScreen.preventAutoHideAsync();
+        }
         await Asset.loadAsync(imageAssets);
       } catch (error) {
         console.warn('Failed to preload image assets', error);
       } finally {
-        if (isMounted) {
-          setIsReady(true);
-          await SplashScreen.hideAsync();
-        }
+        if (isMounted) setAssetsLoaded(true);
       }
     })();
-
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false; };
   }, []);
 
-  if (!isReady) {
-    return null;
-  }
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setInitialRoute(user ? 'HomeScreen' : 'LoginScreen');
+      setAuthChecked(true);
+    });
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    if (assetsLoaded && authChecked) {
+      if (SplashScreen?.hideAsync) {
+        SplashScreen.hideAsync();
+      }
+    }
+  }, [assetsLoaded, authChecked]);
+
+  if (!assetsLoaded || !authChecked) return null;
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="LoginScreen">
+      <Stack.Navigator initialRouteName={initialRoute}>
         <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-        <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Agenda" component={AgendaScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SavedAdvices" component={SavedAdvicesScreen} />
         <Stack.Screen name="Stap 1" component={Step1Screen} />
         <Stack.Screen name="Particulier" component={ParticulierScreen} />
@@ -149,9 +169,9 @@ export default function App() {
         <Stack.Screen name="Specificaties501" component={Specificaties501Screen} />
         <Stack.Screen name="Spec_HV_particulier" component={Spec_HV_particulier} />
         <Stack.Screen name="Spec_LV_particulier" component={Spec_LV_particulier} />
-          <Stack.Screen name="AccountBeheren" component={AccountBeherenScreen} />
+        <Stack.Screen name="AccountBeheren" component={AccountBeherenScreen} />
       </Stack.Navigator>
-          <Toast />
+      <Toast />
     </NavigationContainer>
   );
 }
