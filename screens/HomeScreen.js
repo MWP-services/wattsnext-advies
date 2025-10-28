@@ -16,6 +16,7 @@ import {
   Alert,
 } from "react-native";
 
+
 import { getAuth } from "firebase/auth";
 
 const auth = getAuth();
@@ -89,6 +90,26 @@ export default function HomeScreen({ navigation }) {
 
     return unsubscribe;
   }, []);
+  function formatDateLabel(dateString) {
+  if (!dateString) return "";
+  const [y, m, d] = dateString.split("-").map(Number);
+  const dt = new Date(y, m - 1, d);
+  if (isNaN(dt.getTime())) return dateString;
+
+  try {
+    return new Intl.DateTimeFormat("nl-NL", {
+      weekday: "short",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }).format(dt);
+  } catch {
+    const months = ["jan","feb","mrt","apr","mei","jun","jul","aug","sep","okt","nov","dec"];
+    const weekdays = ["zo","ma","di","wo","do","vr","za"];
+    return `${weekdays[dt.getDay()]} ${String(d).padStart(2,"0")} ${months[m-1]} ${y}`;
+  }
+}
+
 
   // reset tijd bij datumwissel
   useEffect(() => {
