@@ -15,8 +15,18 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
+import {
+  collection,
+  doc,
+  onSnapshot,
+  runTransaction,
+  serverTimestamp,
+} from "firebase/firestore";
+import { db } from "../firebaseConfig"; // <-- jouw geïnitialiseerde Firestore
 
-import { getAuth } from "firebase/auth";
+
+import { getAuth   } from "firebase/auth";
+import AppointmentCalendar from "../components/AppointmentCalendar";
 
 const auth = getAuth();
 
@@ -37,6 +47,14 @@ export default function HomeScreen({ navigation }) {
     const day = String(d.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
+  // 30-minuten tijdsloten tussen 09:00 en 17:00
+const TIME_SLOTS = [
+  "09:00","09:30","10:00","10:30",
+  "11:00","11:30","12:00","12:30",
+  "13:00","13:30","14:00","14:30",
+  "15:00","15:30","16:00","16:30",
+];
+
 
   const todayString = useMemo(() => toLocalDateKey(today), [today]);
 
@@ -121,6 +139,25 @@ export default function HomeScreen({ navigation }) {
       : OFFICE_ADDRESS;
 
   const formattedDate = formatDateLabel(selectedDate);
+  // Helper: maak van "YYYY-MM-DD" een nette NL-label (bv. "ma 27 okt 2025")
+function formatDateLabel(dateString) {
+  if (!dateString) return "";
+  // dateString verwacht formaat "YYYY-MM-DD"
+  const [y, m, d] = dateString.split("-").map(Number);
+  // Let op: maand is 0-based in Date
+  const dt = new Date(y, m - 1, d);
+
+  if (isNaN(dt.getTime())) return dateString; // fallback als parsing faalt
+
+  // Korte, leesbare NL-notatie
+  return new Intl.DateTimeFormat("nl-NL", {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(dt);
+}
+
 
   const canSubmit =
     Boolean(
