@@ -23,8 +23,8 @@
   "submit": {
     "production": {
       "ios": {
-        "ascApiKeyPath": "C:/Users/Micha/Documents/wattsnext-advies/AuthKey_DH3S4P4792.p8",
-        "ascApiKeyId": "DH3S4P4792",
+        "ascApiKeyPath": "C:\\Users\\Micha\\OneDrive\\Documents\\wattsnext app 1.0\\AuthKey_5754Q379JZ.p8",
+        "ascApiKeyId": "5754Q379JZ",
         "ascApiKeyIssuerId": "9c924912-211a-4a1e-bd74-f9cd458b3177",
         "ascAppId": "6749598938"
       }

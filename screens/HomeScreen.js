@@ -1,7 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-
-
-
+import React from "react";
 import {
   View,
   Text,
@@ -11,22 +8,9 @@ import {
   useWindowDimensions,
   ScrollView,
   SafeAreaView,
-  TextInput,
-  ActivityIndicator,
-  Alert,
 } from "react-native";
-import {
-  collection,
-  doc,
-  onSnapshot,
-  runTransaction,
-  serverTimestamp,
-} from "firebase/firestore";
-import { db } from "../firebaseConfig"; // <-- jouw geïnitialiseerde Firestore
 
-
-import { getAuth   } from "firebase/auth";
-import AppointmentCalendar from "../components/AppointmentCalendar";
+import { getAuth } from "firebase/auth";
 
 const auth = getAuth();
 
@@ -47,14 +31,6 @@ export default function HomeScreen({ navigation }) {
     const day = String(d.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
-  // 30-minuten tijdsloten tussen 09:00 en 17:00
-const TIME_SLOTS = [
-  "09:00","09:30","10:00","10:30",
-  "11:00","11:30","12:00","12:30",
-  "13:00","13:30","14:00","14:30",
-  "15:00","15:30","16:00","16:30",
-];
-
 
   const todayString = useMemo(() => toLocalDateKey(today), [today]);
 
@@ -139,25 +115,6 @@ const TIME_SLOTS = [
       : OFFICE_ADDRESS;
 
   const formattedDate = formatDateLabel(selectedDate);
-  // Helper: maak van "YYYY-MM-DD" een nette NL-label (bv. "ma 27 okt 2025")
-function formatDateLabel(dateString) {
-  if (!dateString) return "";
-  // dateString verwacht formaat "YYYY-MM-DD"
-  const [y, m, d] = dateString.split("-").map(Number);
-  // Let op: maand is 0-based in Date
-  const dt = new Date(y, m - 1, d);
-
-  if (isNaN(dt.getTime())) return dateString; // fallback als parsing faalt
-
-  // Korte, leesbare NL-notatie
-  return new Intl.DateTimeFormat("nl-NL", {
-    weekday: "short",
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  }).format(dt);
-}
-
 
   const canSubmit =
     Boolean(
@@ -278,7 +235,6 @@ if (!emailResult.success) {
         </TouchableOpacity>
 
         <ScrollView
-          ref={scrollViewRef}
           contentContainerStyle={[
             styles.scrollContent,
             { paddingHorizontal: width > 768 ? 48 : 24 },
@@ -307,10 +263,7 @@ if (!emailResult.success) {
                 accessibilityRole="button"
                 accessibilityLabel="Start Advies"
               >
-                <Text style={[styles.buttonText, { fontSize: width > 768 ? 20 : 18 }]}>
-                  Start Advies
-                </Text>
- 
+                <Text style={[styles.buttonText, { fontSize: width > 768 ? 20 : 18 }]}>Start Advies</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -318,11 +271,8 @@ if (!emailResult.success) {
                 onPress={() => navigation.navigate("AccountBeheren")}
                 accessibilityRole="button"
                 accessibilityLabel="Account beheren"
- 
- >
-                <Text style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}>
-                  Account beheren
-                </Text>
+              >
+                <Text style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}>Account beheren</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -331,214 +281,23 @@ if (!emailResult.success) {
                 accessibilityRole="button"
                 accessibilityLabel="Bekijk opgeslagen adviezen"
               >
-                <Text style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}>
-                  Opgeslagen adviezen
-                </Text>
+                <Text style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}>Opgeslagen adviezen</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={[styles.gridButton, styles.secondaryButton]}
-   
-                onPress={handleScrollToAgenda}
+                onPress={() => navigation.navigate("Agenda")}
                 accessibilityRole="button"
                 accessibilityLabel="Ga naar agenda"
               >
-                <Text style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}>
-                  Agenda
-                </Text>
+                <Text style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}>Agenda</Text>
               </TouchableOpacity>
             </View>
           </View>
-
-          <View
-            style={[styles.schedulerCard, { width: width > 992 ? "70%" : "100%" }]}
-            onLayout={(event) => {
-              schedulerPositionRef.current = event.nativeEvent.layout.y;
-            }}
-          >
-            <Text style={styles.schedulerTitle}>Plan direct een afspraak</Text>
-            <Text style={styles.schedulerSubtitle}>
-              Kies een datum, selecteer een tijd tussen 09:00 en 17:00 en geef
-              aan of we bij jou langskomen of dat je liever op kantoor afspreekt.
-            </Text>
-
-            {loadingSlots ? (
-              <View style={styles.loadingWrapper}>
-                <ActivityIndicator size="large" color="#f7941e" />
-                <Text style={styles.loadingText}>Beschikbaarheid laden…</Text>
-              </View>
-            ) : (
-              <>
-                <AppointmentCalendar
-                  today={today}
-                  selectedDate={selectedDate}
-                  onSelectDate={(dateString) => setSelectedDate(dateString)}
-                  bookedSlots={bookedSlots}
-                  totalSlotsPerDay={TIME_SLOTS.length}
-                />
-
-                {selectedDate ? (
-                  <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Beschikbare tijden</Text>
-                    {availableTimes.length === 0 ? (
-                      <Text style={styles.emptyMessage}>
-                        Alle tijdsloten zijn bezet op deze dag. Kies een andere datum.
-                      </Text>
-                    ) : (
-                      <View style={styles.timeGrid}>
-                        {availableTimes.map((time) => {
-                          const isSelected = selectedTime === time;
-                          return (
-                            <TouchableOpacity
-                              key={time}
-                              style={[
-                                styles.timeSlot,
-                                isSelected && styles.timeSlotSelected,
-                              ]}
-                              onPress={() => setSelectedTime(time)}
-                              accessibilityRole="button"
-                              accessibilityLabel={`Kies tijdstip ${time}`}
-                            >
-                              <Text
-                                style={[
-                                  styles.timeSlotText,
-                                  isSelected && styles.timeSlotTextSelected,
-                                ]}
-                              >
-                                {time}
-                              </Text>
-                            </TouchableOpacity>
-                          );
-                        })}
-                      </View>
-                    )}
-                  </View>
-                ) : (
-                  <Text style={styles.emptyMessage}>
-                    Selecteer eerst een datum in de kalender om beschikbare tijden te zien.
-                  </Text>
-                )}
-
-                <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>Voorkeurslocatie</Text>
-                  <View style={styles.locationRow}>
-                    <TouchableOpacity
-                      style={[
-                        styles.locationButton,
-                        locationType === "office" && styles.locationButtonActive,
-                      ]}
-                      onPress={() => setLocationType("office")}
-                    >
-                      <Text
-                        style={[
-                          styles.locationButtonText,
-                          locationType === "office" && styles.locationButtonTextActive,
-                        ]}
-                      >
-                        WattsNext kantoor
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={[
-                        styles.locationButton,
-                        locationType === "home" && styles.locationButtonActive,
-                      ]}
-                      onPress={() => setLocationType("home")}
-                    >
-                      <Text
-                        style={[
-                          styles.locationButtonText,
-                          locationType === "home" && styles.locationButtonTextActive,
-                        ]}
-                      >
-                        Afspraak thuis
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  <Text style={styles.locationInfo}>
-                    {locationType === "home"
-                      ? "Vul het adres in waar we mogen langskomen."
-                      : `Het gesprek vindt plaats op ons kantoor: ${OFFICE_ADDRESS}.`}
-                  </Text>
-                  {locationType === "home" && (
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Straat, huisnummer, woonplaats"
-                      value={customAddress}
-                      onChangeText={setCustomAddress}
-                      placeholderTextColor="#666"
-                      accessibilityLabel="Adres voor afspraak"
-                    />
-                  )}
-                </View>
-
-                <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>Contactgegevens</Text>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Naam"
-                    value={contactName}
-                    onChangeText={setContactName}
-                    placeholderTextColor="#666"
-                    accessibilityLabel="Naam contactpersoon"
-                  />
-                  <Text style={styles.readonlyInput}>
-                    E-mail: {userEmail || "onbekend"}
-                  </Text>
-                  {!userEmail && (
-                    <Text style={styles.warningText}>
-                      We konden geen e-mailadres vinden. Log opnieuw in om een afspraak
-                      te kunnen plannen.
-                    </Text>
-                  )}
-                </View>
-
-                <View style={styles.summaryCard}>
-                  <Text style={styles.summaryTitle}>Overzicht afspraak</Text>
-                  <Text style={styles.summaryRow}>
-                    <Text style={styles.summaryLabel}>Datum:</Text>{" "}
-                    <Text style={styles.summaryValue}>
-                      {formattedDate || "Nog niet gekozen"}
-                    </Text>
-                  </Text>
-                  <Text style={styles.summaryRow}>
-                    <Text style={styles.summaryLabel}>Tijd:</Text>{" "}
-                    <Text style={styles.summaryValue}>
-                      {selectedTime || "Nog niet gekozen"}
-                    </Text>
-                  </Text>
-                  <Text style={styles.summaryRow}>
-                    <Text style={styles.summaryLabel}>Locatie:</Text>{" "}
-                    <Text style={styles.summaryValue}>{locationLabel}</Text>
-                  </Text>
-                  <Text style={styles.summaryRow}>
-                    <Text style={styles.summaryLabel}>Adres:</Text>{" "}
-                    <Text style={styles.summaryValue}>{appointmentAddress}</Text>
-                  </Text>
-                </View>
-
-                <TouchableOpacity
-                  style={[
-                    styles.submitButton,
-                    !canSubmit && styles.submitButtonDisabled,
-                  ]}
-                  onPress={handleSubmitAppointment}
-                  disabled={!canSubmit}
-                  accessibilityRole="button"
-                  accessibilityLabel="Bevestig afspraak"
- 
- >
-                  <Text style={[styles.submitButtonText, !canSubmit && styles.submitButtonTextDisabled]}>
-                    {submitting ? "Bezig..." : "Bevestig afspraak"}
-                  </Text>
-                </TouchableOpacity>
-              </>
-            )}
-          </View>
-          </ScrollView>
-        </SafeAreaView>
-      </View>
-    );
+        </ScrollView>
+      </SafeAreaView>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -555,9 +314,6 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
-
-
-
   scrollContent: {
     flexGrow: 1,
     paddingTop: 40,
@@ -580,7 +336,6 @@ const styles = StyleSheet.create({
     color: "#1f6f34",
     textAlign: "center",
   },
-
   buttonGrid: {
     width: "100%",
     flexDirection: "row",
@@ -597,7 +352,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
   button: {
     backgroundColor: "#1f6f34",
     shadowColor: "#000",
@@ -626,7 +380,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
   },
-
   backTopLeft: {
     position: "absolute",
     top: 10,
@@ -641,163 +394,5 @@ const styles = StyleSheet.create({
     color: "#1a73e8",
     fontSize: 16,
     fontWeight: "500",
-  },
-
-  /* Scheduler / appointment styles (basic coverage for used classes) */
-  schedulerCard: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 20,
-    shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 8,
-    elevation: 4,
-    alignSelf: "center",
-  },
-  schedulerTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-    marginBottom: 6,
-    color: "#1f6f34",
-  },
-  schedulerSubtitle: {
-    color: "#556069",
-    marginBottom: 12,
-  },
-  loadingWrapper: {
-    alignItems: "center",
-    paddingVertical: 24,
-  },
-  loadingText: {
-    marginTop: 8,
-    color: "#556069",
-  },
-
-  section: {
-    marginTop: 16,
-  },
-  sectionTitle: {
-    fontWeight: "700",
-    marginBottom: 8,
-    color: "#1f6f34",
-  },
-  emptyMessage: {
-    color: "#666",
-  },
-
-  timeGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  timeSlot: {
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#e0e6ea",
-    margin: 4,
-    backgroundColor: "#fff",
-  },
-  timeSlotSelected: {
-    backgroundColor: "#1f6f34",
-    borderColor: "#1f6f34",
-  },
-  timeSlotText: {
-    color: "#1f6f34",
-  },
-  timeSlotTextSelected: {
-    color: "#fff",
-  },
-
-  locationRow: {
-    flexDirection: "row",
-    gap: 8,
-    marginTop: 8,
-  },
-  locationButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#e0e6ea",
-    backgroundColor: "#fff",
-  },
-  locationButtonActive: {
-    borderColor: "#1f6f34",
-    backgroundColor: "#eaf6ec",
-  },
-  locationButtonText: {
-    color: "#333",
-  },
-  locationButtonTextActive: {
-    color: "#1f6f34",
-    fontWeight: "700",
-  },
-  locationInfo: {
-    marginTop: 8,
-    color: "#666",
-  },
-
-  input: {
-    backgroundColor: "#fff",
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#e0e6ea",
-    color: "#111",
-    marginTop: 8,
-  },
-  readonlyInput: {
-    marginTop: 8,
-    color: "#333",
-  },
-  warningText: {
-    marginTop: 8,
-    color: "#b94600",
-  },
-
-  summaryCard: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 12,
-    marginTop: 12,
-    width: "100%",
-  },
-  summaryTitle: {
-    fontWeight: "700",
-    marginBottom: 8,
-  },
-  summaryRow: {
-    marginTop: 6,
-    color: "#333",
-  },
-  summaryLabel: {
-    fontWeight: "700",
-  },
-  summaryValue: {
-    color: "#333",
-  },
-
-  submitButton: {
-    marginTop: 14,
-    backgroundColor: "#f7941e",
-    paddingVertical: 14,
-    paddingHorizontal: 18,
-    borderRadius: 12,
-    alignItems: "center",
-  },
-  submitButtonDisabled: {
-    backgroundColor: "#f3b889",
-  },
-  submitButtonText: {
-    color: "#fff",
-    fontWeight: "700",
-  },
-  submitButtonTextDisabled: {
-    color: "#fff",
-    opacity: 0.9,
   },
 });
