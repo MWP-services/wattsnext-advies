@@ -1,3 +1,4 @@
+// screens/HomeScreen.js
 import React from "react";
 import {
   View,
@@ -8,223 +9,26 @@ import {
   useWindowDimensions,
   ScrollView,
   SafeAreaView,
+  Platform,
 } from "react-native";
 
 import { getAuth } from "firebase/auth";
 
 const auth = getAuth();
 
-const OFFICE_ADDRESS = "WattsNext Kantoor, Voorbeeldstraat 1, 1234 AB";
-
 export default function HomeScreen({ navigation }) {
   const { width } = useWindowDimensions();
 
-
-
-  const today = useMemo(() => new Date(), []);
-
-  // Helper: produce a local date key in YYYY-MM-DD format (uses local timezone)
-  function toLocalDateKey(date) {
-    const d = new Date(date);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
-
-  const todayString = useMemo(() => toLocalDateKey(today), [today]);
-
-  const scrollViewRef = useRef(null);
-  const schedulerPositionRef = useRef(0);
-  const [selectedDate, setSelectedDate] = useState("");
-  const [selectedTime, setSelectedTime] = useState("");
-  const [locationType, setLocationType] = useState("office");
-  const [customAddress, setCustomAddress] = useState("");
-  const [contactName, setContactName] = useState(
-    auth.currentUser?.displayName || ""
-  );
-
-  const [bookedSlots, setBookedSlots] = useState({});
-  const [loadingSlots, setLoadingSlots] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const userEmail = auth.currentUser?.email || "";
-
-  // Realtime beschikbaarheid inladen
-  useEffect(() => {
-    const appointmentsRef = collection(db, "appointments");
-
-    const unsubscribe = onSnapshot(
-      appointmentsRef,
-      (snapshot) => {
-        const nextSlots = {};
-        snapshot.forEach((docSnap) => {
-          const data = docSnap.data();
-          if (!data?.date || !data?.time) return;
-          if (!nextSlots[data.date]) nextSlots[data.date] = new Set();
-          nextSlots[data.date].add(data.time);
-        });
-
-        const formatted = Object.fromEntries(
-          Object.entries(nextSlots).map(([date, value]) => [
-            date,
-            Array.from(value).sort(),
-          ])
-        );
-
-        setBookedSlots(formatted);
-        setLoadingSlots(false);
-      },
-      (error) => {
-        console.error("Fout bij het ophalen van afspraken", error);
-        setBookedSlots({});
-        setLoadingSlots(false);
-      }
-    );
-
-    return unsubscribe;
-  }, []);
-
-  // reset tijd bij datumwissel
-  useEffect(() => {
-    setSelectedTime("");
-  }, [selectedDate]);
-
-  const availableTimes = useMemo(() => {
-    if (!selectedDate) return [];
-    const bookedForDay = bookedSlots[selectedDate] || [];
-    const now = new Date();
-
-    return TIME_SLOTS.filter((slot) => {
-      if (bookedForDay.includes(slot)) return false;
-
-      if (selectedDate === todayString) {
-        const [hour, minute] = slot.split(":").map(Number);
-        const slotDate = new Date();
-        slotDate.setHours(hour, minute, 0, 0);
-        if (slotDate <= now) return false;
-      }
-
-      return true;
-    });
-  }, [bookedSlots, selectedDate, todayString]);
-
-  const locationLabel = locationType === "home" ? "Thuis" : "Bij WattsNext";
-  const appointmentAddress =
-    locationType === "home" && customAddress.trim()
-      ? customAddress.trim()
-      : OFFICE_ADDRESS;
-
-  const formattedDate = formatDateLabel(selectedDate);
-
-  const canSubmit =
-    Boolean(
-      selectedDate &&
-        selectedTime &&
-        contactName.trim() &&
-        userEmail &&
-        (locationType === "office" || customAddress.trim())
-    ) && !submitting;
-
-  const handleSubmitAppointment = async () => {
-    if (!canSubmit) return;
-
-    const trimmedName = contactName.trim();
-    const trimmedAddress =
-      locationType === "home" ? customAddress.trim() : OFFICE_ADDRESS;
-
-    if (locationType === "home" && !trimmedAddress) {
-      Alert.alert("Adres ontbreekt", "Voer een adres in voor de afspraak thuis.");
-      return;
-    }
-
-    const slotId = `${selectedDate}_${selectedTime.replace(":", "-")}`;
-    const appointmentRef = doc(db, "appointments", slotId);
-
-    setSubmitting(true);
-    try {
-      // Atomisch reserveren via transactie
-      await runTransaction(db, async (tx) => {
-        const snap = await tx.get(appointmentRef);
-        if (snap.exists()) {
-          throw new Error("slot-taken");
-        }
-        tx.set(appointmentRef, {
-          date: selectedDate,
-          time: selectedTime,
-          location: locationType,
-          address: trimmedAddress,
-          contactName: trimmedName,
-          contactEmail: userEmail,
-          createdAt: serverTimestamp(),
-        });
-      });
-
-      // E-mails buiten de transactie
-    const emailResult = await sendAppointmentEmails({
-  clientEmail: userEmail,
-  clientName: trimmedName,
-  formattedDate,
-  time: selectedTime,
-  locationLabel,
-  address: trimmedAddress,
-});
-
-if (!emailResult.success) {
-  const firstErr = emailResult.results.find(r => !r.ok)?.error || 'onbekende fout';
-  console.log('EmailJS failure', emailResult);
-  Alert.alert(
-    "Afspraak ingepland",
-    isEmailConfigured()
-      ? `Bevestigingsmail verzenden mislukt:\n${firstErr}`
-      : "De afspraak is ingepland. Configureer de EXPO_PUBLIC_EMAILJS_* variabelen om automatische e-mails te versturen."
-  );
-} else {
-  Alert.alert(
-    "Afspraak ingepland",
-    "Je ontvangt zo een bevestiging in de mail. WattsNext wordt ook op de hoogte gebracht."
-  );
-}
-
-      // Form reset
-      setSelectedDate("");
-      setSelectedTime("");
-      setCustomAddress("");
-      setLocationType("office");
-    } catch (error) {
-      if (error?.message === "slot-taken") {
-        Alert.alert(
-          "Tijdslot niet beschikbaar",
-          "Dit tijdslot is zojuist geboekt. Kies een andere tijd."
-        );
-      } else {
-        console.error("Fout bij het plannen van een afspraak", error);
-        Alert.alert(
-          "Er ging iets mis",
-          "Het is niet gelukt om de afspraak te plannen. Probeer het later opnieuw."
-        );
-      }
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-
-
-
-  const handleScrollToAgenda = () => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({
-        y: Math.max(schedulerPositionRef.current - 16, 0),
-        animated: true,
-      });
-    }
-  };
-
   return (
     <View style={styles.container}>
-      <Image source={require("../assets/achtergrond.png")} style={styles.backgroundImage} />
+      {/* Achtergrondafbeelding zoals in Step2Screen */}
+      <Image
+        source={require("../assets/achtergrond.png")}
+        style={styles.backgroundImage}
+      />
 
       <SafeAreaView style={styles.safeArea}>
+        {/* Logout / terug-naar-login knop */}
         <TouchableOpacity
           onPress={() => navigation.replace("LoginScreen")}
           style={styles.backTopLeft}
@@ -242,6 +46,7 @@ if (!emailResult.success) {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.content}>
+            {/* Logo */}
             <Image
               source={require("../assets/logo.png")}
               style={[
@@ -254,43 +59,47 @@ if (!emailResult.success) {
               resizeMode="contain"
             />
 
-            <Text style={[styles.title, { fontSize: width > 768 ? 36 : 24 }]}>WattsNext Advies</Text>
+            {/* Titel */}
+            <Text style={[styles.title, { fontSize: width > 768 ? 36 : 24 }]}>
+              WattsNext Advies
+            </Text>
 
-            <View style={styles.buttonGrid}>
+            {/* 2 x 2 tegel-grid */}
+            <View style={styles.tileGrid}>
               <TouchableOpacity
-                style={[styles.gridButton, styles.button]}
+                style={styles.tileButton}
                 onPress={() => navigation.navigate("Stap 1")}
                 accessibilityRole="button"
                 accessibilityLabel="Start Advies"
               >
-                <Text style={[styles.buttonText, { fontSize: width > 768 ? 20 : 18 }]}>Start Advies</Text>
+                <Text style={styles.tileButtonText}>Start Advies</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.gridButton, styles.secondaryButton]}
+                style={styles.tileButton}
                 onPress={() => navigation.navigate("AccountBeheren")}
                 accessibilityRole="button"
                 accessibilityLabel="Account beheren"
               >
-                <Text style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}>Account beheren</Text>
+                <Text style={styles.tileButtonText}>Account beheren</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.gridButton, styles.secondaryButton]}
+                style={styles.tileButton}
                 onPress={() => navigation.navigate("SavedAdvices")}
                 accessibilityRole="button"
                 accessibilityLabel="Bekijk opgeslagen adviezen"
               >
-                <Text style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}>Opgeslagen adviezen</Text>
+                <Text style={styles.tileButtonText}>Opgeslagen adviezen</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.gridButton, styles.secondaryButton]}
+                style={styles.tileButton}
                 onPress={() => navigation.navigate("Agenda")}
                 accessibilityRole="button"
                 accessibilityLabel="Ga naar agenda"
               >
-                <Text style={[styles.secondaryButtonText, { fontSize: width > 768 ? 18 : 16 }]}>Agenda</Text>
+                <Text style={styles.tileButtonText}>Agenda</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -301,19 +110,27 @@ if (!emailResult.success) {
 }
 
 const styles = StyleSheet.create({
+  // layout / background
   container: {
     flex: 1,
+    position: "relative",
     backgroundColor: "#f0f4f8",
   },
   backgroundImage: {
-    ...StyleSheet.absoluteFillObject,
-    width: undefined,
-    height: undefined,
-    resizeMode: "cover",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    resizeMode: Platform.OS === "web" ? "contain" : "cover",
+    zIndex: -1,
   },
+
   safeArea: {
     flex: 1,
   },
+
+  // scroll wrapper
   scrollContent: {
     flexGrow: 1,
     paddingTop: 40,
@@ -321,65 +138,66 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 32,
   },
+
+  // centrale content
   content: {
     width: "100%",
-    maxWidth: 1200,
+    maxWidth: 600,
     alignItems: "center",
     gap: 32,
     paddingTop: 32,
   },
+
   logo: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
+
   title: {
     fontWeight: "700",
     color: "#1f6f34",
     textAlign: "center",
   },
-  buttonGrid: {
+
+  // GRID met enorme tegels
+  tileGrid: {
     width: "100%",
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 16,
     justifyContent: "center",
+    columnGap: 16,
+    rowGap: 16,
   },
-  gridButton: {
-    flexBasis: "45%",
-    minWidth: 160,
-    borderRadius: 16,
-    paddingVertical: 20,
-    paddingHorizontal: 16,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  button: {
-    backgroundColor: "#1f6f34",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.2,
-    shadowRadius: 12,
-    elevation: 6,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
+
+  tileButton: {
+    backgroundColor: "#f7941e", // oranje
     borderRadius: 10,
+
+    // NOG groter
+    minHeight: 220,
+    flexBasis: "48%", // iets ruimer dan 47% zodat hij visueel nog voller lijkt
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+
+    justifyContent: "center",
+    alignItems: "center",
+
+    // schaduw voor dikke card look
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.28,
+    shadowRadius: 18,
+    elevation: 10,
   },
-  buttonText: {
+
+  tileButtonText: {
     color: "#fff",
     fontWeight: "700",
-  },
-  secondaryButton: {
-    backgroundColor: "#ffffffdd",
-    borderWidth: 1,
-    borderColor: "#1f6f34",
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    borderRadius: 10,
-  },
-  secondaryButtonText: {
-    color: "#1f6f34",
-    fontWeight: "600",
     textAlign: "center",
+    fontSize: 22,
+    lineHeight: 26,
   },
+
+  // terugknop linksboven
   backTopLeft: {
     position: "absolute",
     top: 10,
@@ -396,3 +214,4 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
 });
+
