@@ -1,3 +1,4 @@
+// screens/ProductenScreen.js
 import React, { useState } from "react";
 import {
   useWindowDimensions,
@@ -11,6 +12,10 @@ import {
   StyleSheet,
   ImageBackground,
 } from "react-native";
+
+import { sendProductQuoteEmail } from "../support/email";
+import { db, auth } from "../firebaseConfig"; // ✅ we gebruiken auth hier echt
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 const PRODUCTEN = [
   {
@@ -183,61 +188,71 @@ const PRODUCTEN = [
   },
 ];
 
-async function sendProductQuoteRequest(product) {
-  try {
-    // TODO: vervang dit met echte emailjs.send(...)
-    // emailjs.send("service_id", "template_id", {
-    //   to_email: "micha.honkoop@gmail.com",
-    //   subject: `Offerte-aanvraag ${product.productnaam}`,
-    //   message: `Installateur heeft een offerte aangevraagd voor:\n` +
-    //     `Artikelcode: ${product.artikelcode}\n` +
-    //     `Productnaam: ${product.productnaam}\n` +
-    //     `Categorie: ${product.categorie}\n` +
-    //     `Specificaties: ${product.specs || "-"}\n` +
-    //     `Doelgroep: ${product.doelgroep}\n\n` +
-    //     "Stuur prijsopgave en levertijd terug.",
-    // });
-    console.log(
-      "Stuur offerte-aanvraag naar micha.honkoop@gmail.com",
-      product
-    );
-    return { success: true };
-  } catch (e) {
-    return { success: false, error: e.message || "onbekende fout" };
-  }
-}
-
-function ProductenScreen() {
+function ProductenScreen({ navigation }) {
   const { width } = useWindowDimensions();
   const [sendingId, setSendingId] = useState(null);
 
   const handleQuoteRequest = async (product) => {
-    if (sendingId) {
+    if (sendingId) return;
+
+    // check of er een user is
+    const user = auth.currentUser;
+    if (!user) {
+      Alert.alert(
+        "Inloggen vereist",
+        "Je moet ingelogd zijn om een offerte aan te vragen."
+      );
       return;
     }
 
     setSendingId(product.artikelcode);
+    console.log("➡ Offerte-aanvraag gestart voor:", product.productnaam);
+
     try {
-      const result = await sendProductQuoteRequest(product);
+      // 1. Mail sturen
+      const result = await sendProductQuoteEmail(product);
+      console.log("📧 Mailresultaat:", result);
+
+      // 2. Opslaan in Firestore mét uid (nodig voor rules)
+      const docRef = await addDoc(collection(db, "quotes"), {
+        uid: user.uid, // <- essentieel voor security rules
+        artikelcode: product.artikelcode,
+        productnaam: product.productnaam,
+        categorie: product.categorie,
+        doelgroep: product.doelgroep,
+        specs: product.specs || "",
+        status: "open",
+        createdAt: serverTimestamp(),
+      });
+
+      console.log("✅ Quote opgeslagen in Firestore met id:", docRef.id);
+
       if (result && result.success) {
         Alert.alert(
           "Offerte aangevraagd",
-          `Offerte aangevraagd voor ${product.productnaam}. We nemen contact met je op.`
+          `Offerte aangevraagd voor ${product.productnaam}. Je ontvangt binnenkort een reactie.`
         );
       } else {
         Alert.alert(
-          "Fout",
-          "Er ging iets mis bij het aanvragen van de offerte."
+          "Offerte aangemaakt",
+          "De aanvraag is opgeslagen, maar de e-mail kon niet worden verstuurd."
         );
       }
     } catch (error) {
+      console.error("❌ Offerte-aanvraag fout:", error);
       Alert.alert(
         "Fout",
-        "Er ging iets mis bij het aanvragen van de offerte."
+        "Er ging iets mis bij het aanvragen van de offerte (opslaan of mail)."
       );
     } finally {
       setSendingId(null);
     }
+  };
+
+  const getCardWidth = () => {
+    if (width > 1024) return "48%";
+    if (width > 768) return "70%";
+    return "100%";
   };
 
   return (
@@ -258,6 +273,18 @@ function ProductenScreen() {
             Producten voor installateurs
           </Text>
 
+          {/* knop naar overzicht offertes */}
+          <TouchableOpacity
+            style={styles.overviewButton}
+            onPress={() => navigation.navigate("Offertes")}
+            accessibilityRole="button"
+            accessibilityLabel="Ga naar mijn offerte-aanvragen"
+          >
+            <Text style={styles.overviewButtonText}>
+              Mijn offerte-aanvragen →
+            </Text>
+          </TouchableOpacity>
+
           <View
             style={[
               styles.productsWrapper,
@@ -266,31 +293,32 @@ function ProductenScreen() {
           >
             {PRODUCTEN.map((product) => {
               const isSending = sendingId === product.artikelcode;
+              const uniqueKey = `${product.artikelcode}-${product.categorie}`;
+
               return (
                 <View
-                  key={product.artikelcode}
+                  key={uniqueKey}
                   style={[
                     styles.productCard,
-                    {
-                      width:
-                        width > 1024
-                          ? "48%"
-                          : width > 768
-                          ? "70%"
-                          : "100%",
-                    },
+                    { width: getCardWidth() },
                   ]}
                 >
-                  <Text style={styles.productName}>{product.productnaam}</Text>
+                  <Text style={styles.productName}>
+                    {product.productnaam}
+                  </Text>
+
                   <Text style={styles.productMeta}>
                     Artikelcode: {product.artikelcode}
                   </Text>
+
                   <Text style={styles.productMeta}>
                     Categorie: {product.categorie}
                   </Text>
+
                   <Text style={styles.productMeta}>
                     Doelgroep: {product.doelgroep}
                   </Text>
+
                   {product.specs ? (
                     <Text style={styles.productMeta}>
                       Specificaties: {product.specs}
@@ -344,6 +372,23 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: "700",
     color: "#1f6f34",
+    textAlign: "center",
+  },
+  overviewButton: {
+    backgroundColor: "#f7941e",
+    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 6,
+  },
+  overviewButtonText: {
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 16,
     textAlign: "center",
   },
   productsWrapper: {

@@ -66,9 +66,11 @@ import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import AccountBeherenScreen from './screens/AccountBeherenScreen';
 import SavedAdvicesScreen from './screens/SavedAdvicesScreen';
-
+import ProductenScreen from './screens/ProductenScreen';
 import Toast from 'react-native-toast-message';
 import { imageAssets } from './assets/assetManifest';
+import OffertesScreen from "./screens/OffertesScreen";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -170,6 +172,10 @@ export default function App() {
         <Stack.Screen name="Spec_HV_particulier" component={Spec_HV_particulier} />
         <Stack.Screen name="Spec_LV_particulier" component={Spec_LV_particulier} />
         <Stack.Screen name="AccountBeheren" component={AccountBeherenScreen} />
+        <Stack.Screen name="ProductenScreen" component={ProductenScreen} />
+        <Stack.Screen name="Offertes" component={OffertesScreen} />
+        <Stack.Screen name="Producten" component={ProductenScreen} />
+
       </Stack.Navigator>
       <Toast />
     </NavigationContainer>

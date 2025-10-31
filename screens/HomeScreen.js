@@ -121,9 +121,13 @@ export default function HomeScreen({ navigation }) {
                   accessibilityRole="button"
                   accessibilityLabel="Bekijk opgeslagen adviezen"
                 >
-                  <Text style={styles.tileButtonText}>Opgeslagen adviezen</Text>
+                  <Text style={styles.tileButtonText}>
+                    Opgeslagen adviezen
+                  </Text>
                 </TouchableOpacity>
 
+               
+                {/* Nieuwe tegel voor de productcatalogus */}
                 <TouchableOpacity
                   style={[
                     styles.tileButton,
@@ -132,11 +136,11 @@ export default function HomeScreen({ navigation }) {
                       minHeight: isWide ? 200 : 200,
                     },
                   ]}
-                  onPress={() => navigation.navigate("Agenda")}
+                  onPress={() => navigation.navigate("ProductenScreen")}
                   accessibilityRole="button"
-                  accessibilityLabel="Ga naar agenda"
+                  accessibilityLabel="Bekijk producten en vraag offerte aan"
                 >
-                  <Text style={styles.tileButtonText}>Agenda</Text>
+                  <Text style={styles.tileButtonText}>Producten</Text>
                 </TouchableOpacity>
               </View>
             </View>
