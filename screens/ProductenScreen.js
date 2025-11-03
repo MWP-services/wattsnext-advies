@@ -1,5 +1,5 @@
 // screens/ProductenScreen.js
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   useWindowDimensions,
   Alert,
@@ -11,14 +11,16 @@ import {
   TouchableOpacity,
   StyleSheet,
   ImageBackground,
+  TextInput,
+  KeyboardAvoidingView,
 } from "react-native";
 
 import { sendProductQuoteEmail } from "../support/email";
-import { db, auth } from "../firebaseConfig"; // ✅ we gebruiken auth hier echt
+import { db, auth } from "../firebaseConfig";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 const PRODUCTEN = [
-  {
+ {
     artikelcode: "TBLV-0.5I",
     productId: "AS-5.12LDL-GL1",
     productnaam: "AS-5.12LD-GL1",
@@ -172,7 +174,7 @@ const PRODUCTEN = [
   },
   {
     artikelcode: "TBLV-PS-I",
-    productId: "Power Sensor",
+    productId: "Power Sensor Hoog Voltage",
     productnaam: "Power Sensor",
     categorie: "Thuis Batterij Hoog Voltage",
     doelgroep: "Installateur",
@@ -180,7 +182,7 @@ const PRODUCTEN = [
   },
   {
     artikelcode: "TBLV-PS-I",
-    productId: "Power Sensor",
+    productId: "Power Sensor Laag Voltage",
     productnaam: "Power Sensor",
     categorie: "Thuis Batterij Laag Voltage",
     doelgroep: "Installateur",
@@ -188,34 +190,69 @@ const PRODUCTEN = [
   },
 ];
 
+
+
 function ProductenScreen({ navigation }) {
   const { width } = useWindowDimensions();
   const [sendingId, setSendingId] = useState(null);
 
+  // 🔎 Zoeken
+  const [query, setQuery] = useState("");
+
+  // ✅ Multi-select
+  // we slaan de selectie op als Map<uniqueKey, product>
+  const [selected, setSelected] = useState(new Map());
+
+  const getUniqueKey = (p) => `${p.artikelcode}__${p.productId}`;
+
+  const filteredProducts = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return PRODUCTEN;
+    return PRODUCTEN.filter((p) => {
+      const hay = [
+        p.productnaam,
+        p.artikelcode,
+        p.categorie,
+        p.specs,
+        p.productId,
+        p.doelgroep,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      return hay.includes(q);
+    });
+  }, [query]);
+
+  const toggleSelect = (product) => {
+    const key = getUniqueKey(product);
+    setSelected((prev) => {
+      const next = new Map(prev);
+      if (next.has(key)) next.delete(key);
+      else next.set(key, product);
+      return next;
+    });
+  };
+
+  const clearSelection = () => setSelected(new Map());
+
+  // Enkele aanvraag (bestaande flow)
   const handleQuoteRequest = async (product) => {
     if (sendingId) return;
 
-    // check of er een user is
     const user = auth.currentUser;
     if (!user) {
-      Alert.alert(
-        "Inloggen vereist",
-        "Je moet ingelogd zijn om een offerte aan te vragen."
-      );
+      Alert.alert("Inloggen vereist", "Je moet ingelogd zijn om een offerte aan te vragen.");
       return;
     }
 
     setSendingId(product.artikelcode);
-    console.log("➡ Offerte-aanvraag gestart voor:", product.productnaam);
-
     try {
-      // 1. Mail sturen
       const result = await sendProductQuoteEmail(product);
-      console.log("📧 Mailresultaat:", result);
 
-      // 2. Opslaan in Firestore mét uid (nodig voor rules)
-      const docRef = await addDoc(collection(db, "quotes"), {
-        uid: user.uid, // <- essentieel voor security rules
+      await addDoc(collection(db, "quotes"), {
+        uid: user.uid,
+        type: "single",
         artikelcode: product.artikelcode,
         productnaam: product.productnaam,
         categorie: product.categorie,
@@ -225,27 +262,76 @@ function ProductenScreen({ navigation }) {
         createdAt: serverTimestamp(),
       });
 
-      console.log("✅ Quote opgeslagen in Firestore met id:", docRef.id);
-
-      if (result && result.success) {
-        Alert.alert(
-          "Offerte aangevraagd",
-          `Offerte aangevraagd voor ${product.productnaam}. Je ontvangt binnenkort een reactie.`
-        );
+      if (result?.success) {
+        Alert.alert("Offerte aangevraagd", `Offerte aangevraagd voor ${product.productnaam}.`);
       } else {
-        Alert.alert(
-          "Offerte aangemaakt",
-          "De aanvraag is opgeslagen, maar de e-mail kon niet worden verstuurd."
-        );
+        Alert.alert("Offerte aangemaakt", "Aanvraag opgeslagen, maar e-mail kon niet worden verstuurd.");
       }
     } catch (error) {
       console.error("❌ Offerte-aanvraag fout:", error);
-      Alert.alert(
-        "Fout",
-        "Er ging iets mis bij het aanvragen van de offerte (opslaan of mail)."
-      );
+      Alert.alert("Fout", "Er ging iets mis bij het aanvragen van de offerte (opslaan of mail).");
     } finally {
       setSendingId(null);
+    }
+  };
+
+  // Meervoudige aanvraag (N producten in 1 document)
+  const handleBatchQuoteRequest = async () => {
+    if (selected.size === 0) {
+      Alert.alert("Geen selectie", "Vink eerst één of meer producten aan.");
+      return;
+    }
+
+    const user = auth.currentUser;
+    if (!user) {
+      Alert.alert("Inloggen vereist", "Je moet ingelogd zijn om een offerte aan te vragen.");
+      return;
+    }
+
+    const items = Array.from(selected.values()).map((p) => ({
+      artikelcode: p.artikelcode,
+      productnaam: p.productnaam,
+      categorie: p.categorie,
+      doelgroep: p.doelgroep,
+      specs: p.specs || "",
+    }));
+console.log('batch uid =', auth.currentUser?.uid);
+
+    try {
+      // 1) Opslaan als één document met alle items
+      await addDoc(collection(db, "quotes"), {
+        uid: user.uid,
+        type: "multi",
+        items,
+        status: "open",
+        createdAt: serverTimestamp(),
+      });
+
+      // 2) Optioneel: mails versturen voor ieder item (fallback)
+      // Als je later sendMultiProductQuoteEmail maakt, kun je die hier gebruiken.
+      let mailFailures = 0;
+      for (const item of items) {
+        try {
+          await sendProductQuoteEmail(item);
+        } catch (e) {
+          mailFailures += 1;
+          console.warn("Mailfail voor item", item?.productnaam, e);
+        }
+      }
+
+      if (mailFailures === 0) {
+        Alert.alert("Offerte aangevraagd", `Aanvraag voor ${items.length} producten is verstuurd.`);
+      } else if (mailFailures < items.length) {
+        Alert.alert("Gedeeltelijke mailfout", `Aanvraag opgeslagen. ${mailFailures} e-mails zijn niet verstuurd.`);
+      } else {
+        Alert.alert("Offerte opgeslagen", "Aanvraag opgeslagen, maar e-mails konden niet worden verstuurd.");
+      }
+
+      clearSelection();
+      navigation.navigate("Offertes");
+    } catch (error) {
+      console.error("❌ Batch-offerte fout:", error);
+      Alert.alert("Fout", "Het is niet gelukt om de batch-aanvraag op te slaan.");
     }
   };
 
@@ -255,6 +341,8 @@ function ProductenScreen({ navigation }) {
     return "100%";
   };
 
+  const selectedCount = selected.size;
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ImageBackground
@@ -262,106 +350,129 @@ function ProductenScreen({ navigation }) {
         style={styles.backgroundImage}
         imageStyle={styles.backgroundImageInner}
       >
-        <ScrollView
-          contentContainerStyle={[
-            styles.scrollContent,
-            { paddingHorizontal: width > 768 ? 48 : 24 },
-          ]}
-          showsVerticalScrollIndicator={false}
-        >
-          <Text style={[styles.title, { fontSize: width > 768 ? 32 : 24 }]}>
-            Producten voor installateurs
-          </Text>
-
-          {/* knop naar overzicht offertes */}
-          <TouchableOpacity
-            style={styles.overviewButton}
-            onPress={() => navigation.navigate("Offertes")}
-            accessibilityRole="button"
-            accessibilityLabel="Ga naar mijn offerte-aanvragen"
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
+          <ScrollView
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={[styles.scrollContent, { paddingHorizontal: width > 768 ? 48 : 24 }]}
+            showsVerticalScrollIndicator={false}
           >
-            <Text style={styles.overviewButtonText}>
-              Mijn offerte-aanvragen →
+            <Text style={[styles.title, { fontSize: width > 768 ? 32 : 24 }]}>
+              Producten voor installateurs
             </Text>
-          </TouchableOpacity>
 
-          <View
-            style={[
-              styles.productsWrapper,
-              { flexDirection: width > 1024 ? "row" : "column" },
-            ]}
-          >
-            {PRODUCTEN.map((product) => {
-              const isSending = sendingId === product.artikelcode;
-              const uniqueKey = `${product.artikelcode}-${product.categorie}`;
+            {/* 🔎 Zoeken */}
+            <View style={styles.searchRow}>
+              <TextInput
+                style={styles.searchInput}
+                value={query}
+                placeholder="Zoek op naam, artikelcode, categorie, specs…"
+                onChangeText={setQuery}
+                placeholderTextColor="#666"
+                returnKeyType="search"
+              />
+              {!!query && (
+                <TouchableOpacity style={styles.clearBtn} onPress={() => setQuery("")}>
+                  <Text style={styles.clearBtnText}>✕</Text>
+                </TouchableOpacity>
+              )}
+            </View>
 
-              return (
-                <View
-                  key={uniqueKey}
-                  style={[
-                    styles.productCard,
-                    { width: getCardWidth() },
-                  ]}
-                >
-                  <Text style={styles.productName}>
-                    {product.productnaam}
-                  </Text>
+            {/* Navigatie naar Offertes */}
+            <TouchableOpacity
+              style={styles.overviewButton}
+              onPress={() => navigation.navigate("Offertes")}
+            >
+              <Text style={styles.overviewButtonText}>Mijn offerte-aanvragen →</Text>
+            </TouchableOpacity>
 
-                  <Text style={styles.productMeta}>
-                    Artikelcode: {product.artikelcode}
-                  </Text>
+            {/* Batch-actieknoppen */}
+            <View style={styles.batchBar}>
+              <Text style={styles.batchInfo}>
+                Geselecteerd: {selectedCount}
+              </Text>
+              <TouchableOpacity
+                style={[styles.batchBtn, selectedCount === 0 && { opacity: 0.5 }]}
+                onPress={handleBatchQuoteRequest}
+                disabled={selectedCount === 0}
+              >
+                <Text style={styles.batchBtnText}>
+                  Vraag {selectedCount > 0 ? `${selectedCount} ` : ""}offertes aan
+                </Text>
+              </TouchableOpacity>
+              {selectedCount > 0 && (
+                <TouchableOpacity style={styles.batchClearBtn} onPress={clearSelection}>
+                  <Text style={styles.batchClearBtnText}>Reset selectie</Text>
+                </TouchableOpacity>
+              )}
+            </View>
 
-                  <Text style={styles.productMeta}>
-                    Categorie: {product.categorie}
-                  </Text>
+            <View
+              style={[
+                styles.productsWrapper,
+                { flexDirection: width > 1024 ? "row" : "column" },
+              ]}
+            >
+              {filteredProducts.map((product) => {
+                const uniqueKey = getUniqueKey(product);
+                const isSending = sendingId === product.artikelcode;
+                const isSelected = selected.has(uniqueKey);
 
-                  <Text style={styles.productMeta}>
-                    Doelgroep: {product.doelgroep}
-                  </Text>
+                return (
+                  <View key={uniqueKey} style={[styles.productCard, { width: getCardWidth() }]}>
+                    <View style={styles.cardHeaderRow}>
+                      {/* Pseudo checkbox */}
+                      <TouchableOpacity
+                        style={[styles.checkbox, isSelected && styles.checkboxChecked]}
+                        onPress={() => toggleSelect(product)}
+                        accessibilityRole="checkbox"
+                        accessibilityState={{ checked: isSelected }}
+                      >
+                        {isSelected ? <Text style={styles.checkboxTick}>✓</Text> : null}
+                      </TouchableOpacity>
 
-                  {product.specs ? (
-                    <Text style={styles.productMeta}>
-                      Specificaties: {product.specs}
-                    </Text>
-                  ) : null}
+                      <Text style={styles.productName}>{product.productnaam}</Text>
+                    </View>
 
-                  <TouchableOpacity
-                    style={[
-                      styles.quoteButton,
-                      isSending && styles.quoteButtonDisabled,
-                    ]}
-                    onPress={() => handleQuoteRequest(product)}
-                    disabled={isSending}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Vraag offerte aan voor ${product.productnaam}`}
-                  >
-                    <Text style={styles.quoteButtonText}>
-                      {isSending ? "Bezig..." : "Vraag offerte aan"}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              );
-            })}
-          </View>
-        </ScrollView>
+                    <Text style={styles.productMeta}>Artikelcode: {product.artikelcode}</Text>
+                    <Text style={styles.productMeta}>Categorie: {product.categorie}</Text>
+                    <Text style={styles.productMeta}>Doelgroep: {product.doelgroep}</Text>
+                    {product.specs ? (
+                      <Text style={styles.productMeta}>Specificaties: {product.specs}</Text>
+                    ) : null}
+
+                    <View style={styles.cardActions}>
+                      <TouchableOpacity
+                        style={[styles.quoteButton, isSending && styles.quoteButtonDisabled]}
+                        onPress={() => handleQuoteRequest(product)}
+                        disabled={isSending}
+                      >
+                        <Text style={styles.quoteButtonText}>{isSending ? "Bezig..." : "Vraag offerte aan"}</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={[styles.selectToggleBtn, isSelected && styles.selectToggleBtnActive]}
+                        onPress={() => toggleSelect(product)}
+                      >
+                        <Text style={[styles.selectToggleText, isSelected && styles.selectToggleTextActive]}>
+                          {isSelected ? "Verwijder uit selectie" : "Selecteer"}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                );
+              })}
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </ImageBackground>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#f0f4f8",
-  },
-  backgroundImage: {
-    flex: 1,
-    width: "100%",
-    height: "100%",
-  },
-  backgroundImageInner: {
-    resizeMode: Platform.OS === "web" ? "contain" : "cover",
-  },
+  safeArea: { flex: 1, backgroundColor: "#f0f4f8" },
+  backgroundImage: { flex: 1, width: "100%", height: "100%" },
+  backgroundImageInner: { resizeMode: Platform.OS === "web" ? "contain" : "cover" },
   scrollContent: {
     flexGrow: 1,
     paddingTop: 32,
@@ -369,11 +480,39 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 24,
   },
-  title: {
-    fontWeight: "700",
-    color: "#1f6f34",
-    textAlign: "center",
+  title: { fontWeight: "700", color: "#1f6f34", textAlign: "center" },
+
+  // 🔎 Search
+  searchRow: {
+    width: "100%",
+    maxWidth: 960,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
+  searchInput: {
+    flex: 1,
+    backgroundColor: "#ffffffee",
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: "#e0e6ea",
+    color: "#111",
+  },
+  clearBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#ffffffee",
+    borderWidth: 1,
+    borderColor: "#e0e6ea",
+  },
+  clearBtnText: { fontSize: 18, color: "#444" },
+
+  // Offertes overzicht knop
   overviewButton: {
     backgroundColor: "#f7941e",
     borderRadius: 10,
@@ -385,12 +524,35 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 6,
   },
-  overviewButtonText: {
-    color: "#fff",
-    fontWeight: "700",
-    fontSize: 16,
-    textAlign: "center",
+  overviewButtonText: { color: "#fff", fontWeight: "700", fontSize: 16, textAlign: "center" },
+
+  // Batch balk
+  batchBar: {
+    width: "100%",
+    maxWidth: 960,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    gap: 12,
   },
+  batchInfo: { color: "#333", fontWeight: "600" },
+  batchBtn: {
+    backgroundColor: "#1f6f34",
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+  },
+  batchBtnText: { color: "#fff", fontWeight: "700" },
+  batchClearBtn: {
+    backgroundColor: "#ffffffee",
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderWidth: 1,
+    borderColor: "#e0e6ea",
+  },
+  batchClearBtnText: { color: "#1f1f1f", fontWeight: "600" },
+
   productsWrapper: {
     width: "100%",
     maxWidth: 960,
@@ -410,22 +572,24 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 6,
   },
-  productName: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#1f1f1f",
-    marginBottom: 8,
+  cardHeaderRow: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 8 },
+  checkbox: {
+    width: 22, height: 22, borderRadius: 6,
+    borderWidth: 2, borderColor: "#1f6f34",
+    alignItems: "center", justifyContent: "center",
+    backgroundColor: "#fff",
   },
-  productMeta: {
-    fontSize: 16,
-    color: "#333",
-    marginBottom: 4,
-  },
+  checkboxChecked: { backgroundColor: "#1f6f34" },
+  checkboxTick: { color: "#fff", fontWeight: "800" },
+  productName: { fontSize: 20, fontWeight: "700", color: "#1f1f1f" },
+  productMeta: { fontSize: 16, color: "#333", marginBottom: 4 },
+
+  cardActions: { marginTop: 12, flexDirection: "row", gap: 8, flexWrap: "wrap" },
   quoteButton: {
-    marginTop: 16,
     backgroundColor: "#f7941e",
     borderRadius: 10,
-    paddingVertical: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 6 },
@@ -433,14 +597,20 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 6,
   },
-  quoteButtonDisabled: {
-    opacity: 0.5,
+  quoteButtonDisabled: { opacity: 0.5 },
+  quoteButtonText: { color: "#fff", fontWeight: "700", fontSize: 16 },
+
+  selectToggleBtn: {
+    backgroundColor: "#ffffff",
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: "#1f6f34",
   },
-  quoteButtonText: {
-    color: "#fff",
-    fontWeight: "700",
-    fontSize: 16,
-  },
+  selectToggleBtnActive: { backgroundColor: "#eaf6ec" },
+  selectToggleText: { color: "#1f6f34", fontWeight: "700" },
+  selectToggleTextActive: { color: "#1f6f34", fontWeight: "800" },
 });
 
 export default ProductenScreen;
