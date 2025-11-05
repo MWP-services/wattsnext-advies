@@ -44,7 +44,6 @@ export default function OffertesScreen({ navigation }) {
         const list = [];
         snap.forEach((docSnap) => {
           const data = docSnap.data();
-          // normaliseer voor render
           list.push({
             id: docSnap.id,
             type: data.type || "single",
@@ -52,6 +51,7 @@ export default function OffertesScreen({ navigation }) {
             productnaam: data.productnaam || "",
             categorie: data.categorie || "",
             specs: data.specs || "",
+            qty: typeof data.qty === "number" ? data.qty : 1, // ✅ single qty (default 1)
             items: Array.isArray(data.items) ? data.items : null, // multi
             status: data.status || "open",
             createdAt: data.createdAt ?? null,
@@ -69,6 +69,9 @@ export default function OffertesScreen({ navigation }) {
 
     return () => unsub();
   }, []);
+
+  const sumQty = (items) =>
+    Array.isArray(items) ? items.reduce((acc, it) => acc + (Number(it?.qty) || 1), 0) : 0;
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -108,11 +111,13 @@ export default function OffertesScreen({ navigation }) {
               const isMulti =
                 Array.isArray(aanvraag.items) && aanvraag.items.length > 0;
 
+              const totalStuks = isMulti ? sumQty(aanvraag.items) : aanvraag.qty || 1;
+
               return (
                 <View key={aanvraag.id} style={styles.offerteCard}>
                   <Text style={styles.cardTitle}>
                     {isMulti
-                      ? `Batch-aanvraag (${aanvraag.items.length} producten)`
+                      ? `Batch-aanvraag (${aanvraag.items.length} producten, ${totalStuks} stuks)`
                       : aanvraag.productnaam || "Onbekend product"}
                   </Text>
 
@@ -129,6 +134,9 @@ export default function OffertesScreen({ navigation }) {
                           Specificaties: {aanvraag.specs}
                         </Text>
                       ) : null}
+                      <Text style={styles.cardMeta}>
+                        Aantal: {aanvraag.qty || 1} {/* ✅ toon qty bij single */}
+                      </Text>
                     </>
                   ) : (
                     <View style={styles.itemsWrapper}>
@@ -146,8 +154,10 @@ export default function OffertesScreen({ navigation }) {
                               </Text>
                             </Text>
                             <Text style={styles.itemSub}>
-                              {it.categorie || "-"}{" "}
-                              {it.specs ? `| ${it.specs}` : ""}
+                              {it.categorie || "-"} {it.specs ? `| ${it.specs}` : ""}
+                            </Text>
+                            <Text style={styles.itemSub}>
+                              Aantal: {Number(it?.qty) || 1} {/* ✅ toon qty per item */}
                             </Text>
                           </View>
                         </View>

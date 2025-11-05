@@ -194,13 +194,13 @@ function ProductenScreen({ navigation }) {
   const { width } = useWindowDimensions();
   const [sendingId, setSendingId] = useState(null);
 
-  // 🔎 Zoeken
+  // zoeken
   const [query, setQuery] = useState("");
 
-  // ✅ Multi-select (Map<uniqueKey, product>)
+  // multi-select
   const [selected, setSelected] = useState(new Map());
 
-  // ✅ NIEUW: Aantallen per geselecteerd product (object met key → qty)
+  // aantallen per product (alleen zichtbaar/beschikbaar bij selectie)
   const [quantities, setQuantities] = useState({}); // { [uniqueKey]: number }
 
   const getUniqueKey = (p) => `${p.artikelcode}__${p.productId}`;
@@ -224,7 +224,7 @@ function ProductenScreen({ navigation }) {
     });
   }, [query]);
 
-  // NIEUW: helpers voor qty
+  // qty helpers
   const incQty = (key) =>
     setQuantities((prev) => ({
       ...prev,
@@ -242,14 +242,12 @@ function ProductenScreen({ navigation }) {
       const next = new Map(prev);
       if (next.has(key)) {
         next.delete(key);
-        // verwijder ook qty wanneer gedeselecteerd
         setQuantities((q) => {
           const { [key]: _, ...rest } = q;
           return rest;
         });
       } else {
         next.set(key, product);
-        // default qty = 1
         setQuantities((q) => ({ ...q, [key]: q[key] || 1 }));
       }
       return next;
@@ -261,58 +259,81 @@ function ProductenScreen({ navigation }) {
     setQuantities({});
   };
 
-  // Enkele aanvraag (bestaande flow)
-  const handleQuoteRequest = async (product) => {
-    if (sendingId) return;
+ // enkele aanvraag (met requester info)
+// enkele aanvraag (met requester info & correcte qty)
+const handleQuoteRequest = async (product) => {
+  if (sendingId) return;
 
-    const user = auth.currentUser;
-    if (!user) {
-      Alert.alert(
-        "Inloggen vereist",
-        "Je moet ingelogd zijn om een offerte aan te vragen.",
-      );
-      return;
-    }
+  const user = auth.currentUser;
+  if (!user) {
+    Alert.alert(
+      "Inloggen vereist",
+      "Je moet ingelogd zijn om een offerte aan te vragen."
+    );
+    return;
+  }
 
-    setSendingId(product.artikelcode);
-    try {
-      const result = await sendProductQuoteEmail(product);
-
-      await addDoc(collection(db, "quotes"), {
-        uid: user.uid,
-        type: "single",
-        artikelcode: product.artikelcode,
-        productnaam: product.productnaam,
-        categorie: product.categorie,
-        doelgroep: product.doelgroep,
-        specs: product.specs || "",
-        status: "open",
-        createdAt: serverTimestamp(),
-      });
-
-      if (result?.success) {
-        Alert.alert(
-          "Offerte aangevraagd",
-          `Offerte aangevraagd voor ${product.productnaam}.`,
-        );
-      } else {
-        Alert.alert(
-          "Offerte aangemaakt",
-          "Aanvraag opgeslagen, maar e-mail kon niet worden verstuurd.",
-        );
-      }
-    } catch (error) {
-      console.error("❌ Offerte-aanvraag fout:", error);
-      Alert.alert(
-        "Fout",
-        "Er ging iets mis bij het aanvragen van de offerte (opslaan of mail).",
-      );
-    } finally {
-      setSendingId(null);
-    }
+  const requester = {
+    uid: user.uid,
+    email: user.email || "",
+    displayName: user.displayName || "",
   };
 
-  // Meervoudige aanvraag (N producten in 1 document) — nu met qty per product
+  // ✅ haal de gekozen hoeveelheid uit de component-state
+  const uniqueKey = getUniqueKey(product);
+  const qty = Math.max(1, quantities[uniqueKey] || 1);
+
+  setSendingId(product.artikelcode);
+  try {
+    // ✅ stuur de juiste qty naar EmailJS
+    const result = await sendProductQuoteEmail({
+      type: "single",
+      product: { ...product, qty },
+      requester,
+    });
+
+    // ✅ sla de qty ook op in Firestore
+    await addDoc(collection(db, "quotes"), {
+      uid: user.uid,
+      type: "single",
+      artikelcode: product.artikelcode,
+      productnaam: product.productnaam,
+      categorie: product.categorie,
+      doelgroep: product.doelgroep,
+      specs: product.specs || "",
+      qty, // <-- hier opslaan
+      requesterUid: requester.uid,
+      requesterEmail: requester.email,
+      requesterName: requester.displayName,
+      status: "open",
+      createdAt: serverTimestamp(),
+    });
+
+    if (result?.success) {
+      Alert.alert(
+        "Offerte aangevraagd",
+        `Offerte aangevraagd voor ${qty}× ${product.productnaam}.`
+      );
+    } else {
+      Alert.alert(
+        "Offerte aangemaakt",
+        "Aanvraag opgeslagen, maar e-mail kon niet worden verstuurd."
+      );
+    }
+  } catch (error) {
+    console.error("❌ Offerte-aanvraag fout:", error);
+    Alert.alert(
+      "Fout",
+      "Er ging iets mis bij het aanvragen van de offerte (opslaan of mail)."
+    );
+  } finally {
+    setSendingId(null);
+  }
+};
+
+
+
+  // batch aanvraag (met requester info en qty per item)
   const handleBatchQuoteRequest = async () => {
     if (selected.size === 0) {
       Alert.alert("Geen selectie", "Vink eerst één of meer producten aan.");
@@ -321,12 +342,15 @@ function ProductenScreen({ navigation }) {
 
     const user = auth.currentUser;
     if (!user) {
-      Alert.alert(
-        "Inloggen vereist",
-        "Je moet ingelogd zijn om een offerte aan te vragen.",
-      );
+      Alert.alert("Inloggen vereist", "Je moet ingelogd zijn om een offerte aan te vragen.");
       return;
     }
+
+    const requester = {
+      uid: user.uid,
+      email: user.email || "",
+      displayName: user.displayName || user.email?.split("@")[0] || "",
+    };
 
     const items = Array.from(selected.entries()).map(([key, p]) => ({
       artikelcode: p.artikelcode,
@@ -339,20 +363,27 @@ function ProductenScreen({ navigation }) {
     console.log("batch uid =", auth.currentUser?.uid);
 
     try {
-      // 1) Opslaan als één document met alle items + aantallen
+      // 1) opslaan als één quote met alle items (incl. qty)
       await addDoc(collection(db, "quotes"), {
         uid: user.uid,
         type: "multi",
         items,
+        requesterUid: requester.uid,
+        requesterEmail: requester.email,
+        requesterName: requester.displayName,
         status: "open",
         createdAt: serverTimestamp(),
       });
 
-      // 2) (optioneel) mail per item (je kunt dit later vervangen door één samengestelde mail)
+      // 2) losse mails per item (payload gelijk aan single, incl. qty)
       let mailFailures = 0;
       for (const item of items) {
         try {
-          await sendProductQuoteEmail(item);
+          await sendProductQuoteEmail({
+            type: "single",       // zelfde vorm als single
+            product: item,        // bevat qty
+            requester,
+          });
         } catch (e) {
           mailFailures += 1;
           console.warn("Mailfail voor item", item?.productnaam, e);
@@ -360,30 +391,18 @@ function ProductenScreen({ navigation }) {
       }
 
       if (mailFailures === 0) {
-        Alert.alert(
-          "Offerte aangevraagd",
-          `Aanvraag voor ${items.length} producttypen is verstuurd.`,
-        );
+        Alert.alert("Offerte aangevraagd", `Aanvraag voor ${items.length} producttypen is verstuurd.`);
       } else if (mailFailures < items.length) {
-        Alert.alert(
-          "Gedeeltelijke mailfout",
-          `Aanvraag opgeslagen. ${mailFailures} e-mails zijn niet verstuurd.`,
-        );
+        Alert.alert("Gedeeltelijke mailfout", `Aanvraag opgeslagen. ${mailFailures} e-mails zijn niet verstuurd.`);
       } else {
-        Alert.alert(
-          "Offerte opgeslagen",
-          "Aanvraag opgeslagen, maar e-mails konden niet worden verstuurd.",
-        );
+        Alert.alert("Offerte opgeslagen", "Aanvraag opgeslagen, maar e-mails konden niet worden verstuurd.");
       }
 
       clearSelection();
       navigation.navigate("Offertes");
     } catch (error) {
       console.error("❌ Batch-offerte fout:", error);
-      Alert.alert(
-        "Fout",
-        "Het is niet gelukt om de batch-aanvraag op te slaan.",
-      );
+      Alert.alert("Fout", "Het is niet gelukt om de batch-aanvraag op te slaan.");
     }
   };
 
@@ -417,7 +436,7 @@ function ProductenScreen({ navigation }) {
               Producten voor installateurs
             </Text>
 
-            {/* 🔎 Zoeken */}
+            {/* Zoeken */}
             <View style={styles.searchRow}>
               <TextInput
                 style={styles.searchInput}
@@ -442,27 +461,19 @@ function ProductenScreen({ navigation }) {
               style={styles.overviewButton}
               onPress={() => navigation.navigate("Offertes")}
             >
-              <Text style={styles.overviewButtonText}>
-                Mijn offerte-aanvragen →
-              </Text>
+              <Text style={styles.overviewButtonText}>Mijn offerte-aanvragen →</Text>
             </TouchableOpacity>
 
             {/* Batch-actieknoppen */}
             <View style={styles.batchBar}>
-              <Text style={styles.batchInfo}>
-                Geselecteerd: {selectedCount}
-              </Text>
+              <Text style={styles.batchInfo}>Geselecteerd: {selectedCount}</Text>
               <TouchableOpacity
-                style={[
-                  styles.batchBtn,
-                  selectedCount === 0 && { opacity: 0.5 },
-                ]}
+                style={[styles.batchBtn, selectedCount === 0 && { opacity: 0.5 }]}
                 onPress={handleBatchQuoteRequest}
                 disabled={selectedCount === 0}
               >
                 <Text style={styles.batchBtnText}>
-                  Vraag {selectedCount > 0 ? `${selectedCount} ` : ""}offertes
-                  aan
+                  Vraag {selectedCount > 0 ? `${selectedCount} ` : ""}offertes aan
                 </Text>
               </TouchableOpacity>
               {selectedCount > 0 && (
@@ -493,7 +504,7 @@ function ProductenScreen({ navigation }) {
                     style={[styles.productCard, { width: getCardWidth() }]}
                   >
                     <View style={styles.cardHeaderRow}>
-                      {/* Pseudo checkbox */}
+                      {/* checkbox */}
                       <TouchableOpacity
                         style={[
                           styles.checkbox,
@@ -503,14 +514,10 @@ function ProductenScreen({ navigation }) {
                         accessibilityRole="checkbox"
                         accessibilityState={{ checked: isSelected }}
                       >
-                        {isSelected ? (
-                          <Text style={styles.checkboxTick}>✓</Text>
-                        ) : null}
+                        {isSelected ? <Text style={styles.checkboxTick}>✓</Text> : null}
                       </TouchableOpacity>
 
-                      <Text style={styles.productName}>
-                        {product.productnaam}
-                      </Text>
+                      <Text style={styles.productName}>{product.productnaam}</Text>
                     </View>
 
                     <Text style={styles.productMeta}>
@@ -523,12 +530,10 @@ function ProductenScreen({ navigation }) {
                       Doelgroep: {product.doelgroep}
                     </Text>
                     {product.specs ? (
-                      <Text style={styles.productMeta}>
-                        Specificaties: {product.specs}
-                      </Text>
+                      <Text style={styles.productMeta}>Specificaties: {product.specs}</Text>
                     ) : null}
 
-                    {/* ✅ NIEUW: Aantal-selector zichtbaar als product geselecteerd is */}
+                    {/* Aantal-selector bij selectie */}
                     {isSelected && (
                       <View style={styles.qtyRow}>
                         <Text style={styles.qtyLabel}>Aantal:</Text>
@@ -554,10 +559,7 @@ function ProductenScreen({ navigation }) {
 
                     <View style={styles.cardActions}>
                       <TouchableOpacity
-                        style={[
-                          styles.quoteButton,
-                          isSending && styles.quoteButtonDisabled,
-                        ]}
+                        style={[styles.quoteButton, isSending && styles.quoteButtonDisabled]}
                         onPress={() => handleQuoteRequest(product)}
                         disabled={isSending}
                       >
@@ -609,7 +611,7 @@ const styles = StyleSheet.create({
   },
   title: { fontWeight: "700", color: "#1f6f34", textAlign: "center" },
 
-  // 🔎 Search
+  // search
   searchRow: {
     width: "100%",
     maxWidth: 960,
@@ -725,7 +727,7 @@ const styles = StyleSheet.create({
   productName: { fontSize: 20, fontWeight: "700", color: "#1f1f1f" },
   productMeta: { fontSize: 16, color: "#333", marginBottom: 4 },
 
-  // ✅ NIEUW: Qty styles
+  // qty styles
   qtyRow: {
     marginTop: 8,
     flexDirection: "row",
