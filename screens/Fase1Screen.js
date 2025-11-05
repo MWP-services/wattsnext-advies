@@ -1,28 +1,28 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRoute } from '@react-navigation/native';
+import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import ScreenBackground from "../components/ScreenBackground";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRoute } from "@react-navigation/native";
 
 export default function Fase1Screen({ navigation }) {
   const route = useRoute();
-  const aansluiting = route.params?.aansluiting || '1-fase'; // fallback voor zekerheid
+  const aansluiting = route.params?.aansluiting || "1-fase"; // fallback voor zekerheid
 
   return (
-    <ImageBackground
-  source={require('../assets/achtergrond.png')}
-  style={styles.background}
-  resizeMode="contain" // 🔄 of probeer ook "stretch"
-  imageStyle={styles.imageStyle} // 🔧 web-only tweak
->
-
+    <ScreenBackground
+      style={styles.background}
+      imageStyle={styles.imageStyle} // 🔧 web-only tweak
+    >
       <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.container}>
-          <Text style={styles.title}>Welke zekering heeft je 1-fase aansluiting?</Text>
+          <Text style={styles.title}>
+            Welke zekering heeft je 1-fase aansluiting?
+          </Text>
 
           {/* 16A verwijst naar vast 5 kWh advies → geen aansluiting nodig */}
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate('Advies 5 kWh')}
+            onPress={() => navigation.navigate("Advies 5 kWh")}
           >
             <Text style={styles.buttonText}>16A</Text>
           </TouchableOpacity>
@@ -30,62 +30,64 @@ export default function Fase1Screen({ navigation }) {
           {/* Deze twee verwijzen naar Persoonsgegevens + aansluiting meesturen */}
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate('Persoonsgegevens', { aansluiting })}
+            onPress={() =>
+              navigation.navigate("Persoonsgegevens", { aansluiting })
+            }
           >
             <Text style={styles.buttonText}>25A</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate('Persoonsgegevens', { aansluiting })}
+            onPress={() =>
+              navigation.navigate("Persoonsgegevens", { aansluiting })
+            }
           >
             <Text style={styles.buttonText}>35A</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
-    </ImageBackground>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
   background: {
-  flex: 1,
-  width: '100%',
-  height: '100%',
-  justifyContent: 'center',
-  alignItems: 'center',
-},
-
-imageStyle: {
-  resizeMode: 'contain',
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-},
-
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageStyle: {
+    resizeMode: "contain",
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
-    color: '#3eaf4f',
+    fontWeight: "bold",
+    color: "#3eaf4f",
     marginBottom: 30,
-    textAlign: 'center',
+    textAlign: "center",
   },
   button: {
-    backgroundColor: '#f7941e',
+    backgroundColor: "#f7941e",
     padding: 16,
     borderRadius: 10,
     marginVertical: 12,
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
   },
 });

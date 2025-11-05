@@ -1,91 +1,85 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground } from 'react-native';
-import SaveAdviceButton from '../components/SaveAdviceButton';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React from "react";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import SaveAdviceButton from "../components/SaveAdviceButton";
+import { SafeAreaView } from "react-native-safe-area-context";
+import ScreenBackground from "../components/ScreenBackground";
 
 export default function Advies10Laag({ navigation }) {
   return (
-   <ImageBackground
-  source={require('../assets/achtergrond.png')}
-  style={styles.background}
-  resizeMode="contain" // 🔄 of probeer ook "stretch"
-  imageStyle={styles.imageStyle} // 🔧 web-only tweak
->
-
+    <ScreenBackground style={styles.background} imageStyle={styles.imageStyle}>
       <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.container}>
           <Text style={styles.title}>Persoonlijk Advies</Text>
           <Text style={styles.text}>
             Op basis van uw gegevens adviseert WattsNext:
           </Text>
-          <Text style={styles.advice}>10 kWh batterijopslag (Laag Voltage)</Text>
+          <Text style={styles.advice}>
+            10 kWh batterijopslag (Laag Voltage)
+          </Text>
 
           <Image
-            source={require('../assets/10-KWH-ADVIES-LAAG.jpg')}
+            source={require("../assets/10-KWH-ADVIES-LAAG.jpg")}
             style={styles.image}
             resizeMode="contain"
           />
 
           <TouchableOpacity
             style={styles.specButton}
-            onPress={() => navigation.navigate('Spec_LV_particulier')}
+            onPress={() => navigation.navigate("Spec_LV_particulier")}
           >
             <Text style={styles.specButtonText}>Bekijk specificaties</Text>
           </TouchableOpacity>
 
           <SaveAdviceButton
             advice={{
-              id: 'particulier-10kwh-laag',
-              title: 'Advies 10 kWh (Laag Voltage)',
-              summary: 'Advies voor 10 kWh batterijopslag met laag voltage configuratie.',
+              id: "particulier-10kwh-laag",
+              title: "Advies 10 kWh (Laag Voltage)",
+              summary:
+                "Advies voor 10 kWh batterijopslag met laag voltage configuratie.",
             }}
           />
         </View>
       </SafeAreaView>
-    </ImageBackground>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
   background: {
-  flex: 1,
-  width: '100%',
-  height: '100%',
-  justifyContent: 'center',
-  alignItems: 'center',
-},
-
-imageStyle: {
-  resizeMode: 'contain',
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-},
-
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageStyle: {
+    resizeMode: "contain",
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
   container: {
     flex: 1,
     padding: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#3eaf4f',
+    fontWeight: "bold",
+    color: "#3eaf4f",
     marginBottom: 16,
-    textAlign: 'center',
+    textAlign: "center",
   },
   text: {
     fontSize: 16,
     marginBottom: 12,
-    textAlign: 'center',
+    textAlign: "center",
   },
   advice: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#f7941e',
+    fontWeight: "bold",
+    color: "#f7941e",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   image: {
     width: 370,
@@ -96,11 +90,11 @@ imageStyle: {
     marginTop: 10,
     paddingVertical: 12,
     paddingHorizontal: 20,
-    backgroundColor: '#3eaf4f',
+    backgroundColor: "#3eaf4f",
     borderRadius: 8,
   },
   specButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
   },
 });

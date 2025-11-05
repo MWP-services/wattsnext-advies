@@ -1,51 +1,57 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ImageBackground } from 'react-native';
-import SaveAdviceButton from '../components/SaveAdviceButton';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
+import ScreenBackground from "../components/ScreenBackground";
+import SaveAdviceButton from "../components/SaveAdviceButton";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ZakelijkAdviesHandelScreen({ route, navigation }) {
   const { kwh1, kwh2 = 0 } = route.params;
   const totaleBehoefte = kwh1 + kwh2;
 
-  console.log('Ontvangen kwh1:', kwh1);
-  console.log('Ontvangen kwh2:', kwh2);
-  console.log('Totale behoefte:', totaleBehoefte);
+  console.log("Ontvangen kwh1:", kwh1);
+  console.log("Ontvangen kwh2:", kwh2);
+  console.log("Totale behoefte:", totaleBehoefte);
 
-  let advies = '';
-  let specificatieScreen = '';
+  let advies = "";
+  let specificatieScreen = "";
 
   if (totaleBehoefte <= 64) {
-    advies = '64 kWh batterij';
-    specificatieScreen = 'Specificaties64';
+    advies = "64 kWh batterij";
+    specificatieScreen = "Specificaties64";
   } else if (totaleBehoefte <= 96) {
-    advies = '96 kWh batterij';
-    specificatieScreen = 'Specificaties96';
+    advies = "96 kWh batterij";
+    specificatieScreen = "Specificaties96";
   } else if (totaleBehoefte <= 232) {
-    advies = '232 kWh batterij (modulair uitbreidbaar)';
-    specificatieScreen = 'Specificaties232';
+    advies = "232 kWh batterij (modulair uitbreidbaar)";
+    specificatieScreen = "Specificaties232";
   } else if (totaleBehoefte <= 2090) {
-    advies = '2.09 MWh batterij (modulair uitbreidbaar)';
-    specificatieScreen = 'Specificaties209';
+    advies = "2.09 MWh batterij (modulair uitbreidbaar)";
+    specificatieScreen = "Specificaties209";
   } else {
-    advies = '5.01 MWh batterij (modulair uitbreidbaar)';
-    specificatieScreen = 'Specificaties501';
+    advies = "5.01 MWh batterij (modulair uitbreidbaar)";
+    specificatieScreen = "Specificaties501";
   }
 
-  console.log('Gekozen advies:', advies);
-  console.log('Navigeren naar scherm:', specificatieScreen);
+  console.log("Gekozen advies:", advies);
+  console.log("Navigeren naar scherm:", specificatieScreen);
 
   return (
-    <ImageBackground
-  source={require('../assets/achtergrond.png')}
-  style={styles.background}
-  resizeMode="contain" // 🔄 of probeer ook "stretch"
-  imageStyle={styles.imageStyle} // 🔧 web-only tweak
->
-
+    <ScreenBackground
+      style={styles.background}
+      imageStyle={styles.imageStyle} // 🔧 web-only tweak
+    >
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.container}>
           <Text style={styles.title}>Advies - Handel op energiemarkt</Text>
-          <Text style={styles.info}>Totale energiebehoefte: {totaleBehoefte.toFixed(2)} kWh</Text>
+          <Text style={styles.info}>
+            Totale energiebehoefte: {totaleBehoefte.toFixed(2)} kWh
+          </Text>
           <Text style={styles.advice}>{advies}</Text>
 
           <TouchableOpacity
@@ -64,60 +70,58 @@ export default function ZakelijkAdviesHandelScreen({ route, navigation }) {
           />
         </ScrollView>
       </SafeAreaView>
-    </ImageBackground>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
   background: {
-  flex: 1,
-  width: '100%',
-  height: '100%',
-  justifyContent: 'center',
-  alignItems: 'center',
-},
-
-imageStyle: {
-  resizeMode: 'contain',
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-},
-
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageStyle: {
+    resizeMode: "contain",
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
   container: {
     flexGrow: 1,
     padding: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
-    color: '#4CAF50',
+    fontWeight: "bold",
+    color: "#4CAF50",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   info: {
     fontSize: 18,
     marginBottom: 12,
-    textAlign: 'center',
+    textAlign: "center",
   },
   advice: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#f7941e',
+    fontWeight: "bold",
+    color: "#f7941e",
     marginBottom: 30,
-    textAlign: 'center',
+    textAlign: "center",
   },
   button: {
-    backgroundColor: '#f7941e',
+    backgroundColor: "#f7941e",
     padding: 14,
     borderRadius: 10,
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
   },
 });

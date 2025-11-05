@@ -1,5 +1,5 @@
-import React from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   View,
   Text,
@@ -7,9 +7,9 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  ImageBackground
-} from 'react-native';
-import SaveAdviceButton from '../components/SaveAdviceButton';
+} from "react-native";
+import SaveAdviceButton from "../components/SaveAdviceButton";
+import ScreenBackground from "../components/ScreenBackground";
 
 export default function ZakelijkAdviesNoodstroom({ route, navigation }) {
   const { kwh1, kwh2 } = route.params;
@@ -18,43 +18,40 @@ export default function ZakelijkAdviesNoodstroom({ route, navigation }) {
   console.log("Noodstroom Advies → kwh1:", kwh1, "kwh2:", kwh2);
   console.log("Totale behoefte:", totaalKwh);
 
-  let advies = '';
-  let afbeelding = '';
-  let specificatieScreen = '';
+  let advies = "";
+  let afbeelding = "";
+  let specificatieScreen = "";
 
   if (totaalKwh <= 64) {
-    advies = '64 kWh batterij';
-    afbeelding = require('../assets/64-KWH-ZAKELIJK.png');
-    specificatieScreen = 'Specificaties64';
+    advies = "64 kWh batterij";
+    afbeelding = require("../assets/64-KWH-ZAKELIJK.png");
+    specificatieScreen = "Specificaties64";
   } else if (totaalKwh <= 96) {
-    advies = '96 kWh batterij';
-    afbeelding = require('../assets/96-KWH-ZAKELIJK.png');
-    specificatieScreen = 'Specificaties96';
+    advies = "96 kWh batterij";
+    afbeelding = require("../assets/96-KWH-ZAKELIJK.png");
+    specificatieScreen = "Specificaties96";
   } else if (totaalKwh <= 232) {
-    advies = '232 kWh batterij';
-    afbeelding = require('../assets/232-KWH-ZAKELIJK.png');
-    specificatieScreen = 'Specificaties232';
+    advies = "232 kWh batterij";
+    afbeelding = require("../assets/232-KWH-ZAKELIJK.png");
+    specificatieScreen = "Specificaties232";
   } else if (totaalKwh < 2090) {
-    advies = '232 kWh batterij met modules';
-    afbeelding = require('../assets/232-KWH-ZAKELIJK.png');
-    specificatieScreen = 'Specificaties232';
+    advies = "232 kWh batterij met modules";
+    afbeelding = require("../assets/232-KWH-ZAKELIJK.png");
+    specificatieScreen = "Specificaties232";
   } else {
-    advies = '5.01 MWh batterij';
-    afbeelding = require('../assets/5-MW-ZAKELIJK.png');
-    specificatieScreen = 'Specificaties501';
+    advies = "5.01 MWh batterij";
+    afbeelding = require("../assets/5-MW-ZAKELIJK.png");
+    specificatieScreen = "Specificaties501";
   }
 
   console.log("Gekozen advies:", advies);
   console.log("Navigeren naar:", specificatieScreen);
 
   return (
-    <ImageBackground
-  source={require('../assets/achtergrond.png')}
-  style={styles.background}
-  resizeMode="contain" // 🔄 of probeer ook "stretch"
-  imageStyle={styles.imageStyle} // 🔧 web-only tweak
->
-
+    <ScreenBackground
+      style={styles.background}
+      imageStyle={styles.imageStyle} // 🔧 web-only tweak
+    >
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.container}>
           <Text style={styles.title}>Advies Noodstroomvoorziening</Text>
@@ -63,7 +60,11 @@ export default function ZakelijkAdviesNoodstroom({ route, navigation }) {
           </Text>
           <Text style={styles.result}>Aanbevolen oplossing: {advies}</Text>
 
-          <Image source={afbeelding} style={styles.image} resizeMode="contain" />
+          <Image
+            source={afbeelding}
+            style={styles.image}
+            resizeMode="contain"
+          />
 
           <TouchableOpacity
             style={styles.button}
@@ -81,60 +82,58 @@ export default function ZakelijkAdviesNoodstroom({ route, navigation }) {
           />
         </ScrollView>
       </SafeAreaView>
-    </ImageBackground>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
   background: {
-  flex: 1,
-  width: '100%',
-  height: '100%',
-  justifyContent: 'center',
-  alignItems: 'center',
-},
-
-imageStyle: {
-  resizeMode: 'contain',
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-},
-
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageStyle: {
+    resizeMode: "contain",
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
   container: {
     flexGrow: 1,
     padding: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
-    color: '#4CAF50',
-    textAlign: 'center',
+    color: "#4CAF50",
+    textAlign: "center",
   },
   result: {
     fontSize: 16,
     marginVertical: 8,
-    textAlign: 'center',
+    textAlign: "center",
   },
   image: {
-    width: '100%',
+    width: "100%",
     height: 250,
     marginVertical: 20,
   },
   button: {
-    backgroundColor: '#f7941e',
+    backgroundColor: "#f7941e",
     padding: 14,
     borderRadius: 10,
     marginTop: 20,
-    alignItems: 'center',
-    width: '100%',
+    alignItems: "center",
+    width: "100%",
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });

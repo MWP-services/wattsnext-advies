@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   View,
   Text,
@@ -9,13 +9,13 @@ import {
   Alert,
   KeyboardAvoidingView,
   ScrollView,
-  ImageBackground
-} from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+} from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import ScreenBackground from "../components/ScreenBackground";
 
 export default function ZakelijkNoodstroomScreen() {
-  const [kritischVermogen, setKritischVermogen] = useState('');
-  const [backuptijd, setBackuptijd] = useState('');
+  const [kritischVermogen, setKritischVermogen] = useState("");
+  const [backuptijd, setBackuptijd] = useState("");
 
   const route = useRoute();
   const navigation = useNavigation();
@@ -27,31 +27,28 @@ export default function ZakelijkNoodstroomScreen() {
     const vermogen = parseFloat(kritischVermogen);
     const tijd = parseFloat(backuptijd);
 
-    console.log('Invoer → vermogen (kW):', vermogen, 'tijd (uren):', tijd);
-    console.log('Ontvangen benodigdKWh1 uit params:', benodigdKWh1);
+    console.log("Invoer → vermogen (kW):", vermogen, "tijd (uren):", tijd);
+    console.log("Ontvangen benodigdKWh1 uit params:", benodigdKWh1);
 
     if (isNaN(vermogen) || isNaN(tijd)) {
-      Alert.alert('Ongeldige invoer', 'Vul beide velden correct in.');
+      Alert.alert("Ongeldige invoer", "Vul beide velden correct in.");
       return;
     }
 
     const kWh2 = (vermogen * tijd) / efficientie;
-    console.log('Berekend kWh2 (noodstroom):', kWh2.toFixed(2));
+    console.log("Berekend kWh2 (noodstroom):", kWh2.toFixed(2));
 
-    navigation.navigate('ZakelijkEnergiehandelVraag', {
+    navigation.navigate("ZakelijkEnergiehandelVraag", {
       benodigdKWh1: parseFloat(benodigdKWh1),
-      benodigdKWh2: kWh2.toFixed(2)
+      benodigdKWh2: kWh2.toFixed(2),
     });
   };
 
   return (
-   <ImageBackground
-  source={require('../assets/achtergrond.png')}
-  style={styles.background}
-  resizeMode="contain" // 🔄 of probeer ook "stretch"
-  imageStyle={styles.imageStyle} // 🔧 web-only tweak
->
-
+    <ScreenBackground
+      style={styles.background}
+      imageStyle={styles.imageStyle} // 🔧 web-only tweak
+    >
       <SafeAreaView style={{ flex: 1 }}>
         <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
           <ScrollView contentContainerStyle={styles.container}>
@@ -79,63 +76,61 @@ export default function ZakelijkNoodstroomScreen() {
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
-    </ImageBackground>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
   background: {
-  flex: 1,
-  width: '100%',
-  height: '100%',
-  justifyContent: 'center',
-  alignItems: 'center',
-},
-
-imageStyle: {
-  resizeMode: 'contain',
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-},
-
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageStyle: {
+    resizeMode: "contain",
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
   container: {
     flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 24,
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
-    color: '#3eaf4f',
+    fontWeight: "bold",
+    color: "#3eaf4f",
     marginBottom: 24,
-    textAlign: 'center',
+    textAlign: "center",
   },
   label: {
     fontSize: 16,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     marginBottom: 8,
-    color: '#000',
+    color: "#000",
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 10,
     padding: 10,
     marginBottom: 20,
-    width: '100%',
-    backgroundColor: '#fff',
+    width: "100%",
+    backgroundColor: "#fff",
   },
   button: {
-    backgroundColor: '#f7941e',
+    backgroundColor: "#f7941e",
     padding: 16,
     borderRadius: 10,
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
   },
 });

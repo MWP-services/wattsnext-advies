@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   View,
   Text,
@@ -9,13 +9,13 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  ImageBackground
-} from 'react-native';
+} from "react-native";
 
+import ScreenBackground from "../components/ScreenBackground";
 export default function Netcongestie({ navigation }) {
-  const [stroombelasting, setStroombelasting] = useState('');
-  const [netaansluiting, setNetaansluiting] = useState('');
-  const [duur, setDuur] = useState('');
+  const [stroombelasting, setStroombelasting] = useState("");
+  const [netaansluiting, setNetaansluiting] = useState("");
+  const [duur, setDuur] = useState("");
 
   const handleNext = () => {
     const stroom = parseFloat(stroombelasting);
@@ -34,36 +34,39 @@ export default function Netcongestie({ navigation }) {
 
       const aanbevolenCapaciteit = verschilAmp * 0.658 * 2;
 
-      console.log('Netcongestie berekening:');
-      console.log('Verschil in Ampère:', verschilAmp.toFixed(2));
-      console.log('Aanbevolen capaciteit (kWh1):', aanbevolenCapaciteit.toFixed(2));
+      console.log("Netcongestie berekening:");
+      console.log("Verschil in Ampère:", verschilAmp.toFixed(2));
+      console.log(
+        "Aanbevolen capaciteit (kWh1):",
+        aanbevolenCapaciteit.toFixed(2),
+      );
 
-      navigation.navigate('NetcongestieNoodstroomVraag', { kwh1: aanbevolenCapaciteit });
+      navigation.navigate("NetcongestieNoodstroomVraag", {
+        kwh1: aanbevolenCapaciteit,
+      });
     } else {
       alert("Vul alle velden in met geldige getallen.");
     }
   };
 
   return (
-    <ImageBackground
-  source={require('../assets/achtergrond.png')}
-  style={styles.background}
-  resizeMode="contain" // 🔄 of probeer ook "stretch"
-  imageStyle={styles.imageStyle} // 🔧 web-only tweak
->
-
+    <ScreenBackground
+      style={styles.background}
+      imageStyle={styles.imageStyle} // 🔧 web-only tweak
+    >
       <SafeAreaView style={{ flex: 1 }}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
           keyboardVerticalOffset={80}
         >
-          <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+          <ScrollView
+            contentContainerStyle={styles.container}
+            keyboardShouldPersistTaps="handled"
+          >
             <Text style={styles.title}>Netcongestie Berekening</Text>
 
-            <Text style={styles.info}>
-              
-            </Text>
+            <Text style={styles.info}></Text>
 
             <Text style={styles.label}>Gemiddelde stroombelasting (A)</Text>
             <TextInput
@@ -101,43 +104,42 @@ export default function Netcongestie({ navigation }) {
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
-    </ImageBackground>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
   background: {
-  flex: 1,
-  width: '100%',
-  height: '100%',
-  justifyContent: 'center',
-  alignItems: 'center',
-},
-
-imageStyle: {
-  resizeMode: 'contain',
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-},
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageStyle: {
+    resizeMode: "contain",
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
 
   container: {
     flexGrow: 1,
     padding: 24,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginBottom: 15,
-    color: '#4CAF50',
+    color: "#4CAF50",
   },
   info: {
     fontSize: 14,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 20,
-    color: '#333',
+    color: "#333",
   },
   label: {
     fontSize: 16,
@@ -145,23 +147,23 @@ imageStyle: {
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 8,
     padding: 12,
     marginBottom: 20,
     fontSize: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   button: {
-    backgroundColor: '#FF7F00',
+    backgroundColor: "#FF7F00",
     padding: 14,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 10,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });

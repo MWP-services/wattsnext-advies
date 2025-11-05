@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Image,
   useWindowDimensions,
   ScrollView,
   TextInput,
@@ -16,6 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { auth, db } from "../firebaseConfig";
 import { isEmailConfigured, sendAppointmentEmails } from "../support/email";
 import AppointmentCalendar from "../components/AppointmentCalendar";
+import ScreenBackground from "../components/ScreenBackground";
 import {
   collection,
   doc,
@@ -26,17 +26,12 @@ import {
 
 const OFFICE_ADDRESS = "Industrieweg 6, Stolwijk";
 
-
-
-
 function toLocalDateKey(date) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
-
-
 
 function formatDateLabel(dateString) {
   if (!dateString) return "";
@@ -58,7 +53,9 @@ const TIME_SLOTS = (() => {
   for (let hour = 9; hour <= 17; hour += 1) {
     for (let minute = 0; minute < 60; minute += 30) {
       if (hour === 17 && minute > 0) break;
-      slots.push(`${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`);
+      slots.push(
+        `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`,
+      );
     }
   }
   return slots;
@@ -70,13 +67,13 @@ export default function AgendaScreen({ navigation }) {
 
   const todayString = useMemo(() => toLocalDateKey(today), [today]);
 
-
-
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [locationType, setLocationType] = useState("office");
   const [customAddress, setCustomAddress] = useState("");
-  const [contactName, setContactName] = useState(auth.currentUser?.displayName || "");
+  const [contactName, setContactName] = useState(
+    auth.currentUser?.displayName || "",
+  );
   const [bookedSlots, setBookedSlots] = useState({});
   const [loadingSlots, setLoadingSlots] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -100,7 +97,7 @@ export default function AgendaScreen({ navigation }) {
           Object.entries(nextSlots).map(([dateKey, value]) => [
             dateKey,
             Array.from(value).sort(),
-          ])
+          ]),
         );
 
         setBookedSlots(formatted);
@@ -110,7 +107,7 @@ export default function AgendaScreen({ navigation }) {
         console.error("Fout bij het ophalen van afspraken", error);
         setBookedSlots({});
         setLoadingSlots(false);
-      }
+      },
     );
 
     return unsubscribe;
@@ -141,7 +138,9 @@ export default function AgendaScreen({ navigation }) {
 
   const locationLabel = locationType === "home" ? "Thuis" : "Bij WattsNext";
   const appointmentAddress =
-    locationType === "home" && customAddress.trim() ? customAddress.trim() : OFFICE_ADDRESS;
+    locationType === "home" && customAddress.trim()
+      ? customAddress.trim()
+      : OFFICE_ADDRESS;
   const formattedDate = formatDateLabel(selectedDate);
 
   const canSubmit =
@@ -150,17 +149,21 @@ export default function AgendaScreen({ navigation }) {
         selectedTime &&
         contactName.trim() &&
         userEmail &&
-        (locationType === "office" || customAddress.trim())
+        (locationType === "office" || customAddress.trim()),
     ) && !submitting;
 
   const handleSubmitAppointment = async () => {
     if (!canSubmit) return;
 
     const trimmedName = contactName.trim();
-    const trimmedAddress = locationType === "home" ? customAddress.trim() : OFFICE_ADDRESS;
+    const trimmedAddress =
+      locationType === "home" ? customAddress.trim() : OFFICE_ADDRESS;
 
     if (locationType === "home" && !trimmedAddress) {
-      Alert.alert("Adres ontbreekt", "Voer een adres in voor de afspraak thuis.");
+      Alert.alert(
+        "Adres ontbreekt",
+        "Voer een adres in voor de afspraak thuis.",
+      );
       return;
     }
 
@@ -195,18 +198,20 @@ export default function AgendaScreen({ navigation }) {
       });
 
       if (!emailResult.success) {
-        const firstErr = emailResult.results.find((result) => !result.ok)?.error || "onbekende fout";
+        const firstErr =
+          emailResult.results.find((result) => !result.ok)?.error ||
+          "onbekende fout";
         console.log("EmailJS failure", emailResult);
         Alert.alert(
           "Afspraak ingepland",
           isEmailConfigured()
             ? `Bevestigingsmail verzenden mislukt:\n${firstErr}`
-            : "De afspraak is ingepland. Configureer de EXPO_PUBLIC_EMAILJS_* variabelen om automatische e-mails te versturen."
+            : "De afspraak is ingepland. Configureer de EXPO_PUBLIC_EMAILJS_* variabelen om automatische e-mails te versturen.",
         );
       } else {
         Alert.alert(
           "Afspraak ingepland",
-          "Je ontvangt zo een bevestiging in de mail. WattsNext wordt ook op de hoogte gebracht."
+          "Je ontvangt zo een bevestiging in de mail. WattsNext wordt ook op de hoogte gebracht.",
         );
       }
 
@@ -218,13 +223,13 @@ export default function AgendaScreen({ navigation }) {
       if (error?.message === "slot-taken") {
         Alert.alert(
           "Tijdslot niet beschikbaar",
-          "Dit tijdslot is zojuist geboekt. Kies een andere tijd."
+          "Dit tijdslot is zojuist geboekt. Kies een andere tijd.",
         );
       } else {
         console.error("Fout bij het plannen van een afspraak", error);
         Alert.alert(
           "Er ging iets mis",
-          "Het is niet gelukt om de afspraak te plannen. Probeer het later opnieuw."
+          "Het is niet gelukt om de afspraak te plannen. Probeer het later opnieuw.",
         );
       }
     } finally {
@@ -234,192 +239,218 @@ export default function AgendaScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Image source={require("../assets/achtergrond.png")} style={styles.backgroundImage} />
+      <ScreenBackground
+        style={styles.backgroundWrapper}
+        imageStyle={styles.backgroundImage}
+      >
+        <SafeAreaView style={styles.safeArea}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backTopLeft}
+            accessibilityRole="button"
+            accessibilityLabel="Ga terug naar het vorige scherm"
+          >
+            <Text style={styles.backText}>← Terug</Text>
+          </TouchableOpacity>
 
-      <SafeAreaView style={styles.safeArea}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backTopLeft}
-          accessibilityRole="button"
-          accessibilityLabel="Ga terug naar het vorige scherm"
-        >
-          <Text style={styles.backText}>← Terug</Text>
-        </TouchableOpacity>
+          <ScrollView
+            contentContainerStyle={[
+              styles.scrollContent,
+              { paddingHorizontal: width > 768 ? 48 : 24 },
+            ]}
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.content}>
+              <Image
+                source={require("../assets/logo.png")}
+                style={[
+                  styles.logo,
+                  {
+                    width: width > 768 ? 240 : 180,
+                    height: width > 768 ? 96 : 72,
+                  },
+                ]}
+                resizeMode="contain"
+              />
 
-        <ScrollView
-          contentContainerStyle={[
-            styles.scrollContent,
-            { paddingHorizontal: width > 768 ? 48 : 24 },
-          ]}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.content}>
-            <Image
-              source={require("../assets/logo.png")}
-              style={[
-                styles.logo,
-                {
-                  width: width > 768 ? 240 : 180,
-                  height: width > 768 ? 96 : 72,
-                },
-              ]}
-              resizeMode="contain"
-            />
-
-            <Text style={[styles.title, { fontSize: width > 768 ? 32 : 22 }]}>Plan een afspraak</Text>
-
-            <View
-              style={[styles.schedulerCard, { width: width > 992 ? "70%" : "100%" }]}
-            >
-              <Text style={styles.schedulerTitle}>Plan direct een afspraak</Text>
-              <Text style={styles.schedulerSubtitle}>
-                Kies een datum, selecteer een tijd tussen 09:00 en 17:00 en geef aan of we bij jou
-                langskomen of dat je liever op kantoor afspreekt.
+              <Text style={[styles.title, { fontSize: width > 768 ? 32 : 22 }]}>
+                Plan een afspraak
               </Text>
 
-              {loadingSlots ? (
-                <View style={styles.loadingWrapper}>
-                  <ActivityIndicator size="large" color="#f7941e" />
-                  <Text style={styles.loadingText}>Beschikbaarheid laden…</Text>
-                </View>
-              ) : (
-                <>
-                  <AppointmentCalendar
-                    today={today}
-                    selectedDate={selectedDate}
-                    onSelectDate={(dateString) => setSelectedDate(dateString)}
-                    bookedSlots={bookedSlots}
-                    totalSlotsPerDay={TIME_SLOTS.length}
-                  />
+              <View
+                style={[
+                  styles.schedulerCard,
+                  { width: width > 992 ? "70%" : "100%" },
+                ]}
+              >
+                <Text style={styles.schedulerTitle}>
+                  Plan direct een afspraak
+                </Text>
+                <Text style={styles.schedulerSubtitle}>
+                  Kies een datum, selecteer een tijd tussen 09:00 en 17:00 en
+                  geef aan of we bij jou langskomen of dat je liever op kantoor
+                  afspreekt.
+                </Text>
 
-                  {selectedDate ? (
-                    <View style={styles.section}>
-                      <Text style={styles.sectionTitle}>Beschikbare tijden</Text>
-                      {availableTimes.length === 0 ? (
-                        <Text style={styles.emptyMessage}>
-                          Alle tijdsloten zijn bezet op deze dag. Kies een andere datum.
+                {loadingSlots ? (
+                  <View style={styles.loadingWrapper}>
+                    <ActivityIndicator size="large" color="#f7941e" />
+                    <Text style={styles.loadingText}>
+                      Beschikbaarheid laden…
+                    </Text>
+                  </View>
+                ) : (
+                  <>
+                    <AppointmentCalendar
+                      today={today}
+                      selectedDate={selectedDate}
+                      onSelectDate={(dateString) => setSelectedDate(dateString)}
+                      bookedSlots={bookedSlots}
+                      totalSlotsPerDay={TIME_SLOTS.length}
+                    />
+
+                    {selectedDate ? (
+                      <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>
+                          Beschikbare tijden
                         </Text>
-                      ) : (
-                        <View style={styles.timeGrid}>
-                          {availableTimes.map((time) => {
-                            const isSelected = selectedTime === time;
-                            return (
-                              <TouchableOpacity
-                                key={time}
-                                style={[
-                                  styles.timeSlot,
-                                  isSelected && styles.timeSlotSelected,
-                                ]}
-                                onPress={() => setSelectedTime(time)}
-                                accessibilityRole="button"
-                                accessibilityLabel={`Kies tijdstip ${time}`}
-                              >
-                                <Text
+                        {availableTimes.length === 0 ? (
+                          <Text style={styles.emptyMessage}>
+                            Alle tijdsloten zijn bezet op deze dag. Kies een
+                            andere datum.
+                          </Text>
+                        ) : (
+                          <View style={styles.timeGrid}>
+                            {availableTimes.map((time) => {
+                              const isSelected = selectedTime === time;
+                              return (
+                                <TouchableOpacity
+                                  key={time}
                                   style={[
-                                    styles.timeSlotText,
-                                    isSelected && styles.timeSlotTextSelected,
+                                    styles.timeSlot,
+                                    isSelected && styles.timeSlotSelected,
                                   ]}
+                                  onPress={() => setSelectedTime(time)}
+                                  accessibilityRole="button"
+                                  accessibilityLabel={`Kies tijdstip ${time}`}
                                 >
-                                  {time}
-                                </Text>
-                              </TouchableOpacity>
-                            );
-                          })}
-                        </View>
+                                  <Text
+                                    style={[
+                                      styles.timeSlotText,
+                                      isSelected && styles.timeSlotTextSelected,
+                                    ]}
+                                  >
+                                    {time}
+                                  </Text>
+                                </TouchableOpacity>
+                              );
+                            })}
+                          </View>
+                        )}
+                      </View>
+                    ) : (
+                      <Text style={styles.emptyMessage}>
+                        Selecteer eerst een datum in de kalender om beschikbare
+                        tijden te zien.
+                      </Text>
+                    )}
+
+                    <View style={styles.section}>
+                      <Text style={styles.sectionTitle}>Voorkeurslocatie</Text>
+                      <View style={styles.locationRow}>
+                        <TouchableOpacity
+                          style={[
+                            styles.locationButton,
+                            locationType === "office" &&
+                              styles.locationButtonActive,
+                          ]}
+                          onPress={() => setLocationType("office")}
+                        >
+                          <Text
+                            style={[
+                              styles.locationButtonText,
+                              locationType === "office" &&
+                                styles.locationButtonTextActive,
+                            ]}
+                          >
+                            WattsNext kantoor
+                          </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={[
+                            styles.locationButton,
+                            locationType === "home" &&
+                              styles.locationButtonActive,
+                          ]}
+                          onPress={() => setLocationType("home")}
+                        >
+                          <Text
+                            style={[
+                              styles.locationButtonText,
+                              locationType === "home" &&
+                                styles.locationButtonTextActive,
+                            ]}
+                          >
+                            Afspraak thuis
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                      <Text style={styles.locationInfo}>
+                        {locationType === "home"
+                          ? "Vul het adres in waar we mogen langskomen."
+                          : `Het gesprek vindt plaats op ons kantoor: ${OFFICE_ADDRESS}.`}
+                      </Text>
+                      {locationType === "home" && (
+                        <TextInput
+                          style={styles.input}
+                          placeholder="Straat, huisnummer, woonplaats"
+                          placeholderTextColor="#999"
+                          value={customAddress}
+                          onChangeText={setCustomAddress}
+                          autoCapitalize="words"
+                        />
+                      )}
+                      {locationType === "office" && (
+                        <Text style={styles.readonlyInput}>
+                          {OFFICE_ADDRESS}
+                        </Text>
                       )}
                     </View>
-                  ) : (
-                    <Text style={styles.emptyMessage}>
-                      Selecteer eerst een datum in de kalender om beschikbare tijden te zien.
-                    </Text>
-                  )}
 
-                  <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Voorkeurslocatie</Text>
-                    <View style={styles.locationRow}>
-                      <TouchableOpacity
-                        style={[
-                          styles.locationButton,
-                          locationType === "office" && styles.locationButtonActive,
-                        ]}
-                        onPress={() => setLocationType("office")}
-                      >
-                        <Text
-                          style={[
-                            styles.locationButtonText,
-                            locationType === "office" && styles.locationButtonTextActive,
-                          ]}
-                        >
-                          WattsNext kantoor
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={[
-                          styles.locationButton,
-                          locationType === "home" && styles.locationButtonActive,
-                        ]}
-                        onPress={() => setLocationType("home")}
-                      >
-                        <Text
-                          style={[
-                            styles.locationButtonText,
-                            locationType === "home" && styles.locationButtonTextActive,
-                          ]}
-                        >
-                          Afspraak thuis
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                    <Text style={styles.locationInfo}>
-                      {locationType === "home"
-                        ? "Vul het adres in waar we mogen langskomen."
-                        : `Het gesprek vindt plaats op ons kantoor: ${OFFICE_ADDRESS}.`}
-                    </Text>
-                    {locationType === "home" && (
+                    <View style={styles.section}>
+                      <Text style={styles.sectionTitle}>Jouw gegevens</Text>
                       <TextInput
                         style={styles.input}
-                        placeholder="Straat, huisnummer, woonplaats"
+                        placeholder="Voor- en achternaam"
                         placeholderTextColor="#999"
-                        value={customAddress}
-                        onChangeText={setCustomAddress}
+                        value={contactName}
+                        onChangeText={setContactName}
                         autoCapitalize="words"
                       />
-                    )}
-                    {locationType === "office" && (
-                      <Text style={styles.readonlyInput}>{OFFICE_ADDRESS}</Text>
-                    )}
-                  </View>
+                      <Text style={styles.readonlyInput}>{userEmail}</Text>
+                    </View>
 
-                  <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Jouw gegevens</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Voor- en achternaam"
-                      placeholderTextColor="#999"
-                      value={contactName}
-                      onChangeText={setContactName}
-                      autoCapitalize="words"
-                    />
-                    <Text style={styles.readonlyInput}>{userEmail}</Text>
-                  </View>
-
-                  <TouchableOpacity
-                    style={[styles.submitButton, !canSubmit && styles.submitButtonDisabled]}
-                    onPress={handleSubmitAppointment}
-                    accessibilityRole="button"
-                    accessibilityLabel="Bevestig afspraak"
-                    disabled={!canSubmit}
-                  >
-                    <Text style={styles.submitButtonText}>
-                      {submitting ? "Versturen…" : "Bevestig afspraak"}
-                    </Text>
-                  </TouchableOpacity>
-                </>
-              )}
+                    <TouchableOpacity
+                      style={[
+                        styles.submitButton,
+                        !canSubmit && styles.submitButtonDisabled,
+                      ]}
+                      onPress={handleSubmitAppointment}
+                      accessibilityRole="button"
+                      accessibilityLabel="Bevestig afspraak"
+                      disabled={!canSubmit}
+                    >
+                      <Text style={styles.submitButtonText}>
+                        {submitting ? "Versturen…" : "Bevestig afspraak"}
+                      </Text>
+                    </TouchableOpacity>
+                  </>
+                )}
+              </View>
             </View>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+          </ScrollView>
+        </SafeAreaView>
+      </ScreenBackground>
     </View>
   );
 }
@@ -429,10 +460,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f0f4f8",
   },
+  backgroundWrapper: {
+    flex: 1,
+  },
   backgroundImage: {
-    ...StyleSheet.absoluteFillObject,
-    width: undefined,
-    height: undefined,
     resizeMode: "cover",
   },
   safeArea: {

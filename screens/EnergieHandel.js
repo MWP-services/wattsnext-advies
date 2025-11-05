@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   View,
   Text,
@@ -9,12 +9,12 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  ImageBackground
-} from 'react-native';
+} from "react-native";
+import ScreenBackground from "../components/ScreenBackground";
 
 export default function EnergieHandel({ navigation }) {
-  const [vermogen, setVermogen] = useState('');
-  const [teruglever, setTeruglever] = useState('');
+  const [vermogen, setVermogen] = useState("");
+  const [teruglever, setTeruglever] = useState("");
   const [wiltNoodstroom, setWiltNoodstroom] = useState(null);
 
   const handleNext = () => {
@@ -27,31 +27,28 @@ export default function EnergieHandel({ navigation }) {
 
     const kwh1 = teruglevering * 2;
 
-    console.log('Gecontracteerd terugleververmogen (kW):', teruglevering);
-    console.log('Berekening kwh1 = teruglever × 2:', kwh1);
+    console.log("Gecontracteerd terugleververmogen (kW):", teruglevering);
+    console.log("Berekening kwh1 = teruglever × 2:", kwh1);
 
     if (wiltNoodstroom === true) {
-      navigation.navigate('HandelNoodstroomVraag', { kwh1 });
+      navigation.navigate("HandelNoodstroomVraag", { kwh1 });
     } else {
-      navigation.navigate('ZakelijkAdviesHandel', { kwh1, kwh2: 0 });
+      navigation.navigate("ZakelijkAdviesHandel", { kwh1, kwh2: 0 });
     }
   };
 
   return (
-   <ImageBackground
-  source={require('../assets/achtergrond.png')}
-  style={styles.background}
-  resizeMode="contain" // 🔄 of probeer ook "stretch"
-  imageStyle={styles.imageStyle} // 🔧 web-only tweak
->
-
+    <ScreenBackground style={styles.background} imageStyle={styles.imageStyle}>
       <SafeAreaView style={{ flex: 1 }}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
           keyboardVerticalOffset={80}
         >
-          <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+          <ScrollView
+            contentContainerStyle={styles.container}
+            keyboardShouldPersistTaps="handled"
+          >
             <Text style={styles.title}>Handel op de energiemarkt</Text>
 
             <Text style={styles.label}>Gecontracteerd vermogen (kW)</Text>
@@ -64,7 +61,9 @@ export default function EnergieHandel({ navigation }) {
               placeholderTextColor="#aaa"
             />
 
-            <Text style={styles.label}>Gecontracteerd terugleververmogen (kW)</Text>
+            <Text style={styles.label}>
+              Gecontracteerd terugleververmogen (kW)
+            </Text>
             <TextInput
               style={styles.input}
               keyboardType="numeric"
@@ -74,16 +73,24 @@ export default function EnergieHandel({ navigation }) {
               placeholderTextColor="#aaa"
             />
 
-            <Text style={styles.label}>Wilt u ruimte reserveren voor noodstroomvoorziening?</Text>
+            <Text style={styles.label}>
+              Wilt u ruimte reserveren voor noodstroomvoorziening?
+            </Text>
             <View style={styles.toggleContainer}>
               <TouchableOpacity
-                style={[styles.toggleButton, wiltNoodstroom === true && styles.toggleSelected]}
+                style={[
+                  styles.toggleButton,
+                  wiltNoodstroom === true && styles.toggleSelected,
+                ]}
                 onPress={() => setWiltNoodstroom(true)}
               >
                 <Text style={styles.toggleText}>Ja</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.toggleButton, wiltNoodstroom === false && styles.toggleSelected]}
+                style={[
+                  styles.toggleButton,
+                  wiltNoodstroom === false && styles.toggleSelected,
+                ]}
                 onPress={() => setWiltNoodstroom(false)}
               >
                 <Text style={styles.toggleText}>Nee</Text>
@@ -96,37 +103,33 @@ export default function EnergieHandel({ navigation }) {
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
-    </ImageBackground>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
- background: {
-  flex: 1,
-  width: '100%',
-  height: '100%',
-  justifyContent: 'center',
-  alignItems: 'center',
-},
-
-imageStyle: {
-  resizeMode: 'contain',
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-},
-
+  background: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageStyle: {
+    resizeMode: "contain",
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
   container: {
     flexGrow: 1,
     padding: 24,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginBottom: 20,
-    color: '#4CAF50',
+    color: "#4CAF50",
   },
   label: {
     fontSize: 16,
@@ -134,45 +137,45 @@ imageStyle: {
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 8,
     padding: 12,
     marginBottom: 20,
     fontSize: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   button: {
-    backgroundColor: '#FF7F00',
+    backgroundColor: "#FF7F00",
     padding: 14,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 10,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   toggleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginBottom: 30,
   },
   toggleButton: {
     padding: 12,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 8,
     marginHorizontal: 10,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
     minWidth: 100,
-    alignItems: 'center',
+    alignItems: "center",
   },
   toggleSelected: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
   },
   toggleText: {
-    color: '#000',
+    color: "#000",
     fontSize: 16,
   },
 });

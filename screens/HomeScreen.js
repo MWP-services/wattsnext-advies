@@ -10,10 +10,10 @@ import {
   ScrollView,
   SafeAreaView,
   Platform,
-  ImageBackground,
 } from "react-native";
 
 import { getAuth } from "firebase/auth";
+import ScreenBackground from "../components/ScreenBackground";
 
 const auth = getAuth();
 
@@ -24,8 +24,7 @@ export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.root}>
       {/* Volledige achtergrond laag */}
-      <ImageBackground
-        source={require("../assets/achtergrond.png")}
+      <ScreenBackground
         style={styles.backgroundImage}
         imageStyle={styles.backgroundImageInner}
       >
@@ -58,16 +57,10 @@ export default function HomeScreen({ navigation }) {
                     height: isWide ? 120 : 80,
                   },
                 ]}
-                resizeMode="contain"
               />
 
               {/* Titel */}
-              <Text
-                style={[
-                  styles.title,
-                  { fontSize: isWide ? 36 : 24 },
-                ]}
-              >
+              <Text style={[styles.title, { fontSize: isWide ? 36 : 24 }]}>
                 WattsNext Advies
               </Text>
 
@@ -121,12 +114,9 @@ export default function HomeScreen({ navigation }) {
                   accessibilityRole="button"
                   accessibilityLabel="Bekijk opgeslagen adviezen"
                 >
-                  <Text style={styles.tileButtonText}>
-                    Opgeslagen adviezen
-                  </Text>
+                  <Text style={styles.tileButtonText}>Opgeslagen adviezen</Text>
                 </TouchableOpacity>
 
-               
                 {/* Nieuwe tegel voor de productcatalogus */}
                 <TouchableOpacity
                   style={[
@@ -146,7 +136,7 @@ export default function HomeScreen({ navigation }) {
             </View>
           </ScrollView>
         </SafeAreaView>
-      </ImageBackground>
+      </ScreenBackground>
     </View>
   );
 }
