@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   View,
   Text,
@@ -8,13 +8,13 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   ScrollView,
-  ImageBackground
-} from 'react-native';
+} from "react-native";
 
+import ScreenBackground from "../components/ScreenBackground";
 export default function ZakelijkOpslagScreen({ navigation }) {
-  const [jaarlijksVerbruik, setJaarlijksVerbruik] = useState('');
-  const [wpPerPaneel, setWpPerPaneel] = useState('');
-  const [aantalPanelen, setAantalPanelen] = useState('');
+  const [jaarlijksVerbruik, setJaarlijksVerbruik] = useState("");
+  const [wpPerPaneel, setWpPerPaneel] = useState("");
+  const [aantalPanelen, setAantalPanelen] = useState("");
 
   const doorgaan = () => {
     const jaarlijks = parseFloat(jaarlijksVerbruik);
@@ -22,7 +22,7 @@ export default function ZakelijkOpslagScreen({ navigation }) {
     const panelen = parseFloat(aantalPanelen);
 
     if (isNaN(jaarlijks) || isNaN(wp) || isNaN(panelen)) {
-      alert('Vul alle velden in met geldige getallen.');
+      alert("Vul alle velden in met geldige getallen.");
       return;
     }
 
@@ -38,27 +38,24 @@ export default function ZakelijkOpslagScreen({ navigation }) {
     const totaalBenodigd = (kwh1 + kwh2) / 2;
 
     // ✅ Debug logging
-    console.log('Zakelijk Opslag Berekening =>');
-    console.log('Jaarlijks verbruik:', jaarlijks);
-    console.log('Dagelijks verbruik:', dagelijksVerbruik.toFixed(2));
-    console.log('kWh1:', kwh1.toFixed(2));
-    console.log('Wp per paneel:', wp);
-    console.log('Aantal panelen:', panelen);
-    console.log('Vermogen installatie (kWp):', vermogenInstallatie.toFixed(2));
-    console.log('kWh2 (PV-opwek):', kwh2.toFixed(2));
-    console.log('Totaal benodigd (gemiddelde):', totaalBenodigd.toFixed(2));
+    console.log("Zakelijk Opslag Berekening =>");
+    console.log("Jaarlijks verbruik:", jaarlijks);
+    console.log("Dagelijks verbruik:", dagelijksVerbruik.toFixed(2));
+    console.log("kWh1:", kwh1.toFixed(2));
+    console.log("Wp per paneel:", wp);
+    console.log("Aantal panelen:", panelen);
+    console.log("Vermogen installatie (kWp):", vermogenInstallatie.toFixed(2));
+    console.log("kWh2 (PV-opwek):", kwh2.toFixed(2));
+    console.log("Totaal benodigd (gemiddelde):", totaalBenodigd.toFixed(2));
 
-    navigation.navigate('NoodstroomVraag', { kwh1: totaalBenodigd });
+    navigation.navigate("NoodstroomVraag", { kwh1: totaalBenodigd });
   };
 
   return (
-   <ImageBackground
-  source={require('../assets/achtergrond.png')}
-  style={styles.background}
-  resizeMode="contain" // 🔄 of probeer ook "stretch"
-  imageStyle={styles.imageStyle} // 🔧 web-only tweak
->
-
+    <ScreenBackground
+      style={styles.background}
+      imageStyle={styles.imageStyle} // 🔧 web-only tweak
+    >
       <SafeAreaView style={{ flex: 1 }}>
         <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
           <ScrollView contentContainerStyle={styles.container}>
@@ -100,63 +97,61 @@ export default function ZakelijkOpslagScreen({ navigation }) {
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
-    </ImageBackground>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
-background: {
-  flex: 1,
-  width: '100%',
-  height: '100%',
-  justifyContent: 'center',
-  alignItems: 'center',
-},
-
-imageStyle: {
-  resizeMode: 'contain',
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-},
-
+  background: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageStyle: {
+    resizeMode: "contain",
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
   container: {
     flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
-    color: '#3eaf4f',
+    fontWeight: "bold",
+    color: "#3eaf4f",
     marginBottom: 30,
-    textAlign: 'center',
+    textAlign: "center",
   },
   label: {
     fontSize: 16,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     marginBottom: 5,
-    color: '#000',
+    color: "#000",
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 10,
     padding: 10,
     marginBottom: 20,
-    width: '100%',
-    backgroundColor: '#fff',
+    width: "100%",
+    backgroundColor: "#fff",
   },
   button: {
-    backgroundColor: '#f7941e',
+    backgroundColor: "#f7941e",
     padding: 16,
     borderRadius: 10,
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
   },
 });

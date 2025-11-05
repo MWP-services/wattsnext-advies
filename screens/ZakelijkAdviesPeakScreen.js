@@ -1,7 +1,15 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ImageBackground } from 'react-native';
-import SaveAdviceButton from '../components/SaveAdviceButton';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+} from "react-native";
+import ScreenBackground from "../components/ScreenBackground";
+import SaveAdviceButton from "../components/SaveAdviceButton";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ZakelijkAdviesPeakScreen({ route, navigation }) {
   const { kwh1, kwh2 = 0, kwh3 = 0 } = route.params;
@@ -9,53 +17,50 @@ export default function ZakelijkAdviesPeakScreen({ route, navigation }) {
   const totaleBehoefteOrigineel = kwh1 + kwh2 + kwh3;
   const totaleBehoefte = totaleBehoefteOrigineel * 2; // ✨ Keer 2
 
-  console.log('Peak Advies → kwh1:', kwh1, 'kwh2:', kwh2, 'kwh3:', kwh3);
-  console.log('Totale behoefte (origineel):', totaleBehoefteOrigineel);
-  console.log('Totale behoefte (x2):', totaleBehoefte);
+  console.log("Peak Advies → kwh1:", kwh1, "kwh2:", kwh2, "kwh3:", kwh3);
+  console.log("Totale behoefte (origineel):", totaleBehoefteOrigineel);
+  console.log("Totale behoefte (x2):", totaleBehoefte);
 
-  let advies = '';
+  let advies = "";
   let image = null;
-  let specificatieScreen = '';
+  let specificatieScreen = "";
 
   if (totaleBehoefte <= 64) {
-    advies = '64 kWh batterij';
-    image = require('../assets/64-KWH-ZAKELIJK.png');
-    specificatieScreen = 'Specificaties64';
+    advies = "64 kWh batterij";
+    image = require("../assets/64-KWH-ZAKELIJK.png");
+    specificatieScreen = "Specificaties64";
   } else if (totaleBehoefte <= 96) {
-    advies = '96 kWh batterij';
-    image = require('../assets/96-KWH-ZAKELIJK.png');
-    specificatieScreen = 'Specificaties96';
+    advies = "96 kWh batterij";
+    image = require("../assets/96-KWH-ZAKELIJK.png");
+    specificatieScreen = "Specificaties96";
   } else if (totaleBehoefte <= 232) {
-    advies = '232 kWh batterij';
-    image = require('../assets/232-KWH-ZAKELIJK.png');
-    specificatieScreen = 'Specificaties232';
+    advies = "232 kWh batterij";
+    image = require("../assets/232-KWH-ZAKELIJK.png");
+    specificatieScreen = "Specificaties232";
   } else if (totaleBehoefte <= 1160) {
     const modules = Math.ceil(totaleBehoefte / 232);
-    advies = `232 kWh batterij met ${modules} module${modules > 1 ? 's' : ''}`;
-    image = require('../assets/232-KWH-ZAKELIJK.png');
-    specificatieScreen = 'Specificaties232';
-    console.log('Aantal modules:', modules);
+    advies = `232 kWh batterij met ${modules} module${modules > 1 ? "s" : ""}`;
+    image = require("../assets/232-KWH-ZAKELIJK.png");
+    specificatieScreen = "Specificaties232";
+    console.log("Aantal modules:", modules);
   } else if (totaleBehoefte <= 2090) {
-    advies = '2.09 MWh batterij';
-    image = require('../assets/2-MW-ZAKELIJK.png');
-    specificatieScreen = 'Specificaties209';
+    advies = "2.09 MWh batterij";
+    image = require("../assets/2-MW-ZAKELIJK.png");
+    specificatieScreen = "Specificaties209";
   } else {
-    advies = '5.01 MWh batterij';
-    image = require('../assets/5-MW-ZAKELIJK.png');
-    specificatieScreen = 'Specificaties501';
+    advies = "5.01 MWh batterij";
+    image = require("../assets/5-MW-ZAKELIJK.png");
+    specificatieScreen = "Specificaties501";
   }
 
-  console.log('Gekozen advies:', advies);
-  console.log('Navigeren naar:', specificatieScreen);
+  console.log("Gekozen advies:", advies);
+  console.log("Navigeren naar:", specificatieScreen);
 
   return (
-    <ImageBackground
-  source={require('../assets/achtergrond.png')}
-  style={styles.background}
-  resizeMode="contain" // 🔄 of probeer ook "stretch"
-  imageStyle={styles.imageStyle} // 🔧 web-only tweak
->
-
+    <ScreenBackground
+      style={styles.background}
+      imageStyle={styles.imageStyle} // 🔧 web-only tweak
+    >
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView
           style={{ flex: 1 }}
@@ -87,66 +92,64 @@ export default function ZakelijkAdviesPeakScreen({ route, navigation }) {
           />
         </ScrollView>
       </SafeAreaView>
-    </ImageBackground>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
   background: {
-  flex: 1,
-  width: '100%',
-  height: '100%',
-  justifyContent: 'center',
-  alignItems: 'center',
-},
-
-imageStyle: {
-  resizeMode: 'contain',
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-},
-
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageStyle: {
+    resizeMode: "contain",
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
   container: {
     flexGrow: 1,
-    minHeight: '100%',
+    minHeight: "100%",
     padding: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
-    color: '#4CAF50',
+    fontWeight: "bold",
+    color: "#4CAF50",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   info: {
     fontSize: 18,
     marginBottom: 10,
-    textAlign: 'center',
+    textAlign: "center",
   },
   advice: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#f7941e',
+    fontWeight: "bold",
+    color: "#f7941e",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   image: {
-    width: '100%',
+    width: "100%",
     height: 250,
     marginVertical: 20,
   },
   button: {
-    backgroundColor: '#f7941e',
+    backgroundColor: "#f7941e",
     padding: 14,
     borderRadius: 10,
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
   },
 });

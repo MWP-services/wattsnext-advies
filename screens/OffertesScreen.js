@@ -7,12 +7,18 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  ImageBackground,
   Platform,
 } from "react-native";
 
 import { auth, db } from "../firebaseConfig";
-import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
+import ScreenBackground from "../components/ScreenBackground";
 
 export default function OffertesScreen({ navigation }) {
   const [aanvragen, setAanvragen] = useState([]);
@@ -29,7 +35,7 @@ export default function OffertesScreen({ navigation }) {
     const q = query(
       collection(db, "quotes"),
       where("uid", "==", user.uid),
-      orderBy("createdAt", "desc")
+      orderBy("createdAt", "desc"),
     );
 
     const unsub = onSnapshot(
@@ -58,7 +64,7 @@ export default function OffertesScreen({ navigation }) {
         console.error("❌ Fout bij ophalen offertes:", err);
         setAanvragen([]);
         setLoading(false);
-      }
+      },
     );
 
     return () => unsub();
@@ -66,25 +72,31 @@ export default function OffertesScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ImageBackground
-        source={require("../assets/achtergrond.png")}
+      <ScreenBackground
         style={styles.backgroundImage}
         imageStyle={styles.backgroundImageInner}
       >
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
           <Text style={styles.title}>Mijn offerte-aanvragen</Text>
 
           <TouchableOpacity
             style={styles.backToProductsButton}
             onPress={() => navigation.navigate("Producten")}
           >
-            <Text style={styles.backToProductsButtonText}>← Terug naar producten</Text>
+            <Text style={styles.backToProductsButtonText}>
+              ← Terug naar producten
+            </Text>
           </TouchableOpacity>
 
           {loading ? (
             <Text style={styles.subtleText}>Offertes laden…</Text>
           ) : aanvragen.length === 0 ? (
-            <Text style={styles.subtleText}>Je hebt nog geen offerte-aanvragen gedaan.</Text>
+            <Text style={styles.subtleText}>
+              Je hebt nog geen offerte-aanvragen gedaan.
+            </Text>
           ) : null}
 
           <View style={styles.listWrapper}>
@@ -93,7 +105,8 @@ export default function OffertesScreen({ navigation }) {
                 ? new Date(aanvraag.createdAt.seconds * 1000).toLocaleString()
                 : "onbekend";
 
-              const isMulti = Array.isArray(aanvraag.items) && aanvraag.items.length > 0;
+              const isMulti =
+                Array.isArray(aanvraag.items) && aanvraag.items.length > 0;
 
               return (
                 <View key={aanvraag.id} style={styles.offerteCard}>
@@ -105,24 +118,36 @@ export default function OffertesScreen({ navigation }) {
 
                   {!isMulti ? (
                     <>
-                      <Text style={styles.cardMeta}>Artikelcode: {aanvraag.artikelcode || "-"}</Text>
-                      <Text style={styles.cardMeta}>Categorie: {aanvraag.categorie || "-"}</Text>
+                      <Text style={styles.cardMeta}>
+                        Artikelcode: {aanvraag.artikelcode || "-"}
+                      </Text>
+                      <Text style={styles.cardMeta}>
+                        Categorie: {aanvraag.categorie || "-"}
+                      </Text>
                       {aanvraag.specs ? (
-                        <Text style={styles.cardMeta}>Specificaties: {aanvraag.specs}</Text>
+                        <Text style={styles.cardMeta}>
+                          Specificaties: {aanvraag.specs}
+                        </Text>
                       ) : null}
                     </>
                   ) : (
                     <View style={styles.itemsWrapper}>
                       {aanvraag.items.map((it, idx) => (
-                        <View key={`${aanvraag.id}-${idx}`} style={styles.itemRow}>
+                        <View
+                          key={`${aanvraag.id}-${idx}`}
+                          style={styles.itemRow}
+                        >
                           <Text style={styles.itemBullet}>•</Text>
                           <View style={{ flex: 1 }}>
                             <Text style={styles.itemLine}>
                               {it.productnaam || "Product"}{" "}
-                              <Text style={styles.itemDim}>({it.artikelcode || "-"})</Text>
+                              <Text style={styles.itemDim}>
+                                ({it.artikelcode || "-"})
+                              </Text>
                             </Text>
                             <Text style={styles.itemSub}>
-                              {it.categorie || "-"} {it.specs ? `| ${it.specs}` : ""}
+                              {it.categorie || "-"}{" "}
+                              {it.specs ? `| ${it.specs}` : ""}
                             </Text>
                           </View>
                         </View>
@@ -131,7 +156,10 @@ export default function OffertesScreen({ navigation }) {
                   )}
 
                   <Text style={styles.cardStatus}>
-                    Status: <Text style={styles.cardStatusValue}>{aanvraag.status || "open"}</Text>
+                    Status:{" "}
+                    <Text style={styles.cardStatusValue}>
+                      {aanvraag.status || "open"}
+                    </Text>
                   </Text>
                   <Text style={styles.cardTimestamp}>Aangevraagd op: {ts}</Text>
                 </View>
@@ -139,7 +167,7 @@ export default function OffertesScreen({ navigation }) {
             })}
           </View>
         </ScrollView>
-      </ImageBackground>
+      </ScreenBackground>
     </SafeAreaView>
   );
 }
@@ -147,7 +175,9 @@ export default function OffertesScreen({ navigation }) {
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: "#f0f4f8" },
   backgroundImage: { flex: 1, width: "100%", height: "100%" },
-  backgroundImageInner: { resizeMode: Platform.OS === "web" ? "contain" : "cover" },
+  backgroundImageInner: {
+    resizeMode: Platform.OS === "web" ? "contain" : "cover",
+  },
   scrollContent: {
     flexGrow: 1,
     paddingTop: 32,
@@ -156,7 +186,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 24,
   },
-  title: { fontSize: 28, fontWeight: "700", color: "#1f6f34", textAlign: "center" },
+  title: {
+    fontSize: 28,
+    fontWeight: "700",
+    color: "#1f6f34",
+    textAlign: "center",
+  },
   backToProductsButton: {
     backgroundColor: "#f7941e",
     borderRadius: 10,
@@ -168,8 +203,18 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 6,
   },
-  backToProductsButtonText: { color: "#fff", fontWeight: "700", fontSize: 16, textAlign: "center" },
-  subtleText: { fontSize: 16, color: "#333", textAlign: "center", opacity: 0.8 },
+  backToProductsButtonText: {
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 16,
+    textAlign: "center",
+  },
+  subtleText: {
+    fontSize: 16,
+    color: "#333",
+    textAlign: "center",
+    opacity: 0.8,
+  },
   listWrapper: { width: "100%", maxWidth: 800, gap: 16 },
 
   offerteCard: {
@@ -182,9 +227,19 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 6,
   },
-  cardTitle: { fontSize: 20, fontWeight: "700", color: "#1f1f1f", marginBottom: 6 },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#1f1f1f",
+    marginBottom: 6,
+  },
   cardMeta: { fontSize: 16, color: "#333", marginBottom: 4 },
-  cardStatus: { fontSize: 16, color: "#1f1f1f", fontWeight: "600", marginTop: 8 },
+  cardStatus: {
+    fontSize: 16,
+    color: "#1f1f1f",
+    fontWeight: "600",
+    marginTop: 8,
+  },
   cardStatusValue: { color: "#f7941e", fontWeight: "700" },
   cardTimestamp: { fontSize: 14, color: "#555", marginTop: 6 },
 

@@ -10,7 +10,6 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  ImageBackground,
   TextInput,
   KeyboardAvoidingView,
 } from "react-native";
@@ -18,6 +17,7 @@ import {
 import { sendProductQuoteEmail } from "../support/email";
 import { db, auth } from "../firebaseConfig";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import ScreenBackground from "../components/ScreenBackground";
 
 const PRODUCTEN = [
   {
@@ -226,9 +226,15 @@ function ProductenScreen({ navigation }) {
 
   // NIEUW: helpers voor qty
   const incQty = (key) =>
-    setQuantities((prev) => ({ ...prev, [key]: Math.max(1, (prev[key] || 1) + 1) }));
+    setQuantities((prev) => ({
+      ...prev,
+      [key]: Math.max(1, (prev[key] || 1) + 1),
+    }));
   const decQty = (key) =>
-    setQuantities((prev) => ({ ...prev, [key]: Math.max(1, (prev[key] || 1) - 1) }));
+    setQuantities((prev) => ({
+      ...prev,
+      [key]: Math.max(1, (prev[key] || 1) - 1),
+    }));
 
   const toggleSelect = (product) => {
     const key = getUniqueKey(product);
@@ -261,7 +267,10 @@ function ProductenScreen({ navigation }) {
 
     const user = auth.currentUser;
     if (!user) {
-      Alert.alert("Inloggen vereist", "Je moet ingelogd zijn om een offerte aan te vragen.");
+      Alert.alert(
+        "Inloggen vereist",
+        "Je moet ingelogd zijn om een offerte aan te vragen.",
+      );
       return;
     }
 
@@ -282,13 +291,22 @@ function ProductenScreen({ navigation }) {
       });
 
       if (result?.success) {
-        Alert.alert("Offerte aangevraagd", `Offerte aangevraagd voor ${product.productnaam}.`);
+        Alert.alert(
+          "Offerte aangevraagd",
+          `Offerte aangevraagd voor ${product.productnaam}.`,
+        );
       } else {
-        Alert.alert("Offerte aangemaakt", "Aanvraag opgeslagen, maar e-mail kon niet worden verstuurd.");
+        Alert.alert(
+          "Offerte aangemaakt",
+          "Aanvraag opgeslagen, maar e-mail kon niet worden verstuurd.",
+        );
       }
     } catch (error) {
       console.error("❌ Offerte-aanvraag fout:", error);
-      Alert.alert("Fout", "Er ging iets mis bij het aanvragen van de offerte (opslaan of mail).");
+      Alert.alert(
+        "Fout",
+        "Er ging iets mis bij het aanvragen van de offerte (opslaan of mail).",
+      );
     } finally {
       setSendingId(null);
     }
@@ -303,7 +321,10 @@ function ProductenScreen({ navigation }) {
 
     const user = auth.currentUser;
     if (!user) {
-      Alert.alert("Inloggen vereist", "Je moet ingelogd zijn om een offerte aan te vragen.");
+      Alert.alert(
+        "Inloggen vereist",
+        "Je moet ingelogd zijn om een offerte aan te vragen.",
+      );
       return;
     }
 
@@ -339,18 +360,30 @@ function ProductenScreen({ navigation }) {
       }
 
       if (mailFailures === 0) {
-        Alert.alert("Offerte aangevraagd", `Aanvraag voor ${items.length} producttypen is verstuurd.`);
+        Alert.alert(
+          "Offerte aangevraagd",
+          `Aanvraag voor ${items.length} producttypen is verstuurd.`,
+        );
       } else if (mailFailures < items.length) {
-        Alert.alert("Gedeeltelijke mailfout", `Aanvraag opgeslagen. ${mailFailures} e-mails zijn niet verstuurd.`);
+        Alert.alert(
+          "Gedeeltelijke mailfout",
+          `Aanvraag opgeslagen. ${mailFailures} e-mails zijn niet verstuurd.`,
+        );
       } else {
-        Alert.alert("Offerte opgeslagen", "Aanvraag opgeslagen, maar e-mails konden niet worden verstuurd.");
+        Alert.alert(
+          "Offerte opgeslagen",
+          "Aanvraag opgeslagen, maar e-mails konden niet worden verstuurd.",
+        );
       }
 
       clearSelection();
       navigation.navigate("Offertes");
     } catch (error) {
       console.error("❌ Batch-offerte fout:", error);
-      Alert.alert("Fout", "Het is niet gelukt om de batch-aanvraag op te slaan.");
+      Alert.alert(
+        "Fout",
+        "Het is niet gelukt om de batch-aanvraag op te slaan.",
+      );
     }
   };
 
@@ -364,15 +397,20 @@ function ProductenScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ImageBackground
-        source={require("../assets/achtergrond.png")}
+      <ScreenBackground
         style={styles.backgroundImage}
         imageStyle={styles.backgroundImageInner}
       >
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          style={{ flex: 1 }}
+        >
           <ScrollView
             keyboardShouldPersistTaps="handled"
-            contentContainerStyle={[styles.scrollContent, { paddingHorizontal: width > 768 ? 48 : 24 }]}
+            contentContainerStyle={[
+              styles.scrollContent,
+              { paddingHorizontal: width > 768 ? 48 : 24 },
+            ]}
             showsVerticalScrollIndicator={false}
           >
             <Text style={[styles.title, { fontSize: width > 768 ? 32 : 24 }]}>
@@ -390,7 +428,10 @@ function ProductenScreen({ navigation }) {
                 returnKeyType="search"
               />
               {!!query && (
-                <TouchableOpacity style={styles.clearBtn} onPress={() => setQuery("")}>
+                <TouchableOpacity
+                  style={styles.clearBtn}
+                  onPress={() => setQuery("")}
+                >
                   <Text style={styles.clearBtnText}>✕</Text>
                 </TouchableOpacity>
               )}
@@ -401,7 +442,9 @@ function ProductenScreen({ navigation }) {
               style={styles.overviewButton}
               onPress={() => navigation.navigate("Offertes")}
             >
-              <Text style={styles.overviewButtonText}>Mijn offerte-aanvragen →</Text>
+              <Text style={styles.overviewButtonText}>
+                Mijn offerte-aanvragen →
+              </Text>
             </TouchableOpacity>
 
             {/* Batch-actieknoppen */}
@@ -410,16 +453,23 @@ function ProductenScreen({ navigation }) {
                 Geselecteerd: {selectedCount}
               </Text>
               <TouchableOpacity
-                style={[styles.batchBtn, selectedCount === 0 && { opacity: 0.5 }]}
+                style={[
+                  styles.batchBtn,
+                  selectedCount === 0 && { opacity: 0.5 },
+                ]}
                 onPress={handleBatchQuoteRequest}
                 disabled={selectedCount === 0}
               >
                 <Text style={styles.batchBtnText}>
-                  Vraag {selectedCount > 0 ? `${selectedCount} ` : ""}offertes aan
+                  Vraag {selectedCount > 0 ? `${selectedCount} ` : ""}offertes
+                  aan
                 </Text>
               </TouchableOpacity>
               {selectedCount > 0 && (
-                <TouchableOpacity style={styles.batchClearBtn} onPress={clearSelection}>
+                <TouchableOpacity
+                  style={styles.batchClearBtn}
+                  onPress={clearSelection}
+                >
                   <Text style={styles.batchClearBtnText}>Reset selectie</Text>
                 </TouchableOpacity>
               )}
@@ -438,26 +488,44 @@ function ProductenScreen({ navigation }) {
                 const qty = Math.max(1, quantities[uniqueKey] || 1);
 
                 return (
-                  <View key={uniqueKey} style={[styles.productCard, { width: getCardWidth() }]}>
+                  <View
+                    key={uniqueKey}
+                    style={[styles.productCard, { width: getCardWidth() }]}
+                  >
                     <View style={styles.cardHeaderRow}>
                       {/* Pseudo checkbox */}
                       <TouchableOpacity
-                        style={[styles.checkbox, isSelected && styles.checkboxChecked]}
+                        style={[
+                          styles.checkbox,
+                          isSelected && styles.checkboxChecked,
+                        ]}
                         onPress={() => toggleSelect(product)}
                         accessibilityRole="checkbox"
                         accessibilityState={{ checked: isSelected }}
                       >
-                        {isSelected ? <Text style={styles.checkboxTick}>✓</Text> : null}
+                        {isSelected ? (
+                          <Text style={styles.checkboxTick}>✓</Text>
+                        ) : null}
                       </TouchableOpacity>
 
-                      <Text style={styles.productName}>{product.productnaam}</Text>
+                      <Text style={styles.productName}>
+                        {product.productnaam}
+                      </Text>
                     </View>
 
-                    <Text style={styles.productMeta}>Artikelcode: {product.artikelcode}</Text>
-                    <Text style={styles.productMeta}>Categorie: {product.categorie}</Text>
-                    <Text style={styles.productMeta}>Doelgroep: {product.doelgroep}</Text>
+                    <Text style={styles.productMeta}>
+                      Artikelcode: {product.artikelcode}
+                    </Text>
+                    <Text style={styles.productMeta}>
+                      Categorie: {product.categorie}
+                    </Text>
+                    <Text style={styles.productMeta}>
+                      Doelgroep: {product.doelgroep}
+                    </Text>
                     {product.specs ? (
-                      <Text style={styles.productMeta}>Specificaties: {product.specs}</Text>
+                      <Text style={styles.productMeta}>
+                        Specificaties: {product.specs}
+                      </Text>
                     ) : null}
 
                     {/* ✅ NIEUW: Aantal-selector zichtbaar als product geselecteerd is */}
@@ -486,18 +554,31 @@ function ProductenScreen({ navigation }) {
 
                     <View style={styles.cardActions}>
                       <TouchableOpacity
-                        style={[styles.quoteButton, isSending && styles.quoteButtonDisabled]}
+                        style={[
+                          styles.quoteButton,
+                          isSending && styles.quoteButtonDisabled,
+                        ]}
                         onPress={() => handleQuoteRequest(product)}
                         disabled={isSending}
                       >
-                        <Text style={styles.quoteButtonText}>{isSending ? "Bezig..." : "Vraag offerte aan"}</Text>
+                        <Text style={styles.quoteButtonText}>
+                          {isSending ? "Bezig..." : "Vraag offerte aan"}
+                        </Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity
-                        style={[styles.selectToggleBtn, isSelected && styles.selectToggleBtnActive]}
+                        style={[
+                          styles.selectToggleBtn,
+                          isSelected && styles.selectToggleBtnActive,
+                        ]}
                         onPress={() => toggleSelect(product)}
                       >
-                        <Text style={[styles.selectToggleText, isSelected && styles.selectToggleTextActive]}>
+                        <Text
+                          style={[
+                            styles.selectToggleText,
+                            isSelected && styles.selectToggleTextActive,
+                          ]}
+                        >
                           {isSelected ? "Verwijder uit selectie" : "Selecteer"}
                         </Text>
                       </TouchableOpacity>
@@ -508,7 +589,7 @@ function ProductenScreen({ navigation }) {
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
-      </ImageBackground>
+      </ScreenBackground>
     </SafeAreaView>
   );
 }
@@ -516,7 +597,9 @@ function ProductenScreen({ navigation }) {
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: "#f0f4f8" },
   backgroundImage: { flex: 1, width: "100%", height: "100%" },
-  backgroundImageInner: { resizeMode: Platform.OS === "web" ? "contain" : "cover" },
+  backgroundImageInner: {
+    resizeMode: Platform.OS === "web" ? "contain" : "cover",
+  },
   scrollContent: {
     flexGrow: 1,
     paddingTop: 32,
@@ -568,7 +651,12 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 6,
   },
-  overviewButtonText: { color: "#fff", fontWeight: "700", fontSize: 16, textAlign: "center" },
+  overviewButtonText: {
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 16,
+    textAlign: "center",
+  },
 
   // Batch balk
   batchBar: {
@@ -616,11 +704,20 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 6,
   },
-  cardHeaderRow: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 8 },
+  cardHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 8,
+  },
   checkbox: {
-    width: 22, height: 22, borderRadius: 6,
-    borderWidth: 2, borderColor: "#1f6f34",
-    alignItems: "center", justifyContent: "center",
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    borderWidth: 2,
+    borderColor: "#1f6f34",
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: "#fff",
   },
   checkboxChecked: { backgroundColor: "#1f6f34" },
@@ -666,7 +763,12 @@ const styles = StyleSheet.create({
     color: "#1f1f1f",
   },
 
-  cardActions: { marginTop: 12, flexDirection: "row", gap: 8, flexWrap: "wrap" },
+  cardActions: {
+    marginTop: 12,
+    flexDirection: "row",
+    gap: 8,
+    flexWrap: "wrap",
+  },
   quoteButton: {
     backgroundColor: "#f7941e",
     borderRadius: 10,

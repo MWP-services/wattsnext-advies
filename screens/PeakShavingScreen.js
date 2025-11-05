@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   View,
   Text,
@@ -9,16 +9,16 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  ImageBackground
-} from 'react-native';
+} from "react-native";
 
+import ScreenBackground from "../components/ScreenBackground";
 export default function PeakShavingScreen({ navigation }) {
-  const [mode, setMode] = useState('kW'); // 'kW' of 'A'
-  const [net, setNet] = useState('');
-  const [piek, setPiek] = useState('');
-  const [duur, setDuur] = useState('');
-  const [frequentie, setFrequentie] = useState('');
-  const [vermogensfactor, setVermogensfactor] = useState('0.95');
+  const [mode, setMode] = useState("kW"); // 'kW' of 'A'
+  const [net, setNet] = useState("");
+  const [piek, setPiek] = useState("");
+  const [duur, setDuur] = useState("");
+  const [frequentie, setFrequentie] = useState("");
+  const [vermogensfactor, setVermogensfactor] = useState("0.95");
 
   const efficientie = 0.9;
   const lijnspanning = 400; // voor Ampère-berekening
@@ -30,18 +30,26 @@ export default function PeakShavingScreen({ navigation }) {
     const f = parseFloat(frequentie);
     const vf = parseFloat(vermogensfactor);
 
-    if ([n, p, d, f].some(isNaN) || d <= 0 || f <= 0 || p <= 0 || n <= 0 || isNaN(vf)) {
+    if (
+      [n, p, d, f].some(isNaN) ||
+      d <= 0 ||
+      f <= 0 ||
+      p <= 0 ||
+      n <= 0 ||
+      isNaN(vf)
+    ) {
       alert("Vul geldige getallen in voor alle velden.");
       return;
     }
 
     let kwh1 = 0;
 
-    if (mode === 'kW') {
+    if (mode === "kW") {
       kwh1 = ((p - n) * d * f) / efficientie;
     } else {
       const verschilA = p - n;
-      kwh1 = ((Math.sqrt(3) * lijnspanning * verschilA * vf) * d * f) / efficientie;
+      kwh1 =
+        (Math.sqrt(3) * lijnspanning * verschilA * vf * d * f) / efficientie;
     }
 
     if (kwh1 < 0) {
@@ -49,21 +57,18 @@ export default function PeakShavingScreen({ navigation }) {
       return;
     }
 
-    navigation.navigate('PeakNoodstroomVraag', { kwh1 });
+    navigation.navigate("PeakNoodstroomVraag", { kwh1 });
   };
 
   return (
-   <ImageBackground
-  source={require('../assets/achtergrond.png')}
-  style={styles.background}
-  resizeMode="contain" // 🔄 of probeer ook "stretch"
-  imageStyle={styles.imageStyle} // 🔧 web-only tweak
->
-
+    <ScreenBackground
+      style={styles.background}
+      imageStyle={styles.imageStyle} // 🔧 web-only tweak
+    >
       <SafeAreaView style={{ flex: 1 }}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
           keyboardVerticalOffset={80}
         >
           <ScrollView contentContainerStyle={styles.container}>
@@ -71,34 +76,62 @@ export default function PeakShavingScreen({ navigation }) {
 
             <View style={styles.toggleContainer}>
               <TouchableOpacity
-                style={[styles.toggleButton, mode === 'kW' && styles.toggleSelected]}
-                onPress={() => setMode('kW')}
+                style={[
+                  styles.toggleButton,
+                  mode === "kW" && styles.toggleSelected,
+                ]}
+                onPress={() => setMode("kW")}
               >
                 <Text style={styles.toggleText}>Invoer in kW</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.toggleButton, mode === 'A' && styles.toggleSelected]}
-                onPress={() => setMode('A')}
+                style={[
+                  styles.toggleButton,
+                  mode === "A" && styles.toggleSelected,
+                ]}
+                onPress={() => setMode("A")}
               >
                 <Text style={styles.toggleText}>Invoer in Ampère</Text>
               </TouchableOpacity>
             </View>
 
             <Text style={styles.label}>Gecontracteerd Vermogen ({mode})</Text>
-            <TextInput style={styles.input} keyboardType="numeric" value={net} onChangeText={setNet} />
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={net}
+              onChangeText={setNet}
+            />
 
             <Text style={styles.label}>Gemeten piekbelasting ({mode})</Text>
-            <TextInput style={styles.input} keyboardType="numeric" value={piek} onChangeText={setPiek} />
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={piek}
+              onChangeText={setPiek}
+            />
 
             <Text style={styles.label}>Duur van de piek (uren)</Text>
-            <TextInput style={styles.input} keyboardType="numeric" value={duur} onChangeText={setDuur} />
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={duur}
+              onChangeText={setDuur}
+            />
 
             <Text style={styles.label}>Frequentie per dag</Text>
-            <TextInput style={styles.input} keyboardType="numeric" value={frequentie} onChangeText={setFrequentie} />
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={frequentie}
+              onChangeText={setFrequentie}
+            />
 
-            {mode === 'A' && (
+            {mode === "A" && (
               <>
-                <Text style={styles.label}>Vermogensfactor (standaard 0.95)</Text>
+                <Text style={styles.label}>
+                  Vermogensfactor (standaard 0.95)
+                </Text>
                 <TextInput
                   style={styles.input}
                   keyboardType="numeric"
@@ -114,84 +147,82 @@ export default function PeakShavingScreen({ navigation }) {
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
-    </ImageBackground>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
   background: {
-  flex: 1,
-  width: '100%',
-  height: '100%',
-  justifyContent: 'center',
-  alignItems: 'center',
-},
-
-imageStyle: {
-  resizeMode: 'contain',
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-},
-
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageStyle: {
+    resizeMode: "contain",
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
   container: {
     flexGrow: 1,
     padding: 24,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginBottom: 30,
-    color: '#4CAF50',
+    color: "#4CAF50",
   },
   label: {
     fontSize: 16,
     marginBottom: 6,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 8,
     padding: 12,
     marginBottom: 20,
     fontSize: 16,
-    width: '100%',
-    backgroundColor: '#fff',
+    width: "100%",
+    backgroundColor: "#fff",
   },
   button: {
-    backgroundColor: '#FF7F00',
+    backgroundColor: "#FF7F00",
     padding: 14,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 10,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   toggleContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 20,
   },
   toggleButton: {
     flex: 1,
     padding: 12,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 8,
     marginHorizontal: 5,
-    backgroundColor: '#f9f9f9',
-    alignItems: 'center',
+    backgroundColor: "#f9f9f9",
+    alignItems: "center",
   },
   toggleSelected: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
   },
   toggleText: {
-    color: '#000',
+    color: "#000",
     fontSize: 16,
   },
 });

@@ -1,17 +1,17 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useCallback, useMemo, useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Image,
-  ImageBackground,
   ScrollView,
   Linking,
-  Alert
-} from 'react-native';
-import SaveAdviceButton from '../components/SaveAdviceButton';
+  Alert,
+} from "react-native";
+import SaveAdviceButton from "../components/SaveAdviceButton";
+import ScreenBackground from "../components/ScreenBackground";
 
 export default function OverzichtZakelijkAdviesScreen({ route, navigation }) {
   const { kwh1, kwh2, energiehandel } = route.params;
@@ -22,37 +22,63 @@ export default function OverzichtZakelijkAdviesScreen({ route, navigation }) {
 
   // Zakelijk aanbod (alle hoog voltage)
   const zakelijkeOpties = [
-    { capaciteit: 7.5, naam: '7.5 kWh Zakelijk', afbeelding: require('../assets/7.5-KWH-ADVIES.jpg') },
-    { capaciteit: 10, naam: '10 kWh Zakelijk', afbeelding: require('../assets/10-KWH-ADVIES.jpg') },
-    { capaciteit: 12.5, naam: '12.5 kWh Zakelijk', afbeelding: require('../assets/12.5-KWH-ADVIES.jpg') },
-    { capaciteit: 15, naam: '15 kWh Zakelijk', afbeelding: require('../assets/15-KWH-ADVIES.jpg') },
-    { capaciteit: 17.5, naam: '17.5 kWh Zakelijk', afbeelding: require('../assets/17.5-KWH-ADVIES.jpg') },
-    { capaciteit: 20, naam: '20 kWh Zakelijk', afbeelding: require('../assets/20-KWH-ADVIES.jpg') },
+    {
+      capaciteit: 7.5,
+      naam: "7.5 kWh Zakelijk",
+      afbeelding: require("../assets/7.5-KWH-ADVIES.jpg"),
+    },
+    {
+      capaciteit: 10,
+      naam: "10 kWh Zakelijk",
+      afbeelding: require("../assets/10-KWH-ADVIES.jpg"),
+    },
+    {
+      capaciteit: 12.5,
+      naam: "12.5 kWh Zakelijk",
+      afbeelding: require("../assets/12.5-KWH-ADVIES.jpg"),
+    },
+    {
+      capaciteit: 15,
+      naam: "15 kWh Zakelijk",
+      afbeelding: require("../assets/15-KWH-ADVIES.jpg"),
+    },
+    {
+      capaciteit: 17.5,
+      naam: "17.5 kWh Zakelijk",
+      afbeelding: require("../assets/17.5-KWH-ADVIES.jpg"),
+    },
+    {
+      capaciteit: 20,
+      naam: "20 kWh Zakelijk",
+      afbeelding: require("../assets/20-KWH-ADVIES.jpg"),
+    },
   ];
 
-  const gekozen = zakelijkeOpties.find(optie => kwhTotaal <= optie.capaciteit) || {
-    naam: 'Meer dan 20 kWh nodig',
+  const gekozen = zakelijkeOpties.find(
+    (optie) => kwhTotaal <= optie.capaciteit,
+  ) || {
+    naam: "Meer dan 20 kWh nodig",
     afbeelding: null,
   };
 
   const adviesId = useMemo(() => {
     if (!gekozen.naam) {
-      return 'zakelijk-overzicht';
+      return "zakelijk-overzicht";
     }
 
-    return `zakelijk-overzicht-${gekozen.naam.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+    return `zakelijk-overzicht-${gekozen.naam.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
   }, [gekozen.naam]);
 
   const emailSubject = useMemo(
-    () => 'Afspraak inplannen - Wattsnext zakelijk advies',
-    []
+    () => "Afspraak inplannen - Wattsnext zakelijk advies",
+    [],
   );
 
   const emailBody = useMemo(() => {
     const regels = [
-      'Beste Rick,',
-      '',
-      'Graag plan ik een afspraak in om het volgende zakelijk energieopslagadvies te bespreken:',
+      "Beste Rick,",
+      "",
+      "Graag plan ik een afspraak in om het volgende zakelijk energieopslagadvies te bespreken:",
       `- Benodigd totaal vermogen: ${kwhTotaal.toFixed(1)} kWh`,
       `- Aanbevolen oplossing: ${gekozen.naam}`,
     ];
@@ -62,22 +88,22 @@ export default function OverzichtZakelijkAdviesScreen({ route, navigation }) {
     }
 
     regels.push(
-      '',
-      'Laat me weten welke momenten voor jou passen, dan prik ik graag een afspraak.',
-      '',
-      'Met vriendelijke groet,',
-      '[Je naam]',
+      "",
+      "Laat me weten welke momenten voor jou passen, dan prik ik graag een afspraak.",
+      "",
+      "Met vriendelijke groet,",
+      "[Je naam]",
     );
 
-    return regels.join('\n');
+    return regels.join("\n");
   }, [energiehandel, gekozen.naam, kwhTotaal]);
 
   const mailtoLink = useMemo(
     () =>
       `mailto:r.oskam@wattsnext.energy?subject=${encodeURIComponent(
-        emailSubject
+        emailSubject,
       )}&body=${encodeURIComponent(emailBody)}`,
-    [emailBody, emailSubject]
+    [emailBody, emailSubject],
   );
 
   const handleOpenEmail = useCallback(async () => {
@@ -85,27 +111,30 @@ export default function OverzichtZakelijkAdviesScreen({ route, navigation }) {
       await Linking.openURL(mailtoLink);
     } catch (error) {
       Alert.alert(
-        'E-mail openen mislukt',
-        'Open je mailapp en stuur Rick handmatig via r.oskam@wattsnext.energy.'
+        "E-mail openen mislukt",
+        "Open je mailapp en stuur Rick handmatig via r.oskam@wattsnext.energy.",
       );
     }
   }, [mailtoLink]);
 
   return (
-    <ImageBackground
-  source={require('../assets/achtergrond.png')}
-  style={styles.background}
-  resizeMode="contain" // 🔄 of probeer ook "stretch"
-  imageStyle={styles.imageStyle} // 🔧 web-only tweak
->
-
+    <ScreenBackground
+      style={styles.background}
+      imageStyle={styles.imageStyle} // 🔧 web-only tweak
+    >
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.container}>
           <Text style={styles.title}>Zakelijk Advies</Text>
-          <Text style={styles.subtext}>Benodigd totaal: {kwhTotaal.toFixed(1)} kWh</Text>
+          <Text style={styles.subtext}>
+            Benodigd totaal: {kwhTotaal.toFixed(1)} kWh
+          </Text>
 
           {gekozen.afbeelding && (
-            <Image source={gekozen.afbeelding} style={styles.image} resizeMode="contain" />
+            <Image
+              source={gekozen.afbeelding}
+              style={styles.image}
+              resizeMode="contain"
+            />
           )}
 
           <Text style={styles.advies}>{gekozen.naam}</Text>
@@ -121,17 +150,17 @@ export default function OverzichtZakelijkAdviesScreen({ route, navigation }) {
               id: adviesId,
               title: `Zakelijk advies overzicht: ${gekozen.naam}`,
               summary: `Totaal vermogen: ${kwhTotaal.toFixed(1)} kWh.${
-                energiehandel ? ` Energiehandel: ${energiehandel}.` : ''
+                energiehandel ? ` Energiehandel: ${energiehandel}.` : ""
               }`,
             }}
           />
 
           <TouchableOpacity
             style={[styles.button, styles.emailButton]}
-            onPress={() => setShowEmailFormat(value => !value)}
+            onPress={() => setShowEmailFormat((value) => !value)}
           >
             <Text style={styles.buttonText}>
-              {showEmailFormat ? 'Verberg e-mailformat' : 'Toon e-mailformat'}
+              {showEmailFormat ? "Verberg e-mailformat" : "Toon e-mailformat"}
             </Text>
           </TouchableOpacity>
 
@@ -152,42 +181,40 @@ export default function OverzichtZakelijkAdviesScreen({ route, navigation }) {
 
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => navigation.navigate("Home")}
           >
             <Text style={styles.buttonText}>Terug naar begin</Text>
           </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>
-    </ImageBackground>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
   background: {
-  flex: 1,
-  width: '100%',
-  height: '100%',
-  justifyContent: 'center',
-  alignItems: 'center',
-},
-
-imageStyle: {
-  resizeMode: 'contain',
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-},
-
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageStyle: {
+    resizeMode: "contain",
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
   container: {
     flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#3eaf4f',
+    fontWeight: "bold",
+    color: "#3eaf4f",
     marginBottom: 10,
   },
   subtext: {
@@ -196,10 +223,10 @@ imageStyle: {
   },
   advies: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#f7941e',
+    fontWeight: "bold",
+    color: "#f7941e",
     marginVertical: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   image: {
     width: 300,
@@ -207,47 +234,47 @@ imageStyle: {
     marginBottom: 20,
   },
   button: {
-    backgroundColor: '#f7941e',
+    backgroundColor: "#f7941e",
     padding: 14,
     borderRadius: 10,
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
     marginTop: 10,
   },
   emailButton: {
-    backgroundColor: '#3eaf4f',
+    backgroundColor: "#3eaf4f",
   },
   mailButton: {
-    backgroundColor: '#1f6f34',
+    backgroundColor: "#1f6f34",
     marginTop: 16,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
   },
   emailCard: {
-    width: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    width: "100%",
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
     borderRadius: 12,
     padding: 20,
     marginTop: 16,
   },
   emailTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 6,
-    color: '#3eaf4f',
-    textAlign: 'center',
+    color: "#3eaf4f",
+    textAlign: "center",
   },
   emailAddress: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 10,
-    textAlign: 'center',
+    textAlign: "center",
   },
   emailText: {
     fontSize: 16,
     lineHeight: 24,
-    color: '#333',
+    color: "#333",
   },
 });

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   View,
   Text,
@@ -9,18 +9,18 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  ImageBackground
-} from 'react-native';
+} from "react-native";
 
+import ScreenBackground from "../components/ScreenBackground";
 export default function NetcongestieNoodstroomVraag({ navigation, route }) {
   const { kwh1 } = route.params;
   const [wilNoodstroom, setWilNoodstroom] = useState(null);
-  const [kritischVerbruik, setKritischVerbruik] = useState('');
-  const [backupTijd, setBackupTijd] = useState('');
+  const [kritischVerbruik, setKritischVerbruik] = useState("");
+  const [backupTijd, setBackupTijd] = useState("");
 
   const handleNee = () => {
-    console.log('Netcongestie advies zónder noodstroom:', { kwh1, kwh2: 0 });
-    navigation.navigate('ZakelijkAdviesNetcongestie', { kwh1, kwh2: 0 });
+    console.log("Netcongestie advies zónder noodstroom:", { kwh1, kwh2: 0 });
+    navigation.navigate("ZakelijkAdviesNetcongestie", { kwh1, kwh2: 0 });
   };
 
   const handleNext = () => {
@@ -28,39 +28,47 @@ export default function NetcongestieNoodstroomVraag({ navigation, route }) {
     const t = parseFloat(backupTijd);
     if (!isNaN(v) && !isNaN(t) && v > 0 && t > 0) {
       const kwh2 = (v * t) / 0.9;
-      console.log('Netcongestie advies mét noodstroom:', { kwh1, kwh2 });
-      navigation.navigate('ZakelijkAdviesNetcongestie', { kwh1, kwh2 });
+      console.log("Netcongestie advies mét noodstroom:", { kwh1, kwh2 });
+      navigation.navigate("ZakelijkAdviesNetcongestie", { kwh1, kwh2 });
     } else {
-      alert('Vul geldige waarden in.');
+      alert("Vul geldige waarden in.");
     }
   };
 
   return (
-  <ImageBackground
-  source={require('../assets/achtergrond.png')}
-  style={styles.background}
-  resizeMode="contain" // 🔄 of probeer ook "stretch"
-  imageStyle={styles.imageStyle} // 🔧 web-only tweak
->
-
+    <ScreenBackground
+      style={styles.background}
+      imageStyle={styles.imageStyle} // 🔧 web-only tweak
+    >
       <SafeAreaView style={{ flex: 1 }}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
           keyboardVerticalOffset={80}
         >
-          <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-            <Text style={styles.title}>Wilt u ruimte reserveren voor noodstroomvoorziening?</Text>
+          <ScrollView
+            contentContainerStyle={styles.container}
+            keyboardShouldPersistTaps="handled"
+          >
+            <Text style={styles.title}>
+              Wilt u ruimte reserveren voor noodstroomvoorziening?
+            </Text>
 
             <View style={styles.toggleContainer}>
               <TouchableOpacity
-                style={[styles.toggleButton, wilNoodstroom === true && styles.toggleSelected]}
+                style={[
+                  styles.toggleButton,
+                  wilNoodstroom === true && styles.toggleSelected,
+                ]}
                 onPress={() => setWilNoodstroom(true)}
               >
                 <Text style={styles.toggleText}>Ja</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.toggleButton, wilNoodstroom === false && styles.toggleSelected]}
+                style={[
+                  styles.toggleButton,
+                  wilNoodstroom === false && styles.toggleSelected,
+                ]}
                 onPress={handleNee}
               >
                 <Text style={styles.toggleText}>Nee</Text>
@@ -97,37 +105,35 @@ export default function NetcongestieNoodstroomVraag({ navigation, route }) {
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
-    </ImageBackground>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
- background: {
-  flex: 1,
-  width: '100%',
-  height: '100%',
-  justifyContent: 'center',
-  alignItems: 'center',
-},
-
-imageStyle: {
-  resizeMode: 'contain',
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-},
-
+  background: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageStyle: {
+    resizeMode: "contain",
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
   container: {
     flexGrow: 1,
     padding: 24,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginBottom: 20,
-    color: '#4CAF50',
+    color: "#4CAF50",
   },
   label: {
     fontSize: 16,
@@ -135,45 +141,45 @@ imageStyle: {
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 8,
     padding: 12,
     marginBottom: 20,
     fontSize: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   button: {
-    backgroundColor: '#FF7F00',
+    backgroundColor: "#FF7F00",
     padding: 14,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 10,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   toggleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginBottom: 30,
   },
   toggleButton: {
     padding: 12,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 8,
     marginHorizontal: 10,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
     minWidth: 100,
-    alignItems: 'center',
+    alignItems: "center",
   },
   toggleSelected: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
   },
   toggleText: {
-    color: '#000',
+    color: "#000",
     fontSize: 16,
   },
 });

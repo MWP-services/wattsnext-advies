@@ -1,6 +1,6 @@
 // screens/NoodstroomEnergiehandelVraagScreen.js
-import { SafeAreaView } from 'react-native-safe-area-context';
-import React, { useState } from 'react';
+import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -10,59 +10,74 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  ImageBackground
-} from 'react-native';
+} from "react-native";
 
+import ScreenBackground from "../components/ScreenBackground";
 export default function NoodstroomEnergiehandelVraag({ navigation, route }) {
   const { kwh1 } = route.params;
   const [wiltHandelen, setWiltHandelen] = useState(null);
-  const [pmarkt, setPmarkt] = useState('');
-  const [pnet, setPnet] = useState('');
-  const [activaties, setActivaties] = useState('');
+  const [pmarkt, setPmarkt] = useState("");
+  const [pnet, setPnet] = useState("");
+  const [activaties, setActivaties] = useState("");
 
   const handleNext = () => {
     const markt = parseFloat(pmarkt);
     const net = parseFloat(pnet);
     const a = parseInt(activaties);
-    if (!isNaN(markt) && !isNaN(net) && !isNaN(a) && markt > 0 && net > 0 && a > 0) {
+    if (
+      !isNaN(markt) &&
+      !isNaN(net) &&
+      !isNaN(a) &&
+      markt > 0 &&
+      net > 0 &&
+      a > 0
+    ) {
       const minVermogen = Math.min(markt, net);
       const kwh2 = (minVermogen * 2 * a) / 0.9;
-      navigation.navigate('ZakelijkAdviesNoodstroom', { kwh1, kwh2 });
+      navigation.navigate("ZakelijkAdviesNoodstroom", { kwh1, kwh2 });
     } else {
       alert("Vul geldige waarden in.");
     }
   };
 
   const handleNee = () => {
-    navigation.navigate('ZakelijkAdviesNoodstroom', { kwh1, kwh2: 0 });
+    navigation.navigate("ZakelijkAdviesNoodstroom", { kwh1, kwh2: 0 });
   };
 
   return (
-   <ImageBackground
-  source={require('../assets/achtergrond.png')}
-  style={styles.background}
-  resizeMode="contain" // 🔄 of probeer ook "stretch"
-  imageStyle={styles.imageStyle} // 🔧 web-only tweak
->
-
+    <ScreenBackground
+      style={styles.background}
+      imageStyle={styles.imageStyle} // 🔧 web-only tweak
+    >
       <SafeAreaView style={{ flex: 1 }}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
           keyboardVerticalOffset={80}
         >
-          <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-            <Text style={styles.title}>Wilt u handelen op de energiemarkt?</Text>
+          <ScrollView
+            contentContainerStyle={styles.container}
+            keyboardShouldPersistTaps="handled"
+          >
+            <Text style={styles.title}>
+              Wilt u handelen op de energiemarkt?
+            </Text>
 
             <View style={styles.toggleContainer}>
               <TouchableOpacity
-                style={[styles.toggleButton, wiltHandelen === true && styles.toggleSelected]}
+                style={[
+                  styles.toggleButton,
+                  wiltHandelen === true && styles.toggleSelected,
+                ]}
                 onPress={() => setWiltHandelen(true)}
               >
                 <Text style={styles.toggleText}>Ja</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.toggleButton, wiltHandelen === false && styles.toggleSelected]}
+                style={[
+                  styles.toggleButton,
+                  wiltHandelen === false && styles.toggleSelected,
+                ]}
                 onPress={handleNee}
               >
                 <Text style={styles.toggleText}>Nee</Text>
@@ -71,7 +86,9 @@ export default function NoodstroomEnergiehandelVraag({ navigation, route }) {
 
             {wiltHandelen === true && (
               <>
-                <Text style={styles.label}>Gewenste handels capaciteit (kWh)</Text>
+                <Text style={styles.label}>
+                  Gewenste handels capaciteit (kWh)
+                </Text>
                 <TextInput
                   style={styles.input}
                   keyboardType="numeric"
@@ -81,7 +98,9 @@ export default function NoodstroomEnergiehandelVraag({ navigation, route }) {
                   placeholderTextColor="#aaa"
                 />
 
-                <Text style={styles.label}>Maximaal netaansluitingsvermogen (kW)</Text>
+                <Text style={styles.label}>
+                  Maximaal netaansluitingsvermogen (kW)
+                </Text>
                 <TextInput
                   style={styles.input}
                   keyboardType="numeric"
@@ -109,37 +128,35 @@ export default function NoodstroomEnergiehandelVraag({ navigation, route }) {
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
-    </ImageBackground>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
   background: {
-  flex: 1,
-  width: '100%',
-  height: '100%',
-  justifyContent: 'center',
-  alignItems: 'center',
-},
-
-imageStyle: {
-  resizeMode: 'contain',
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-},
-
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageStyle: {
+    resizeMode: "contain",
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
   container: {
     flexGrow: 1,
     padding: 24,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginBottom: 20,
-    color: '#4CAF50',
+    color: "#4CAF50",
   },
   label: {
     fontSize: 16,
@@ -147,45 +164,45 @@ imageStyle: {
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 8,
     padding: 12,
     marginBottom: 20,
     fontSize: 16,
-    backgroundColor: '#fff', // Input zelf wit
+    backgroundColor: "#fff", // Input zelf wit
   },
   button: {
-    backgroundColor: '#FF7F00',
+    backgroundColor: "#FF7F00",
     padding: 14,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 10,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   toggleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginBottom: 30,
   },
   toggleButton: {
     padding: 12,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 8,
     marginHorizontal: 10,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
     minWidth: 100,
-    alignItems: 'center',
+    alignItems: "center",
   },
   toggleSelected: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
   },
   toggleText: {
-    color: '#000',
+    color: "#000",
     fontSize: 16,
   },
 });

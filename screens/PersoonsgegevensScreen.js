@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   View,
   Text,
@@ -8,35 +8,32 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   ScrollView,
-  ImageBackground
-} from 'react-native';
-import { useRoute } from '@react-navigation/native';
+} from "react-native";
+import { useRoute } from "@react-navigation/native";
+import ScreenBackground from "../components/ScreenBackground";
 
 export default function PersoonsgegevensScreen({ navigation }) {
   const route = useRoute();
   const aansluiting = route.params?.aansluiting;
 
-  const [verbruik, setVerbruik] = useState('');
-  const [vermogenWp, setVermogenWp] = useState('');
-  const [aantalPanelen, setAantalPanelen] = useState('');
+  const [verbruik, setVerbruik] = useState("");
+  const [vermogenWp, setVermogenWp] = useState("");
+  const [aantalPanelen, setAantalPanelen] = useState("");
 
   const doorgaan = () => {
-    navigation.navigate('Advies', {
+    navigation.navigate("Advies", {
       verbruik,
       vermogenWp,
       aantalPanelen,
-      aansluiting
+      aansluiting,
     });
   };
 
   return (
-    <ImageBackground
-  source={require('../assets/achtergrond.png')}
-  style={styles.background}
-  resizeMode="contain" // 🔄 of probeer ook "stretch"
-  imageStyle={styles.imageStyle} // 🔧 web-only tweak
->
-
+    <ScreenBackground
+      style={styles.background}
+      imageStyle={styles.imageStyle} // 🔧 web-only tweak
+    >
       <SafeAreaView style={{ flex: 1 }}>
         <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
           <ScrollView contentContainerStyle={styles.container}>
@@ -78,61 +75,59 @@ export default function PersoonsgegevensScreen({ navigation }) {
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
-    </ImageBackground>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
   background: {
-  flex: 1,
-  width: '100%',
-  height: '100%',
-  justifyContent: 'center',
-  alignItems: 'center',
-},
-
-imageStyle: {
-  resizeMode: 'contain',
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-},
-
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageStyle: {
+    resizeMode: "contain",
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
   container: {
     flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
-    color: '#3eaf4f',
-    marginBottom: 30
+    fontWeight: "bold",
+    color: "#3eaf4f",
+    marginBottom: 30,
   },
   label: {
     fontSize: 16,
-    alignSelf: 'flex-start',
-    marginBottom: 5
+    alignSelf: "flex-start",
+    marginBottom: 5,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 10,
     padding: 10,
     marginBottom: 20,
-    width: '100%',
-    backgroundColor: '#fff'
+    width: "100%",
+    backgroundColor: "#fff",
   },
   button: {
-    backgroundColor: '#f7941e',
+    backgroundColor: "#f7941e",
     padding: 16,
     borderRadius: 10,
-    width: '100%',
-    alignItems: 'center'
+    width: "100%",
+    alignItems: "center",
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 18
-  }
+    color: "#fff",
+    fontSize: 18,
+  },
 });

@@ -1,6 +1,6 @@
 // screens/LoadShiftingVraagScreen.js
-import { SafeAreaView } from 'react-native-safe-area-context';
-import React, { useState } from 'react';
+import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -10,12 +10,12 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  ImageBackground
-} from 'react-native';
+} from "react-native";
 
+import ScreenBackground from "../components/ScreenBackground";
 export default function LoadShifting({ navigation }) {
-  const [vermogen, setVermogen] = useState('');
-  const [duur, setDuur] = useState('');
+  const [vermogen, setVermogen] = useState("");
+  const [duur, setDuur] = useState("");
 
   const handleNext = () => {
     const p = parseFloat(vermogen);
@@ -24,28 +24,30 @@ export default function LoadShifting({ navigation }) {
     if (!isNaN(p) && !isNaN(t) && p > 0 && t > 0) {
       const kwh1 = (p * t) / 0.9; // Efficiëntie = 90%
       console.log("LoadShifting kwh1:", kwh1);
-      navigation.navigate('LoadShiftingNoodstroomVraag', { kwh1 });
+      navigation.navigate("LoadShiftingNoodstroomVraag", { kwh1 });
     } else {
       alert("Vul geldige waarden in.");
     }
   };
 
   return (
-    <ImageBackground
-  source={require('../assets/achtergrond.png')}
-  style={styles.background}
-  resizeMode="contain" // 🔄 of probeer ook "stretch"
-  imageStyle={styles.imageStyle} // 🔧 web-only tweak
->
-
+    <ScreenBackground
+      style={styles.background}
+      imageStyle={styles.imageStyle} // 🔧 web-only tweak
+    >
       <SafeAreaView style={{ flex: 1 }}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
           keyboardVerticalOffset={80}
         >
-          <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-            <Text style={styles.title}>Energie-inkoop optimaliseren (Load Shifting)</Text>
+          <ScrollView
+            contentContainerStyle={styles.container}
+            keyboardShouldPersistTaps="handled"
+          >
+            <Text style={styles.title}>
+              Energie-inkoop optimaliseren (Load Shifting)
+            </Text>
 
             <Text style={styles.label}>Gewenst vermogen (kW)</Text>
             <TextInput
@@ -73,35 +75,35 @@ export default function LoadShifting({ navigation }) {
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
-    </ImageBackground>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-     width: '100%',
-  height: '100%',
-  justifyContent: 'center',
-  alignItems: 'center',
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   imageStyle: {
-  resizeMode: 'contain',
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-},
+    resizeMode: "contain",
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
   container: {
     flexGrow: 1,
     padding: 24,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginBottom: 30,
-    color: '#4CAF50',
+    color: "#4CAF50",
   },
   label: {
     fontSize: 16,
@@ -109,23 +111,23 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 8,
     padding: 12,
     marginBottom: 20,
     fontSize: 16,
-    backgroundColor: '#fff', // Input zelf blijft wit
+    backgroundColor: "#fff", // Input zelf blijft wit
   },
   button: {
-    backgroundColor: '#FF7F00',
+    backgroundColor: "#FF7F00",
     padding: 14,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 10,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });
