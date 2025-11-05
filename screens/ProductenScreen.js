@@ -20,7 +20,7 @@ import { db, auth } from "../firebaseConfig";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 const PRODUCTEN = [
- {
+  {
     artikelcode: "TBLV-0.5I",
     productId: "AS-5.12LDL-GL1",
     productnaam: "AS-5.12LD-GL1",
@@ -190,8 +190,6 @@ const PRODUCTEN = [
   },
 ];
 
-
-
 function ProductenScreen({ navigation }) {
   const { width } = useWindowDimensions();
   const [sendingId, setSendingId] = useState(null);
@@ -199,9 +197,11 @@ function ProductenScreen({ navigation }) {
   // 🔎 Zoeken
   const [query, setQuery] = useState("");
 
-  // ✅ Multi-select
-  // we slaan de selectie op als Map<uniqueKey, product>
+  // ✅ Multi-select (Map<uniqueKey, product>)
   const [selected, setSelected] = useState(new Map());
+
+  // ✅ NIEUW: Aantallen per geselecteerd product (object met key → qty)
+  const [quantities, setQuantities] = useState({}); // { [uniqueKey]: number }
 
   const getUniqueKey = (p) => `${p.artikelcode}__${p.productId}`;
 
@@ -224,17 +224,36 @@ function ProductenScreen({ navigation }) {
     });
   }, [query]);
 
+  // NIEUW: helpers voor qty
+  const incQty = (key) =>
+    setQuantities((prev) => ({ ...prev, [key]: Math.max(1, (prev[key] || 1) + 1) }));
+  const decQty = (key) =>
+    setQuantities((prev) => ({ ...prev, [key]: Math.max(1, (prev[key] || 1) - 1) }));
+
   const toggleSelect = (product) => {
     const key = getUniqueKey(product);
     setSelected((prev) => {
       const next = new Map(prev);
-      if (next.has(key)) next.delete(key);
-      else next.set(key, product);
+      if (next.has(key)) {
+        next.delete(key);
+        // verwijder ook qty wanneer gedeselecteerd
+        setQuantities((q) => {
+          const { [key]: _, ...rest } = q;
+          return rest;
+        });
+      } else {
+        next.set(key, product);
+        // default qty = 1
+        setQuantities((q) => ({ ...q, [key]: q[key] || 1 }));
+      }
       return next;
     });
   };
 
-  const clearSelection = () => setSelected(new Map());
+  const clearSelection = () => {
+    setSelected(new Map());
+    setQuantities({});
+  };
 
   // Enkele aanvraag (bestaande flow)
   const handleQuoteRequest = async (product) => {
@@ -275,7 +294,7 @@ function ProductenScreen({ navigation }) {
     }
   };
 
-  // Meervoudige aanvraag (N producten in 1 document)
+  // Meervoudige aanvraag (N producten in 1 document) — nu met qty per product
   const handleBatchQuoteRequest = async () => {
     if (selected.size === 0) {
       Alert.alert("Geen selectie", "Vink eerst één of meer producten aan.");
@@ -288,17 +307,18 @@ function ProductenScreen({ navigation }) {
       return;
     }
 
-    const items = Array.from(selected.values()).map((p) => ({
+    const items = Array.from(selected.entries()).map(([key, p]) => ({
       artikelcode: p.artikelcode,
       productnaam: p.productnaam,
       categorie: p.categorie,
       doelgroep: p.doelgroep,
       specs: p.specs || "",
+      qty: Math.max(1, quantities[key] || 1), // ✅ aantal meenemen
     }));
-console.log('batch uid =', auth.currentUser?.uid);
+    console.log("batch uid =", auth.currentUser?.uid);
 
     try {
-      // 1) Opslaan als één document met alle items
+      // 1) Opslaan als één document met alle items + aantallen
       await addDoc(collection(db, "quotes"), {
         uid: user.uid,
         type: "multi",
@@ -307,8 +327,7 @@ console.log('batch uid =', auth.currentUser?.uid);
         createdAt: serverTimestamp(),
       });
 
-      // 2) Optioneel: mails versturen voor ieder item (fallback)
-      // Als je later sendMultiProductQuoteEmail maakt, kun je die hier gebruiken.
+      // 2) (optioneel) mail per item (je kunt dit later vervangen door één samengestelde mail)
       let mailFailures = 0;
       for (const item of items) {
         try {
@@ -320,7 +339,7 @@ console.log('batch uid =', auth.currentUser?.uid);
       }
 
       if (mailFailures === 0) {
-        Alert.alert("Offerte aangevraagd", `Aanvraag voor ${items.length} producten is verstuurd.`);
+        Alert.alert("Offerte aangevraagd", `Aanvraag voor ${items.length} producttypen is verstuurd.`);
       } else if (mailFailures < items.length) {
         Alert.alert("Gedeeltelijke mailfout", `Aanvraag opgeslagen. ${mailFailures} e-mails zijn niet verstuurd.`);
       } else {
@@ -416,6 +435,7 @@ console.log('batch uid =', auth.currentUser?.uid);
                 const uniqueKey = getUniqueKey(product);
                 const isSending = sendingId === product.artikelcode;
                 const isSelected = selected.has(uniqueKey);
+                const qty = Math.max(1, quantities[uniqueKey] || 1);
 
                 return (
                   <View key={uniqueKey} style={[styles.productCard, { width: getCardWidth() }]}>
@@ -439,6 +459,30 @@ console.log('batch uid =', auth.currentUser?.uid);
                     {product.specs ? (
                       <Text style={styles.productMeta}>Specificaties: {product.specs}</Text>
                     ) : null}
+
+                    {/* ✅ NIEUW: Aantal-selector zichtbaar als product geselecteerd is */}
+                    {isSelected && (
+                      <View style={styles.qtyRow}>
+                        <Text style={styles.qtyLabel}>Aantal:</Text>
+                        <View style={styles.qtyControls}>
+                          <TouchableOpacity
+                            style={styles.qtyBtn}
+                            onPress={() => decQty(uniqueKey)}
+                            accessibilityLabel="Verlaag aantal"
+                          >
+                            <Text style={styles.qtyBtnText}>−</Text>
+                          </TouchableOpacity>
+                          <Text style={styles.qtyValue}>{qty}</Text>
+                          <TouchableOpacity
+                            style={styles.qtyBtn}
+                            onPress={() => incQty(uniqueKey)}
+                            accessibilityLabel="Verhoog aantal"
+                          >
+                            <Text style={styles.qtyBtnText}>+</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    )}
 
                     <View style={styles.cardActions}>
                       <TouchableOpacity
@@ -583,6 +627,44 @@ const styles = StyleSheet.create({
   checkboxTick: { color: "#fff", fontWeight: "800" },
   productName: { fontSize: 20, fontWeight: "700", color: "#1f1f1f" },
   productMeta: { fontSize: 16, color: "#333", marginBottom: 4 },
+
+  // ✅ NIEUW: Qty styles
+  qtyRow: {
+    marginTop: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  qtyLabel: {
+    color: "#1f1f1f",
+    fontWeight: "600",
+  },
+  qtyControls: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  qtyBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#ffffff",
+    borderWidth: 1,
+    borderColor: "#1f6f34",
+  },
+  qtyBtnText: {
+    fontSize: 18,
+    color: "#1f6f34",
+    fontWeight: "800",
+  },
+  qtyValue: {
+    minWidth: 28,
+    textAlign: "center",
+    fontWeight: "700",
+    color: "#1f1f1f",
+  },
 
   cardActions: { marginTop: 12, flexDirection: "row", gap: 8, flexWrap: "wrap" },
   quoteButton: {
