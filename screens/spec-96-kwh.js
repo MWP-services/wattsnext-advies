@@ -1,26 +1,31 @@
 import React from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
+import ScreenBackground from '../components/ScreenBackground';
 
 export default function Specificaties96Screen() {
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Specificaties 96 kWh batterij</Text>
-      <Image
-        source={require('../assets/96-kwh-spec.png')}
-        style={styles.image}
-        resizeMode="contain"
-      />
-    </ScrollView>
+    <View style={styles.container}>
+      <ScreenBackground>
+        <SafeAreaView style={styles.safeArea}>
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <Text style={styles.title}>Specificaties 96 kWh batterij</Text>
+            <Image
+              source={require('../assets/96-kwh-spec.png')}
+              style={styles.image}
+              resizeMode="contain"
+            />
+          </ScrollView>
+        </SafeAreaView>
+      </ScreenBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    backgroundColor: '#fff',
-    padding: 24,
-    alignItems: 'center',
-  },
+  container: { flex: 1, position: 'relative' },
+  safeArea: { flex: 1 },
+  scrollContainer: { flexGrow: 1, padding: 24, alignItems: 'center' },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
