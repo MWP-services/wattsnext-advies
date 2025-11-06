@@ -240,8 +240,6 @@ export default function AgendaScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <ScreenBackground
-        style={styles.backgroundWrapper}
-        imageStyle={styles.backgroundImage}
       >
         <SafeAreaView style={styles.safeArea}>
           <TouchableOpacity
@@ -465,7 +463,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   backgroundImage: {
-    resizeMode: "cover",
+    flex: 1,
   },
   safeArea: {
     flex: 1,
@@ -487,15 +485,26 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+    alignSelf: "center",
+    width: "100%",
+    maxWidth: 1200,
     paddingTop: 60,
     paddingBottom: 80,
-    alignItems: "center",
     gap: 32,
   },
   content: {
-    width: "100%",
-    maxWidth: 900,
+    flex: 1,
+    justifyContent: "center",
     alignItems: "center",
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+    alignSelf: "center",
+    width: "100%",
+    maxWidth: 1200,
     gap: 24,
   },
   logo: {

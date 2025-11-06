@@ -27,8 +27,13 @@ const styles = StyleSheet.create({
   safeArea: { flex: 1 },
   content: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+    alignSelf: "center",
+    width: "100%",
+    maxWidth: 1200,
     padding: 20,
   },
   title: {

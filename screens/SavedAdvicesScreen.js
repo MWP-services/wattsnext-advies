@@ -207,7 +207,7 @@ export default function SavedAdvicesScreen() {
 
   return (
     <View style={styles.container}>
-      <ScreenBackground style={styles.background} imageStyle={styles.imageStyle}>
+      <ScreenBackground>
         <SafeAreaView style={styles.safeArea}>
           <View style={styles.content}>
             <Text style={styles.title}>Opgeslagen adviezen</Text>
@@ -264,20 +264,16 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
-  background: {
+  content: {
     flex: 1,
-    width: "100%",
-    height: "100%",
     justifyContent: "center",
     alignItems: "center",
-  },
-  imageStyle: {
-    resizeMode: "contain",
-    position: "absolute",
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+    alignSelf: "center",
     width: "100%",
-    height: "100%",
+    maxWidth: 1200,
   },
-  content: { flex: 1, padding: 24 },
   title: {
     fontSize: 24,
     fontWeight: "bold",
@@ -309,6 +305,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 24,
+    alignSelf: "stretch",
   },
   emailButtonText: { color: "#fff", fontSize: 16, fontWeight: "600" },
   card: {

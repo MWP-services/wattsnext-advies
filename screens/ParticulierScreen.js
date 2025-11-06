@@ -13,7 +13,6 @@ export default function ParticulierScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <ScreenBackground
-        style={styles.backgroundImage}
         resizeMode={Platform.OS === "web" ? "contain" : "cover"}
       >
         <SafeAreaView style={styles.safeArea}>
@@ -70,6 +69,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+    alignSelf: "center",
+    width: "100%",
+    maxWidth: 1200,
     padding: 20,
   },
   title: {
@@ -84,7 +88,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 10,
     marginVertical: 12,
-    width: "100%",
+    alignSelf: "stretch",
     alignItems: "center",
   },
   buttonText: {

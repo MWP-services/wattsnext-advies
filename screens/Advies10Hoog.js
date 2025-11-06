@@ -7,7 +7,7 @@ import ScreenBackground from "../components/ScreenBackground";
 export default function Advies10Hoog({ navigation }) {
   return (
     <View style={styles.container}>
-      <ScreenBackground style={styles.background} imageStyle={styles.imageStyle}>
+      <ScreenBackground>
         <SafeAreaView style={styles.safeArea}>
           <View style={styles.content}>
           <Text style={styles.title}>Persoonlijk Advies</Text>
@@ -51,25 +51,18 @@ const styles = StyleSheet.create({
     flex: 1,
     position: "relative",
   },
-  background: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  imageStyle: {
-    resizeMode: "contain",
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-  },
   safeArea: {
     flex: 1,
   },
   content: {
     flex: 1,
-    padding: 24,
-    alignItems: "center",
     justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+    alignSelf: "center",
+    width: "100%",
+    maxWidth: 1200,
   },
   title: {
     fontSize: 24,

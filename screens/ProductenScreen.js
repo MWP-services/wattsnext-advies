@@ -417,8 +417,6 @@ const handleQuoteRequest = async (product) => {
   return (
     <View style={styles.container}>
       <ScreenBackground
-        style={styles.backgroundImage}
-        imageStyle={styles.backgroundImageInner}
       >
         <SafeAreaView style={styles.safeArea}>
           <KeyboardAvoidingView
@@ -601,15 +599,18 @@ const handleQuoteRequest = async (product) => {
 const styles = StyleSheet.create({
   container: { flex: 1, position: "relative" },
   safeArea: { flex: 1, backgroundColor: "#f0f4f8" },
-  backgroundImage: { flex: 1, width: "100%", height: "100%" },
-  backgroundImageInner: {
-    resizeMode: Platform.OS === "web" ? "contain" : "cover",
-  },
+  backgroundImage: { flex: 1 },
   scrollContent: {
     flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+    alignSelf: "center",
+    width: "100%",
+    maxWidth: 1200,
     paddingTop: 32,
     paddingBottom: 48,
-    alignItems: "center",
     gap: 24,
   },
   title: { fontWeight: "700", color: "#1f6f34", textAlign: "center" },

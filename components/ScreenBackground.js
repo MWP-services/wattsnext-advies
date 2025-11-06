@@ -1,5 +1,5 @@
 import React from "react";
-import { ImageBackground, StyleSheet, Platform } from "react-native";
+import { ImageBackground, StyleSheet } from "react-native";
 
 const ScreenBackground = ({ children, style, imageStyle, ...rest }) => {
   return (
@@ -17,11 +17,10 @@ const ScreenBackground = ({ children, style, imageStyle, ...rest }) => {
 const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
-    width: "100%",
-    height: "100%",
   },
   backgroundImageInner: {
-    resizeMode: Platform.OS === "web" ? "contain" : "cover",
+    ...StyleSheet.absoluteFillObject,
+    resizeMode: "cover",
   },
 });
 

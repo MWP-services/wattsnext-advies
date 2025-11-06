@@ -32,8 +32,6 @@ export default function PersoonsgegevensScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <ScreenBackground
-        style={styles.background}
-        imageStyle={styles.imageStyle} // 🔧 web-only tweak
       >
         <SafeAreaView style={styles.safeArea}>
           <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
@@ -86,19 +84,6 @@ const styles = StyleSheet.create({
     flex: 1,
     position: "relative",
   },
-  background: {
-    flex: 1,
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  imageStyle: {
-    resizeMode: "contain",
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-  },
   safeArea: {
     flex: 1,
   },
@@ -106,6 +91,11 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+    alignSelf: "center",
+    width: "100%",
+    maxWidth: 1200,
     padding: 20,
   },
   title: {
@@ -132,7 +122,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f7941e",
     padding: 16,
     borderRadius: 10,
-    width: "100%",
+    alignSelf: "stretch",
     alignItems: "center",
   },
   buttonText: {

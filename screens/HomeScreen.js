@@ -25,8 +25,6 @@ export default function HomeScreen({ navigation }) {
     <View style={styles.container}>
       {/* Volledige achtergrond laag */}
       <ScreenBackground
-        style={styles.backgroundImage}
-        imageStyle={styles.backgroundImageInner}
       >
         <SafeAreaView style={styles.safeArea}>
           {/* Logout / terug-naar-login knop */}
@@ -150,14 +148,9 @@ const styles = StyleSheet.create({
 
   backgroundImage: {
     flex: 1,
-    width: "100%",
-    height: "100%",
   },
 
   // dit bepaalt hoe de afbeelding zich in de container gedraagt
-  backgroundImageInner: {
-    resizeMode: Platform.OS === "web" ? "contain" : "cover",
-  },
 
   safeArea: {
     flex: 1,
@@ -183,15 +176,27 @@ const styles = StyleSheet.create({
 
   scrollContent: {
     flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+    alignSelf: "center",
+    width: "100%",
+    maxWidth: 1200,
     paddingTop: 40,
     paddingBottom: 60,
-    alignItems: "center",
     gap: 32,
   },
 
   content: {
-    width: "100%",
+    flex: 1,
+    justifyContent: "center",
     alignItems: "center",
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+    alignSelf: "center",
+    width: "100%",
+    maxWidth: 1200,
     gap: 32,
     paddingTop: 32,
   },
