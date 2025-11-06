@@ -59,21 +59,27 @@ export default function AdviesScreen() {
   }, []);
 
   return (
-    <ScreenBackground
-      style={styles.background}
-      imageStyle={styles.imageStyle} // 🔧 web-only tweak
-    >
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.container}>
-          <ActivityIndicator size="large" color="#f7941e" />
-          <Text style={styles.text}>Advies wordt berekend...</Text>
-        </View>
-      </SafeAreaView>
-    </ScreenBackground>
+    <View style={styles.container}>
+      <ScreenBackground
+        style={styles.background}
+        imageStyle={styles.imageStyle} // 🔧 web-only tweak
+      >
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.content}>
+            <ActivityIndicator size="large" color="#f7941e" />
+            <Text style={styles.text}>Advies wordt berekend...</Text>
+          </View>
+        </SafeAreaView>
+      </ScreenBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: "relative",
+  },
   background: {
     flex: 1,
     width: "100%",
@@ -87,7 +93,10 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  container: {
+  safeArea: {
+    flex: 1,
+  },
+  content: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",

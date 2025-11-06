@@ -36,20 +36,21 @@ export default function NetcongestieNoodstroomVraag({ navigation, route }) {
   };
 
   return (
-    <ScreenBackground
-      style={styles.background}
-      imageStyle={styles.imageStyle} // 🔧 web-only tweak
-    >
-      <SafeAreaView style={{ flex: 1 }}>
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={80}
-        >
-          <ScrollView
-            contentContainerStyle={styles.container}
-            keyboardShouldPersistTaps="handled"
+    <View style={styles.container}>
+      <ScreenBackground
+        style={styles.background}
+        imageStyle={styles.imageStyle} // 🔧 web-only tweak
+      >
+        <SafeAreaView style={styles.safeArea}>
+          <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={80}
           >
+            <ScrollView
+              contentContainerStyle={styles.scrollContent}
+              keyboardShouldPersistTaps="handled"
+            >
             <Text style={styles.title}>
               Wilt u ruimte reserveren voor noodstroomvoorziening?
             </Text>
@@ -102,14 +103,19 @@ export default function NetcongestieNoodstroomVraag({ navigation, route }) {
                 </TouchableOpacity>
               </>
             )}
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    </ScreenBackground>
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </SafeAreaView>
+      </ScreenBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: "relative",
+  },
   background: {
     flex: 1,
     width: "100%",
@@ -123,7 +129,10 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  container: {
+  safeArea: {
+    flex: 1,
+  },
+  scrollContent: {
     flexGrow: 1,
     padding: 24,
     justifyContent: "center",
