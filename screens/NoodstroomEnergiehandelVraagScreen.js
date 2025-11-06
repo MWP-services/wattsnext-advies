@@ -46,8 +46,7 @@ export default function NoodstroomEnergiehandelVraag({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <ScreenBackground
-      >
+      <ScreenBackground>
         <SafeAreaView style={styles.safeArea}>
           <KeyboardAvoidingView
             style={{ flex: 1 }}
@@ -55,7 +54,7 @@ export default function NoodstroomEnergiehandelVraag({ navigation, route }) {
             keyboardVerticalOffset={80}
           >
             <ScrollView
-              contentContainerStyle={styles.scrollContent}
+              contentContainerStyle={styles.content}
               keyboardShouldPersistTaps="handled"
             >
             <Text style={styles.title}>
@@ -140,12 +139,11 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
-  scrollContent: {
+  content: {
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingVertical: 24,
     alignSelf: "center",
     width: "100%",
     maxWidth: 1200,
@@ -175,6 +173,7 @@ const styles = StyleSheet.create({
     padding: 14,
     borderRadius: 10,
     alignItems: "center",
+    alignSelf: "stretch",
     marginTop: 10,
   },
   buttonText: {

@@ -58,12 +58,11 @@ export default function ZakelijkAdviesPeakScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <ScreenBackground
-      >
+      <ScreenBackground>
         <SafeAreaView style={styles.safeArea}>
           <ScrollView
             style={{ flex: 1 }}
-            contentContainerStyle={styles.scrollContent}
+            contentContainerStyle={styles.content}
           >
             <Text style={styles.title}>Advies op maat</Text>
           <Text style={styles.info}>
@@ -104,12 +103,11 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
-  scrollContent: {
+  content: {
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingVertical: 24,
     alignSelf: "center",
     width: "100%",
     maxWidth: 1200,

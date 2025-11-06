@@ -43,10 +43,9 @@ export default function ZakelijkAdviesHandelScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <ScreenBackground
-      >
+      <ScreenBackground>
         <SafeAreaView style={styles.safeArea}>
-          <ScrollView contentContainerStyle={styles.scrollContent}>
+          <ScrollView contentContainerStyle={styles.content}>
             <Text style={styles.title}>Advies - Handel op energiemarkt</Text>
           <Text style={styles.info}>
             Totale energiebehoefte: {totaleBehoefte.toFixed(2)} kWh
@@ -82,12 +81,11 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
-  scrollContent: {
+  content: {
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingVertical: 24,
     alignSelf: "center",
     width: "100%",
     maxWidth: 1200,

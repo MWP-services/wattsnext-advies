@@ -44,10 +44,9 @@ export default function NoodstroomVraagScreen({ navigation, route }) {
             keyboardVerticalOffset={80}
           >
             <ScrollView
-              contentContainerStyle={styles.scrollContent}
+              contentContainerStyle={styles.content}
               keyboardShouldPersistTaps="handled"
             >
-            <View style={styles.content}>
               <Text style={styles.title}>
                 Wilt u ruimte overhouden voor noodstroom?
               </Text>
@@ -100,7 +99,6 @@ export default function NoodstroomVraagScreen({ navigation, route }) {
                 </TouchableOpacity>
               </>
             )}
-            </View>
             </ScrollView>
           </KeyboardAvoidingView>
         </SafeAreaView>
@@ -117,22 +115,11 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
-  scrollContent: {
+  content: {
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingVertical: 24,
-    alignSelf: "center",
-    width: "100%",
-    maxWidth: 1200,
-  },
-  content: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 24,
-    paddingVertical: 24,
     alignSelf: "center",
     width: "100%",
     maxWidth: 1200,

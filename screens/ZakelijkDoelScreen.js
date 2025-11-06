@@ -37,10 +37,9 @@ export default function ZakelijkDoelScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <ScreenBackground
-      >
+      <ScreenBackground>
         <SafeAreaView style={styles.safeArea}>
-          <ScrollView contentContainerStyle={styles.scrollContent}>
+          <ScrollView contentContainerStyle={styles.content}>
             <Text style={styles.title}>
               Wat is het doeleinde voor de batterij?
             </Text>
@@ -69,12 +68,11 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
-  scrollContent: {
+  content: {
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingVertical: 24,
     alignSelf: "center",
     width: "100%",
     maxWidth: 1200,

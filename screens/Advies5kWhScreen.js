@@ -57,7 +57,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingVertical: 24,
     alignSelf: "center",
     width: "100%",
     maxWidth: 1200,
@@ -93,6 +92,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: "#3eaf4f",
     borderRadius: 8,
+    alignSelf: "stretch",
+    alignItems: "center",
   },
   specButtonText: {
     color: "#fff",
