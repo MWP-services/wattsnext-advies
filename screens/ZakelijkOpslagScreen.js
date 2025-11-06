@@ -53,11 +53,10 @@ export default function ZakelijkOpslagScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <ScreenBackground
-      >
+      <ScreenBackground>
         <SafeAreaView style={styles.safeArea}>
           <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-            <ScrollView contentContainerStyle={styles.scrollContent}>
+            <ScrollView contentContainerStyle={styles.content}>
             <Text style={styles.title}>Opslag van PV-opwek optimaliseren</Text>
 
             <Text style={styles.label}>Jaarlijks stroomverbruik (kWh)</Text>
@@ -109,16 +108,14 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
-  scrollContent: {
+  content: {
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingVertical: 24,
     alignSelf: "center",
     width: "100%",
     maxWidth: 1200,
-    padding: 20,
   },
   title: {
     fontSize: 22,

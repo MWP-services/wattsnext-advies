@@ -56,10 +56,9 @@ export default function ZakelijkAdviesNetcongestie({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <ScreenBackground
-      >
+      <ScreenBackground>
         <SafeAreaView style={styles.safeArea}>
-          <ScrollView contentContainerStyle={styles.scrollContent}>
+          <ScrollView contentContainerStyle={styles.content}>
             <Text style={styles.title}>Advies Netcongestie</Text>
           <Text style={styles.text}>
             Benodigd vermogen: {totaleBehoefte.toFixed(2)} kWh
@@ -99,12 +98,11 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
-  scrollContent: {
+  content: {
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingVertical: 24,
     alignSelf: "center",
     width: "100%",
     maxWidth: 1200,
@@ -131,7 +129,7 @@ const styles = StyleSheet.create({
     padding: 14,
     borderRadius: 10,
     alignItems: "center",
-    width: "100%",
+    alignSelf: "stretch",
     marginTop: 10,
   },
   buttonText: {

@@ -47,10 +47,9 @@ export default function EnergieHandel({ navigation }) {
             keyboardVerticalOffset={80}
           >
             <ScrollView
-              contentContainerStyle={styles.scrollContent}
+              contentContainerStyle={styles.content}
               keyboardShouldPersistTaps="handled"
             >
-            <View style={styles.content}>
               <Text style={styles.title}>Handel op de energiemarkt</Text>
 
             <Text style={styles.label}>Gecontracteerd vermogen (kW)</Text>
@@ -102,7 +101,6 @@ export default function EnergieHandel({ navigation }) {
               <TouchableOpacity style={styles.button} onPress={handleNext}>
                 <Text style={styles.buttonText}>Ga verder</Text>
               </TouchableOpacity>
-            </View>
             </ScrollView>
           </KeyboardAvoidingView>
         </SafeAreaView>
@@ -119,22 +117,11 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
-  scrollContent: {
+  content: {
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingVertical: 24,
-    alignSelf: "center",
-    width: "100%",
-    maxWidth: 1200,
-  },
-  content: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 24,
-    paddingVertical: 24,
     alignSelf: "center",
     width: "100%",
     maxWidth: 1200,

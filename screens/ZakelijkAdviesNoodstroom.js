@@ -49,10 +49,9 @@ export default function ZakelijkAdviesNoodstroom({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <ScreenBackground
-      >
+      <ScreenBackground>
         <SafeAreaView style={styles.safeArea}>
-          <ScrollView contentContainerStyle={styles.scrollContent}>
+          <ScrollView contentContainerStyle={styles.content}>
             <Text style={styles.title}>Advies Noodstroomvoorziening</Text>
           <Text style={styles.result}>
             Benodigde opslagcapaciteit: {totaalKwh.toFixed(1)} kWh
@@ -94,12 +93,11 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
-  scrollContent: {
+  content: {
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingVertical: 24,
     alignSelf: "center",
     width: "100%",
     maxWidth: 1200,
@@ -127,7 +125,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 20,
     alignItems: "center",
-    width: "100%",
+    alignSelf: "stretch",
   },
   buttonText: {
     color: "#fff",
