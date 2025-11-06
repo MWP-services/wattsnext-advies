@@ -4,7 +4,6 @@ import {
   useWindowDimensions,
   Alert,
   Platform,
-  SafeAreaView,
   ScrollView,
   View,
   Text,
@@ -13,6 +12,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { sendProductQuoteEmail } from "../support/email";
 import { db, auth } from "../firebaseConfig";
@@ -415,23 +415,24 @@ const handleQuoteRequest = async (product) => {
   const selectedCount = selected.size;
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.container}>
       <ScreenBackground
         style={styles.backgroundImage}
         imageStyle={styles.backgroundImageInner}
       >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
-          style={{ flex: 1 }}
-        >
-          <ScrollView
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={[
-              styles.scrollContent,
-              { paddingHorizontal: width > 768 ? 48 : 24 },
-            ]}
-            showsVerticalScrollIndicator={false}
+        <SafeAreaView style={styles.safeArea}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+            style={{ flex: 1 }}
           >
+            <ScrollView
+              keyboardShouldPersistTaps="handled"
+              contentContainerStyle={[
+                styles.scrollContent,
+                { paddingHorizontal: width > 768 ? 48 : 24 },
+              ]}
+              showsVerticalScrollIndicator={false}
+            >
             <Text style={[styles.title, { fontSize: width > 768 ? 32 : 24 }]}>
               Producten voor installateurs
             </Text>
@@ -589,14 +590,16 @@ const handleQuoteRequest = async (product) => {
                 );
               })}
             </View>
-          </ScrollView>
-        </KeyboardAvoidingView>
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </SafeAreaView>
       </ScreenBackground>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: { flex: 1, position: "relative" },
   safeArea: { flex: 1, backgroundColor: "#f0f4f8" },
   backgroundImage: { flex: 1, width: "100%", height: "100%" },
   backgroundImageInner: {

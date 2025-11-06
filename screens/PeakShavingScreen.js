@@ -61,17 +61,18 @@ export default function PeakShavingScreen({ navigation }) {
   };
 
   return (
-    <ScreenBackground
-      style={styles.background}
-      imageStyle={styles.imageStyle} // 🔧 web-only tweak
-    >
-      <SafeAreaView style={{ flex: 1 }}>
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={80}
-        >
-          <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
+      <ScreenBackground
+        style={styles.background}
+        imageStyle={styles.imageStyle} // 🔧 web-only tweak
+      >
+        <SafeAreaView style={styles.safeArea}>
+          <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={80}
+          >
+            <ScrollView contentContainerStyle={styles.scrollContent}>
             <Text style={styles.title}>Peak Shaving</Text>
 
             <View style={styles.toggleContainer}>
@@ -144,14 +145,19 @@ export default function PeakShavingScreen({ navigation }) {
             <TouchableOpacity style={styles.button} onPress={handleNext}>
               <Text style={styles.buttonText}>Ga verder</Text>
             </TouchableOpacity>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    </ScreenBackground>
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </SafeAreaView>
+      </ScreenBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: "relative",
+  },
   background: {
     flex: 1,
     width: "100%",
@@ -165,7 +171,10 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  container: {
+  safeArea: {
+    flex: 1,
+  },
+  scrollContent: {
     flexGrow: 1,
     padding: 24,
     justifyContent: "center",

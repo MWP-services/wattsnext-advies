@@ -36,16 +36,17 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <ScreenBackground>
         <SafeAreaView style={styles.safeArea}>
-          <View style={styles.content}>
-            <Image
-              source={require("../assets/logo.png")}
-              style={{
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={styles.keyboardAvoider}
+          >
+            <View style={styles.content}>
+              <Image
+                source={require("../assets/logo.png")}
+                style={{
                 width: width > 768 ? 300 : 200,
                 height: width > 768 ? 120 : 80,
                 marginBottom: 40,
@@ -90,10 +91,11 @@ export default function LoginScreen({ navigation }) {
             <TouchableOpacity style={styles.guestButton} onPress={handleGuest}>
               <Text style={styles.guestButtonText}>Doorgaan als gast</Text>
             </TouchableOpacity>
-          </View>
+            </View>
+          </KeyboardAvoidingView>
         </SafeAreaView>
       </ScreenBackground>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
@@ -103,6 +105,9 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   safeArea: {
+    flex: 1,
+  },
+  keyboardAvoider: {
     flex: 1,
   },
   content: {

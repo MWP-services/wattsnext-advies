@@ -206,14 +206,15 @@ export default function SavedAdvicesScreen() {
   );
 
   return (
-    <ScreenBackground style={styles.background} imageStyle={styles.imageStyle}>
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.container}>
-          <Text style={styles.title}>Opgeslagen adviezen</Text>
-          <Text style={styles.subtitle}>
-            Bewaar adviezen via de knoppen op de adviesschermen en bekijk ze
-            hier terug.
-          </Text>
+    <View style={styles.container}>
+      <ScreenBackground style={styles.background} imageStyle={styles.imageStyle}>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.content}>
+            <Text style={styles.title}>Opgeslagen adviezen</Text>
+            <Text style={styles.subtitle}>
+              Bewaar adviezen via de knoppen op de adviesschermen en bekijk ze
+              hier terug.
+            </Text>
 
           <TouchableOpacity
             style={styles.emailButton}
@@ -248,13 +249,21 @@ export default function SavedAdvicesScreen() {
               contentContainerStyle={styles.listContent}
             />
           )}
-        </View>
-      </SafeAreaView>
-    </ScreenBackground>
+          </View>
+        </SafeAreaView>
+      </ScreenBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: "relative",
+  },
+  safeArea: {
+    flex: 1,
+  },
   background: {
     flex: 1,
     width: "100%",
@@ -268,7 +277,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  container: { flex: 1, padding: 24 },
+  content: { flex: 1, padding: 24 },
   title: {
     fontSize: 24,
     fontWeight: "bold",

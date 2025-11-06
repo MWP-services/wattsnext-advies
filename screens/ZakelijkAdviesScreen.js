@@ -49,13 +49,14 @@ export default function ZakelijkAdviesScreen({ navigation, route }) {
   console.log("Navigeren naar:", specificatieScreen);
 
   return (
-    <ScreenBackground
-      style={styles.background}
-      imageStyle={styles.imageStyle} // 🔧 web-only tweak
-    >
-      <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={styles.container}>
-          <Text style={styles.title}>Advies op maat</Text>
+    <View style={styles.container}>
+      <ScreenBackground
+        style={styles.background}
+        imageStyle={styles.imageStyle} // 🔧 web-only tweak
+      >
+        <SafeAreaView style={styles.safeArea}>
+          <ScrollView contentContainerStyle={styles.scrollContent}>
+            <Text style={styles.title}>Advies op maat</Text>
           <Text style={styles.text}>
             Benodigd vermogen: {k0.toFixed(2)} kWh
           </Text>
@@ -79,13 +80,18 @@ export default function ZakelijkAdviesScreen({ navigation, route }) {
               summary: `Benodigd vermogen: ${k0.toFixed(2)} kWh. Aanbevolen oplossing: ${advies}.`,
             }}
           />
-        </ScrollView>
-      </SafeAreaView>
-    </ScreenBackground>
+          </ScrollView>
+        </SafeAreaView>
+      </ScreenBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: "relative",
+  },
   background: {
     flex: 1,
     width: "100%",
@@ -98,6 +104,15 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     height: "100%",
+  },
+  safeArea: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    padding: 24,
+    justifyContent: "center",
+    alignItems: "center",
   },
   title: {
     fontSize: 22,

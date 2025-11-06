@@ -458,6 +458,7 @@ export default function AgendaScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: "relative",
     backgroundColor: "#f0f4f8",
   },
   backgroundWrapper: {

@@ -55,13 +55,14 @@ export default function ZakelijkAdviesNetcongestie({ navigation, route }) {
   console.log("Navigeren naar:", specificatieScreen);
 
   return (
-    <ScreenBackground
-      style={styles.background}
-      imageStyle={styles.imageStyle} // 🔧 web-only tweak
-    >
-      <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={styles.container}>
-          <Text style={styles.title}>Advies Netcongestie</Text>
+    <View style={styles.container}>
+      <ScreenBackground
+        style={styles.background}
+        imageStyle={styles.imageStyle} // 🔧 web-only tweak
+      >
+        <SafeAreaView style={styles.safeArea}>
+          <ScrollView contentContainerStyle={styles.scrollContent}>
+            <Text style={styles.title}>Advies Netcongestie</Text>
           <Text style={styles.text}>
             Benodigd vermogen: {totaleBehoefte.toFixed(2)} kWh
           </Text>
@@ -85,13 +86,18 @@ export default function ZakelijkAdviesNetcongestie({ navigation, route }) {
               summary: `Benodigd vermogen: ${totaleBehoefte.toFixed(2)} kWh. Aanbevolen oplossing: ${advies}.`,
             }}
           />
-        </ScrollView>
-      </SafeAreaView>
-    </ScreenBackground>
+          </ScrollView>
+        </SafeAreaView>
+      </ScreenBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: "relative",
+  },
   background: {
     flex: 1,
     width: "100%",
@@ -105,7 +111,10 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  container: {
+  safeArea: {
+    flex: 1,
+  },
+  scrollContent: {
     flexGrow: 1,
     padding: 24,
     justifyContent: "center",
