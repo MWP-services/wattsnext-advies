@@ -1,14 +1,7 @@
 // screens/OffertesScreen.js
 import React, { useEffect, useState } from "react";
-import {
-  SafeAreaView,
-  ScrollView,
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Platform,
-} from "react-native";
+import { ScrollView, View, Text, TouchableOpacity, StyleSheet, Platform } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { auth, db } from "../firebaseConfig";
 import {
@@ -74,15 +67,16 @@ export default function OffertesScreen({ navigation }) {
     Array.isArray(items) ? items.reduce((acc, it) => acc + (Number(it?.qty) || 1), 0) : 0;
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.container}>
       <ScreenBackground
         style={styles.backgroundImage}
         imageStyle={styles.backgroundImageInner}
       >
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
+        <SafeAreaView style={styles.safeArea}>
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+          >
           <Text style={styles.title}>Mijn offerte-aanvragen</Text>
 
           <TouchableOpacity
@@ -176,13 +170,15 @@ export default function OffertesScreen({ navigation }) {
               );
             })}
           </View>
-        </ScrollView>
+          </ScrollView>
+        </SafeAreaView>
       </ScreenBackground>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: { flex: 1, position: "relative" },
   safeArea: { flex: 1, backgroundColor: "#f0f4f8" },
   backgroundImage: { flex: 1, width: "100%", height: "100%" },
   backgroundImageInner: {

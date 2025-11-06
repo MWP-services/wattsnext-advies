@@ -118,13 +118,14 @@ export default function OverzichtZakelijkAdviesScreen({ route, navigation }) {
   }, [mailtoLink]);
 
   return (
-    <ScreenBackground
-      style={styles.background}
-      imageStyle={styles.imageStyle} // 🔧 web-only tweak
-    >
-      <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={styles.container}>
-          <Text style={styles.title}>Zakelijk Advies</Text>
+    <View style={styles.container}>
+      <ScreenBackground
+        style={styles.background}
+        imageStyle={styles.imageStyle} // 🔧 web-only tweak
+      >
+        <SafeAreaView style={styles.safeArea}>
+          <ScrollView contentContainerStyle={styles.scrollContent}>
+            <Text style={styles.title}>Zakelijk Advies</Text>
           <Text style={styles.subtext}>
             Benodigd totaal: {kwhTotaal.toFixed(1)} kWh
           </Text>
@@ -185,13 +186,18 @@ export default function OverzichtZakelijkAdviesScreen({ route, navigation }) {
           >
             <Text style={styles.buttonText}>Terug naar begin</Text>
           </TouchableOpacity>
-        </ScrollView>
-      </SafeAreaView>
-    </ScreenBackground>
+          </ScrollView>
+        </SafeAreaView>
+      </ScreenBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: "relative",
+  },
   background: {
     flex: 1,
     width: "100%",
@@ -205,7 +211,10 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  container: {
+  safeArea: {
+    flex: 1,
+  },
+  scrollContent: {
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",

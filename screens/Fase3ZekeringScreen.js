@@ -9,15 +9,16 @@ export default function Fase3ZekeringScreen({ navigation }) {
   const aansluiting = route.params?.aansluiting || "3-fase";
 
   return (
-    <ScreenBackground
-      style={styles.background}
-      imageStyle={styles.imageStyle} // 🔧 web-only tweak
-    >
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.container}>
-          <Text style={styles.title}>
-            Welke zekering heeft je 3-fase aansluiting?
-          </Text>
+    <View style={styles.container}>
+      <ScreenBackground
+        style={styles.background}
+        imageStyle={styles.imageStyle} // 🔧 web-only tweak
+      >
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.content}>
+            <Text style={styles.title}>
+              Welke zekering heeft je 3-fase aansluiting?
+            </Text>
 
           <TouchableOpacity
             style={styles.button}
@@ -45,13 +46,18 @@ export default function Fase3ZekeringScreen({ navigation }) {
           >
             <Text style={styles.buttonText}>35A</Text>
           </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    </ScreenBackground>
+          </View>
+        </SafeAreaView>
+      </ScreenBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: "relative",
+  },
   background: {
     flex: 1,
     width: "100%",
@@ -65,7 +71,10 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  container: {
+  safeArea: {
+    flex: 1,
+  },
+  content: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",

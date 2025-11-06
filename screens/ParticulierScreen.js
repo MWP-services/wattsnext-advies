@@ -55,6 +55,7 @@ export default function ParticulierScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: "relative",
   },
   backgroundImage: {
     flex: 1,

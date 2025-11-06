@@ -8,9 +8,9 @@ import {
   Image,
   useWindowDimensions,
   ScrollView,
-  SafeAreaView,
   Platform,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { getAuth } from "firebase/auth";
 import ScreenBackground from "../components/ScreenBackground";
@@ -22,7 +22,7 @@ export default function HomeScreen({ navigation }) {
   const isWide = width > 768; // iPad / web / brede layout
 
   return (
-    <View style={styles.root}>
+    <View style={styles.container}>
       {/* Volledige achtergrond laag */}
       <ScreenBackground
         style={styles.backgroundImage}
@@ -142,8 +142,9 @@ export default function HomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  root: {
+  container: {
     flex: 1,
+    position: "relative",
     backgroundColor: "#f0f4f8",
   },
 

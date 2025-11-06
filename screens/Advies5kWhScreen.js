@@ -6,9 +6,10 @@ import ScreenBackground from "../components/ScreenBackground";
 
 export default function Advies5kWhScreen({ navigation }) {
   return (
-    <ScreenBackground style={styles.background} imageStyle={styles.imageStyle}>
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.container}>
+    <View style={styles.container}>
+      <ScreenBackground style={styles.background} imageStyle={styles.imageStyle}>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.content}>
           <Text style={styles.title}>Persoonlijk Advies</Text>
 
           <Text style={styles.text}>
@@ -37,12 +38,17 @@ export default function Advies5kWhScreen({ navigation }) {
             }}
           />
         </View>
-      </SafeAreaView>
-    </ScreenBackground>
+        </SafeAreaView>
+      </ScreenBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: "relative",
+  },
   background: {
     flex: 1,
     justifyContent: "center",
@@ -54,7 +60,10 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  container: {
+  safeArea: {
+    flex: 1,
+  },
+  content: {
     flex: 1,
     padding: 24,
     alignItems: "center",
