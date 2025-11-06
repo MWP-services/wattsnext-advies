@@ -10,10 +10,7 @@ export default function Fase3ZekeringScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <ScreenBackground
-        style={styles.background}
-        imageStyle={styles.imageStyle} // 🔧 web-only tweak
-      >
+      <ScreenBackground>
         <SafeAreaView style={styles.safeArea}>
           <View style={styles.content}>
             <Text style={styles.title}>
@@ -58,19 +55,6 @@ const styles = StyleSheet.create({
     flex: 1,
     position: "relative",
   },
-  background: {
-    flex: 1,
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  imageStyle: {
-    resizeMode: "contain",
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-  },
   safeArea: {
     flex: 1,
   },
@@ -78,7 +62,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+    alignSelf: "center",
+    width: "100%",
+    maxWidth: 1200,
   },
   title: {
     fontSize: 22,
@@ -92,7 +80,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 10,
     marginVertical: 12,
-    width: "100%",
+    alignSelf: "stretch",
     alignItems: "center",
   },
   buttonText: {

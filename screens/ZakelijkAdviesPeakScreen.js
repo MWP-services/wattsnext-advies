@@ -59,8 +59,6 @@ export default function ZakelijkAdviesPeakScreen({ route, navigation }) {
   return (
     <View style={styles.container}>
       <ScreenBackground
-        style={styles.background}
-        imageStyle={styles.imageStyle} // 🔧 web-only tweak
       >
         <SafeAreaView style={styles.safeArea}>
           <ScrollView
@@ -103,28 +101,19 @@ const styles = StyleSheet.create({
     flex: 1,
     position: "relative",
   },
-  background: {
-    flex: 1,
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  imageStyle: {
-    resizeMode: "contain",
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-  },
   safeArea: {
     flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
-    minHeight: "100%",
-    padding: 24,
-    alignItems: "center",
     justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+    alignSelf: "center",
+    width: "100%",
+    maxWidth: 1200,
+    minHeight: "100%",
   },
   title: {
     fontSize: 22,
@@ -154,7 +143,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f7941e",
     padding: 14,
     borderRadius: 10,
-    width: "100%",
+    alignSelf: "stretch",
     alignItems: "center",
   },
   buttonText: {

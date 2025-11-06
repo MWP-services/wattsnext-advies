@@ -36,10 +36,7 @@ export default function NoodstroomVraagScreen({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <ScreenBackground
-        style={styles.background}
-        imageStyle={styles.imageStyle} // 🔧 web-only tweak
-      >
+      <ScreenBackground>
         <SafeAreaView style={styles.safeArea}>
           <KeyboardAvoidingView
             style={{ flex: 1 }}
@@ -50,9 +47,10 @@ export default function NoodstroomVraagScreen({ navigation, route }) {
               contentContainerStyle={styles.scrollContent}
               keyboardShouldPersistTaps="handled"
             >
-            <Text style={styles.title}>
-              Wilt u ruimte overhouden voor noodstroom?
-            </Text>
+            <View style={styles.content}>
+              <Text style={styles.title}>
+                Wilt u ruimte overhouden voor noodstroom?
+              </Text>
 
             <View style={styles.toggleContainer}>
               <TouchableOpacity
@@ -102,6 +100,7 @@ export default function NoodstroomVraagScreen({ navigation, route }) {
                 </TouchableOpacity>
               </>
             )}
+            </View>
             </ScrollView>
           </KeyboardAvoidingView>
         </SafeAreaView>
@@ -115,26 +114,28 @@ const styles = StyleSheet.create({
     flex: 1,
     position: "relative",
   },
-  background: {
-    flex: 1,
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  imageStyle: {
-    resizeMode: "contain",
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-  },
   safeArea: {
     flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
-    padding: 24,
     justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+    alignSelf: "center",
+    width: "100%",
+    maxWidth: 1200,
+  },
+  content: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+    alignSelf: "center",
+    width: "100%",
+    maxWidth: 1200,
   },
   title: {
     fontSize: 22,
@@ -146,6 +147,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     marginBottom: 6,
+    alignSelf: "stretch",
   },
   input: {
     borderWidth: 1,
@@ -155,13 +157,15 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 16,
     backgroundColor: "#fff", // Inputvelden wit voor goede leesbaarheid
+    alignSelf: "stretch",
   },
   button: {
     backgroundColor: "#FF7F00",
     padding: 14,
     borderRadius: 10,
-    alignItems: "center",
     marginTop: 10,
+    alignSelf: "stretch",
+    alignItems: "center",
   },
   buttonText: {
     color: "#fff",

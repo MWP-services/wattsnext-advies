@@ -47,8 +47,6 @@ export default function NoodstroomEnergiehandelVraag({ navigation, route }) {
   return (
     <View style={styles.container}>
       <ScreenBackground
-        style={styles.background}
-        imageStyle={styles.imageStyle} // 🔧 web-only tweak
       >
         <SafeAreaView style={styles.safeArea}>
           <KeyboardAvoidingView
@@ -139,26 +137,18 @@ const styles = StyleSheet.create({
     flex: 1,
     position: "relative",
   },
-  background: {
-    flex: 1,
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  imageStyle: {
-    resizeMode: "contain",
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-  },
   safeArea: {
     flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
-    padding: 24,
     justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+    alignSelf: "center",
+    width: "100%",
+    maxWidth: 1200,
   },
   title: {
     fontSize: 22,
