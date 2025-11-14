@@ -3,15 +3,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
 import ScreenBackground from '../components/ScreenBackground';
 
-export default function Specificaties232Screen() {
+export default function Specificaties261Screen() {
   return (
     <View style={styles.container}>
       <ScreenBackground>
         <SafeAreaView style={styles.safeArea}>
           <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <Text style={styles.title}>Specificaties 232 kWh batterij</Text>
+            <Text style={styles.title}>Specificaties 261 kWh batterij</Text>
             <Image
-              source={require('../assets/232-kwh-spec.png')}
+              source={require('../assets/261-kwh-spec.png')}
               style={styles.image}
               resizeMode="contain"
             />

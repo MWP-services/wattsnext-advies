@@ -15,49 +15,65 @@ export default function ZakelijkAdviesLoadShiftingScreen({
   route,
   navigation,
 }) {
-  const { kwh1 = 0, kwh2 = 0, kwh3 = 0 } = route.params;
+  const { kwh1 = 0, kwh2 = 0, kwh3 = 0 } = route.params || {};
   const totaleBehoefte = kwh1 + kwh2;
+
   console.log(
     "LoadShifting Advies -> kwh1:",
     kwh1,
     "kwh2:",
     kwh2,
     "kwh3:",
-    kwh3,
+    kwh3
   );
   console.log("Totale behoefte:", totaleBehoefte);
 
   let advies = "";
   let image = null;
-  let modules = 0;
   let specificatieScreen = "";
+  let modulesTekst = "";
+  let totaalGeadviseerdeCapaciteit = totaleBehoefte;
 
   if (totaleBehoefte <= 64) {
     advies = "64 kWh batterij";
     image = require("../assets/64-KWH-ZAKELIJK.png");
     specificatieScreen = "Specificaties64";
+    totaalGeadviseerdeCapaciteit = 64;
   } else if (totaleBehoefte <= 96) {
     advies = "96 kWh batterij";
     image = require("../assets/96-KWH-ZAKELIJK.png");
     specificatieScreen = "Specificaties96";
-  } else if (totaleBehoefte <= 232) {
-    advies = "232 kWh batterij";
-    image = require("../assets/232-KWH-ZAKELIJK.png");
-    specificatieScreen = "Specificaties232";
-  } else if (totaleBehoefte <= 1160) {
-    modules = Math.ceil(totaleBehoefte / 232);
-    advies = `232 kWh batterij (${modules} modules)`;
-    image = require("../assets/232-KWH-ZAKELIJK.png");
-    specificatieScreen = "Specificaties232";
-    console.log("Aantal modules voor 232 kWh batterij:", modules);
+    totaalGeadviseerdeCapaciteit = 96;
+  } else if (totaleBehoefte < 1800) {
+    // 261 kWh basisbatterij modulair uitbreiden
+    const eenheid = 261;
+    const aantalEenheden = Math.ceil(totaleBehoefte / eenheid); // totaal aantal 261-blokken
+    const aantalModules = Math.max(aantalEenheden - 1, 0); // basis + modules
+    totaalGeadviseerdeCapaciteit = aantalEenheden * eenheid;
+
+    if (aantalModules === 0) {
+      advies = "261 kWh batterij";
+    } else if (aantalModules === 1) {
+      advies = "261 kWh batterij + 1 module van 261 kWh";
+    } else {
+      advies = `261 kWh batterij + ${aantalModules} modules van 261 kWh`;
+    }
+
+    image = require("../assets/261-KWH-ZAKELIJK.png");
+    specificatieScreen = "Specificaties261";
+
+    modulesTekst = `Totaal geadviseerde capaciteit: ${totaalGeadviseerdeCapaciteit} kWh (${aantalEenheden} × 261 kWh).`;
+    console.log("Aantal 261-blokken:", aantalEenheden);
   } else if (totaleBehoefte <= 2090) {
     advies = "2.09 MWh batterij";
     image = require("../assets/2-MW-ZAKELIJK.png");
     specificatieScreen = "Specificaties209";
+    totaalGeadviseerdeCapaciteit = 2090;
   } else {
     advies = "5.01 MWh batterij";
     image = require("../assets/5-MW-ZAKELIJK.png");
     specificatieScreen = "Specificaties501";
+    totaalGeadviseerdeCapaciteit = 5010;
   }
 
   console.log("Gekozen advies:", advies);
@@ -69,29 +85,42 @@ export default function ZakelijkAdviesLoadShiftingScreen({
         <SafeAreaView style={styles.safeArea}>
           <ScrollView contentContainerStyle={styles.content}>
             <Text style={styles.title}>Advies Load Shifting</Text>
-          <Text style={styles.info}>
-            Totale energiebehoefte: {totaleBehoefte.toFixed(1)} kWh
-          </Text>
-          <Text style={styles.info}>Aanbevolen oplossing: {advies}</Text>
 
-          {image && (
-            <Image source={image} style={styles.image} resizeMode="contain" />
-          )}
+            <Text style={styles.info}>
+              Totale energiebehoefte: {totaleBehoefte.toFixed(1)} kWh
+            </Text>
+            <Text style={styles.info}>Aanbevolen oplossing: {advies}</Text>
 
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate(specificatieScreen)}
-          >
-            <Text style={styles.buttonText}>Bekijk specificaties</Text>
-          </TouchableOpacity>
+            {modulesTekst !== "" && (
+              <Text style={styles.info}>{modulesTekst}</Text>
+            )}
 
-          <SaveAdviceButton
-            advice={{
-              id: `zakelijk-loadshifting-${specificatieScreen}`,
-              title: `Load Shifting advies: ${advies}`,
-              summary: `Totale energiebehoefte: ${totaleBehoefte.toFixed(1)} kWh. Aanbevolen oplossing: ${advies}.`,
-            }}
-          />
+            <Text style={styles.info}>
+              Geadviseerde systeemcapaciteit: {totaalGeadviseerdeCapaciteit} kWh
+            </Text>
+
+            {image && (
+              <Image source={image} style={styles.image} resizeMode="contain" />
+            )}
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => navigation.navigate(specificatieScreen)}
+            >
+              <Text style={styles.buttonText}>Bekijk specificaties</Text>
+            </TouchableOpacity>
+
+            <SaveAdviceButton
+              advice={{
+                id: `zakelijk-loadshifting-${specificatieScreen}`,
+                title: `Load Shifting advies: ${advies}`,
+                summary: `Totale energiebehoefte: ${totaleBehoefte.toFixed(
+                  1
+                )} kWh. Geadviseerde systeemcapaciteit: ${totaalGeadviseerdeCapaciteit} kWh. Oplossing: ${advies}${
+                  modulesTekst ? `. ${modulesTekst}` : ""
+                }`,
+              }}
+            />
           </ScrollView>
         </SafeAreaView>
       </ScreenBackground>
