@@ -57,7 +57,7 @@ import HandelNoodstroomVraagScreen from './screens/HandelNoodstroomVraagScreen';
 import ZakelijkAdviesHandelScreen from './screens/ZakelijkAdviesHandelScreen';
 import Specificaties64Screen from './screens/spec-64-kwh';
 import Specificaties96Screen from './screens/spec-96-kwh'; 
-import Specificaties232Screen from './screens/spec-232-kwh';
+import Specificaties232Screen from './screens/spec-261-kwh.js';
 import Specificaties209Screen from './screens/spec-2-mwh';
 import Specificaties501Screen from './screens/spec-5-mwh';
 import Spec_HV_particulier from './screens/Spec_HV_particulier';

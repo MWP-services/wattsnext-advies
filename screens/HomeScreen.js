@@ -8,9 +8,8 @@ import {
   Image,
   useWindowDimensions,
   ScrollView,
-  Platform,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { getAuth } from "firebase/auth";
 import ScreenBackground from "../components/ScreenBackground";
@@ -20,19 +19,20 @@ const auth = getAuth();
 export default function HomeScreen({ navigation }) {
   const { width } = useWindowDimensions();
   const isWide = width > 768; // iPad / web / brede layout
+  const insets = useSafeAreaInsets(); // <<< FIX voor notch / statusbalk spacing
 
   return (
     <View style={styles.container}>
-      {/* Volledige achtergrond laag */}
-      <ScreenBackground
-      >
+      <ScreenBackground>
         <SafeAreaView style={styles.safeArea}>
-          {/* Logout / terug-naar-login knop */}
+
+          {/* TERUGKNOP — verplaatst onder de notch */}
           <TouchableOpacity
             onPress={() => navigation.replace("LoginScreen")}
-            style={styles.backTopLeft}
-            accessibilityRole="button"
-            accessibilityLabel="Terug naar log-in"
+            style={[
+              styles.backTopLeft,
+              { top: insets.top + 8 }, // <<< CRUCIAAL: altijd klikbaar op iPhone
+            ]}
           >
             <Text style={styles.backText}>← Terug naar log-in</Text>
           </TouchableOpacity>
@@ -45,7 +45,8 @@ export default function HomeScreen({ navigation }) {
             showsVerticalScrollIndicator={false}
           >
             <View style={[styles.content, { maxWidth: isWide ? 600 : 480 }]}>
-              {/* Logo */}
+
+              {/* LOGO */}
               <Image
                 source={require("../assets/logo.png")}
                 style={[
@@ -55,18 +56,18 @@ export default function HomeScreen({ navigation }) {
                     height: isWide ? 120 : 80,
                   },
                 ]}
+                resizeMode="contain"
               />
 
-              {/* Titel */}
+              {/* TITEL */}
               <Text style={[styles.title, { fontSize: isWide ? 36 : 24 }]}>
                 WattsNext Advies
               </Text>
 
-              {/* Tiles */}
+              {/* Tegel lay-out */}
               <View
                 style={[
                   styles.tileGrid,
-                  // op smalle schermen willen we 1 kolom (100%), op brede 2 kolommen
                   { columnGap: isWide ? 16 : 0 },
                 ]}
               >
@@ -75,12 +76,10 @@ export default function HomeScreen({ navigation }) {
                     styles.tileButton,
                     {
                       flexBasis: isWide ? "48%" : "100%",
-                      minHeight: isWide ? 200 : 200,
+                      minHeight: 200,
                     },
                   ]}
                   onPress={() => navigation.navigate("Stap 1")}
-                  accessibilityRole="button"
-                  accessibilityLabel="Start Advies"
                 >
                   <Text style={styles.tileButtonText}>Start Advies</Text>
                 </TouchableOpacity>
@@ -90,12 +89,10 @@ export default function HomeScreen({ navigation }) {
                     styles.tileButton,
                     {
                       flexBasis: isWide ? "48%" : "100%",
-                      minHeight: isWide ? 200 : 200,
+                      minHeight: 200,
                     },
                   ]}
                   onPress={() => navigation.navigate("AccountBeheren")}
-                  accessibilityRole="button"
-                  accessibilityLabel="Account beheren"
                 >
                   <Text style={styles.tileButtonText}>Account beheren</Text>
                 </TouchableOpacity>
@@ -105,34 +102,30 @@ export default function HomeScreen({ navigation }) {
                     styles.tileButton,
                     {
                       flexBasis: isWide ? "48%" : "100%",
-                      minHeight: isWide ? 200 : 200,
+                      minHeight: 200,
                     },
                   ]}
                   onPress={() => navigation.navigate("SavedAdvices")}
-                  accessibilityRole="button"
-                  accessibilityLabel="Bekijk opgeslagen adviezen"
                 >
                   <Text style={styles.tileButtonText}>Opgeslagen adviezen</Text>
                 </TouchableOpacity>
 
-                {/* Nieuwe tegel voor de productcatalogus */}
                 <TouchableOpacity
                   style={[
                     styles.tileButton,
                     {
                       flexBasis: isWide ? "48%" : "100%",
-                      minHeight: isWide ? 200 : 200,
+                      minHeight: 200,
                     },
                   ]}
                   onPress={() => navigation.navigate("ProductenScreen")}
-                  accessibilityRole="button"
-                  accessibilityLabel="Bekijk producten en vraag offerte aan"
                 >
                   <Text style={styles.tileButtonText}>Producten</Text>
                 </TouchableOpacity>
               </View>
             </View>
           </ScrollView>
+
         </SafeAreaView>
       </ScreenBackground>
     </View>
@@ -146,28 +139,22 @@ const styles = StyleSheet.create({
     backgroundColor: "#f0f4f8",
   },
 
-  backgroundImage: {
-    flex: 1,
-  },
-
-  // dit bepaalt hoe de afbeelding zich in de container gedraagt
-
   safeArea: {
     flex: 1,
     position: "relative",
   },
 
-  // terugknop linksboven
   backTopLeft: {
     position: "absolute",
-    top: 10,
+    top: 0, // wordt overschreven door insets.top + 8
     left: 10,
     paddingVertical: 6,
     paddingHorizontal: 12,
     backgroundColor: "#ffffffcc",
     borderRadius: 10,
-    zIndex: 10,
+    zIndex: 20,
   },
+
   backText: {
     color: "#1a73e8",
     fontSize: 16,
@@ -178,14 +165,13 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 24,
     paddingVertical: 24,
+    paddingBottom: 60,
+    gap: 32,
     alignSelf: "center",
     width: "100%",
     maxWidth: 1200,
     paddingTop: 40,
-    paddingBottom: 60,
-    gap: 32,
   },
 
   content: {
@@ -194,11 +180,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 24,
     paddingVertical: 24,
-    alignSelf: "center",
     width: "100%",
-    maxWidth: 1200,
     gap: 32,
-    paddingTop: 32,
   },
 
   logo: {
@@ -220,15 +203,13 @@ const styles = StyleSheet.create({
   },
 
   tileButton: {
-    backgroundColor: "#f7941e", // oranje
+    backgroundColor: "#f7941e",
     borderRadius: 10,
     paddingHorizontal: 20,
     paddingVertical: 20,
-
     justifyContent: "center",
     alignItems: "center",
 
-    // schaduw voor dikke card look
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.28,

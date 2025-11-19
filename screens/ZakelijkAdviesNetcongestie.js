@@ -37,9 +37,9 @@ export default function ZakelijkAdviesNetcongestie({ navigation, route }) {
     advies = "96 kWh batterij";
     image = require("../assets/96-KWH-ZAKELIJK.png");
     specificatieScreen = "Specificaties96";
-  } else if (totaleBehoefte <= 232) {
-    advies = "232 kWh batterij (modulair uitbreidbaar)";
-    image = require("../assets/232-KWH-ZAKELIJK.png");
+  } else if (totaleBehoefte <= 261) {
+    advies = "261 kWh batterij (modulair uitbreidbaar)";
+    image = require("../assets/261-KWH-ZAKELIJK.png");
     specificatieScreen = "Specificaties232";
   } else if (totaleBehoefte <= 2090) {
     advies = "2.09 MWh batterij (modulair uitbreidbaar)";
