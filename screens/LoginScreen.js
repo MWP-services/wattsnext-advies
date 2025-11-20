@@ -10,29 +10,84 @@ import {
   KeyboardAvoidingView,
   Platform,
   useWindowDimensions,
+  Alert,
 } from "react-native";
 import { auth } from "../firebaseConfig";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 import ScreenBackground from "../components/ScreenBackground";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [wachtwoord, setWachtwoord] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
   const { width } = useWindowDimensions();
 
   const handleLogin = async () => {
-    console.log("Inloggen met:", email);
     try {
       await signInWithEmailAndPassword(auth, email, wachtwoord);
-      navigation.replace("HomeScreen"); // of 'Stap 1' of ander gewenst scherm
+      navigation.replace("HomeScreen");
     } catch (error) {
       alert(error.message);
     }
   };
 
   const handleGuest = () => {
-    console.log("Doorgaan als gast (particuliere route)");
     navigation.replace("Particulier");
+  };
+
+  // ⭐ Wachtwoord vergeten → reset email sturen
+  const handlePasswordReset = async () => {
+    console.log("🔑 Reset-knop geklikt met email:", email);
+
+    const trimmedEmail = email.trim();
+
+    if (!trimmedEmail) {
+      Alert.alert(
+        "E-mailadres nodig",
+        "Vul eerst je e-mailadres in bij het veld 'E-mailadres' bovenaan."
+      );
+      return;
+    }
+
+    if (resetLoading) return; // dubbelklikken negeren
+    setResetLoading(true);
+
+    try {
+      await sendPasswordResetEmail(auth, trimmedEmail);
+      Alert.alert(
+        "E-mail verstuurd",
+        "Je ontvangt een mail met een link om je wachtwoord te resetten."
+      );
+    } catch (err) {
+      console.log("❌ Reset error:", err.code, err.message);
+
+      let message = "Er ging iets mis. Controleer je e-mailadres.";
+
+      if (err.code === "auth/quota-exceeded") {
+        message =
+          "Er zijn tijdelijk te veel resetverzoeken verstuurd vanaf dit project. Probeer het later opnieuw.";
+      } else if (err.code === "auth/user-not-found") {
+        message = "Er bestaat geen account met dit e-mailadres.";
+      } else if (err.code === "auth/invalid-email") {
+        message = "Dit is geen geldig e-mailadres.";
+      } else if (err.code === "auth/operation-not-allowed") {
+        message =
+          "E-mail/wachtwoord inloggen is nog niet ingeschakeld in Firebase.";
+      } else if (err.code === "auth/too-many-requests") {
+        message =
+          "Te veel pogingen. Wacht even en probeer het later nog een keer.";
+      } else if (err.code === "auth/network-request-failed") {
+        message =
+          "Geen verbinding met de server. Controleer je internetverbinding.";
+      }
+
+      Alert.alert("Fout", `${message}\n\n(${err.code})`);
+    } finally {
+      setResetLoading(false);
+    }
   };
 
   return (
@@ -47,50 +102,63 @@ export default function LoginScreen({ navigation }) {
               <Image
                 source={require("../assets/logo.png")}
                 style={{
-                width: width > 768 ? 300 : 200,
-                height: width > 768 ? 120 : 80,
-                marginBottom: 40,
-              }}
-              resizeMode="contain"
-            />
-            <Text style={[styles.title, { fontSize: width > 768 ? 32 : 24 }]}>
-              Inloggen
-            </Text>
+                  width: width > 768 ? 300 : 200,
+                  height: width > 768 ? 120 : 80,
+                  marginBottom: 40,
+                }}
+                resizeMode="contain"
+              />
 
-            <TextInput
-              placeholder="E-mailadres"
-              placeholderTextColor="#aaa"
-              value={email}
-              onChangeText={setEmail}
-              style={styles.input}
-              autoCapitalize="none"
-            />
-
-            <TextInput
-              placeholder="Wachtwoord"
-              placeholderTextColor="#aaa"
-              value={wachtwoord}
-              onChangeText={setWachtwoord}
-              style={styles.input}
-              secureTextEntry
-            />
-
-            <TouchableOpacity style={styles.button} onPress={handleLogin}>
-              <Text style={styles.buttonText}>Log in</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => navigation.navigate("RegisterScreen")}
-              style={styles.link}
-            >
-              <Text style={styles.linkText}>
-                Nog geen account? Registreer hier
+              <Text style={[styles.title, { fontSize: width > 768 ? 32 : 24 }]}>
+                Inloggen
               </Text>
-            </TouchableOpacity>
 
-            <TouchableOpacity style={styles.guestButton} onPress={handleGuest}>
-              <Text style={styles.guestButtonText}>Doorgaan als gast</Text>
-            </TouchableOpacity>
+              <TextInput
+                placeholder="E-mailadres"
+                placeholderTextColor="#aaa"
+                value={email}
+                onChangeText={setEmail}
+                style={styles.input}
+                autoCapitalize="none"
+                keyboardType="email-address"
+              />
+
+              <TextInput
+                placeholder="Wachtwoord"
+                placeholderTextColor="#aaa"
+                value={wachtwoord}
+                onChangeText={setWachtwoord}
+                style={styles.input}
+                secureTextEntry
+              />
+
+              <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                <Text style={styles.buttonText}>Log in</Text>
+              </TouchableOpacity>
+
+              {/* ⭐ Wachtwoord vergeten knop met loading state */}
+              <TouchableOpacity
+                onPress={handlePasswordReset}
+                style={[styles.forgotButton, resetLoading && { opacity: 0.6 }]}
+                disabled={resetLoading}
+              >
+                <Text style={styles.forgotText}>
+                  {resetLoading ? "Bezig..." : "Wachtwoord vergeten?"}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => navigation.navigate("RegisterScreen")}
+                style={styles.link}
+              >
+                <Text style={styles.linkText}>
+                  Nog geen account? Registreer hier
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.guestButton} onPress={handleGuest}>
+                <Text style={styles.guestButtonText}>Doorgaan als gast</Text>
+              </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>
         </SafeAreaView>
@@ -147,6 +215,15 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "600",
     fontSize: 16,
+  },
+  forgotButton: {
+    marginTop: 12,
+  },
+  forgotText: {
+    color: "#1a73e8",
+    textDecorationLine: "underline",
+    fontSize: 15,
+    fontWeight: "500",
   },
   guestButton: {
     marginTop: 20,

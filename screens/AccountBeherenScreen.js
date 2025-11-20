@@ -20,6 +20,7 @@ import ScreenBackground from '../components/ScreenBackground';
 export default function AccountBeherenScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState('');
+
   const tryDelete = async () => {
     const user = auth.currentUser;
     if (!user) {
@@ -30,7 +31,7 @@ export default function AccountBeherenScreen({ navigation }) {
 
     try {
       setLoading(true);
-      await deleteUser(user); // alleen Auth verwijderen
+      await deleteUser(user);
       setLoading(false);
       Alert.alert('Account verwijderd', 'Je account is definitief verwijderd.');
       navigation.replace('LoginScreen');
@@ -98,8 +99,18 @@ export default function AccountBeherenScreen({ navigation }) {
             <View style={styles.content}>
               <Text style={styles.title}>Account beheren</Text>
               <Text style={styles.body}>
-                Hier kun je je account permanent verwijderen. Dit is onomkeerbaar en verwijdert je gegevens.
+                Hier kun je je wachtwoord wijzigen of je account permanent verwijderen.
               </Text>
+
+              {/* ⭐ NIEUWE KNOP: Wachtwoord wijzigen */}
+              <TouchableOpacity
+                style={styles.changePasswordBtn}
+                onPress={() => navigation.navigate("ChangePassword")}
+              >
+                <Text style={styles.changePasswordText}>Wachtwoord wijzigen</Text>
+              </TouchableOpacity>
+
+              <View style={{ height: 32 }} />
 
               <TouchableOpacity
                 style={styles.deleteBtn}
@@ -129,6 +140,7 @@ export default function AccountBeherenScreen({ navigation }) {
                 style={styles.input}
                 autoCapitalize="none"
               />
+
               <TouchableOpacity
                 style={styles.outlineBtn}
                 onPress={handleReauthenticate}
@@ -138,6 +150,7 @@ export default function AccountBeherenScreen({ navigation }) {
               </TouchableOpacity>
 
               <View style={{ height: 16 }} />
+
               <TouchableOpacity style={styles.linkBtn} onPress={() => navigation.goBack()}>
                 <Text style={styles.linkText}>← Terug</Text>
               </TouchableOpacity>
@@ -157,8 +170,23 @@ const styles = StyleSheet.create({
   title: { fontSize: 24, fontWeight: '700', marginBottom: 8, color: '#3eaf4f', textAlign: 'center' },
   subTitle: { fontSize: 18, fontWeight: '700', marginTop: 8, marginBottom: 4 },
   body: { fontSize: 15, textAlign: 'center', maxWidth: 500, opacity: 0.9 },
-  deleteBtn: {
+
+  // ⭐ NIEUWE STYLES:
+  changePasswordBtn: {
     marginTop: 20,
+    backgroundColor: "#f7941e",
+    paddingVertical: 14,
+    paddingHorizontal: 22,
+    borderRadius: 10,
+    minWidth: 260,
+    alignItems: "center",
+  },
+  changePasswordText: {
+    color: "#fff",
+    fontWeight: "700",
+  },
+
+  deleteBtn: {
     backgroundColor: '#d32f2f',
     paddingVertical: 14,
     paddingHorizontal: 22,

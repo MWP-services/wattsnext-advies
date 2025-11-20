@@ -21,137 +21,43 @@ import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import ScreenBackground from "../components/ScreenBackground";
 
 const PRODUCTEN = [
-  {
-    artikelcode: "TBLV-0.5I",
-    productId: "AS-5.12LDL-GL1",
-    productnaam: "AS-5.12LD-GL1",
-    categorie: "Thuis Batterij 1-fase",
-    doelgroep: "Installateur",
-    specs: "5 kWh",
-  },
-  {
-    artikelcode: "AS-system accesoires-I",
-    productId: "AS-system accesoires",
-    productnaam: "AS-system accesoires",
-    categorie: "Systeem accessoires",
-    doelgroep: "Installateur",
-    specs: "",
-  },
-  {
-    artikelcode: "HO1-4.6-I",
-    productId: "AH-4.6KSL-G2",
-    productnaam: "AH-4.6KSL-G2",
-    categorie: "Hybride Omvormer 1 fase",
-    doelgroep: "Installateur",
-    specs: "4.6 kW",
-  },
-  {
-    artikelcode: "HO1-6-I",
-    productId: "AH-6KSL-G2",
-    productnaam: "AH-6KSL-G2",
-    categorie: "Hybride Omvormer 1 fase",
-    doelgroep: "Installateur",
-    specs: "6 kW",
-  },
-  {
+    {
     artikelcode: "TBHV-2.5-I",
     productId: "AS-2.56HD-GL1",
-    productnaam: "AS-2.56HD-GL1",
+    productnaam: "Losse batterij unit 2.5 kWh 3 fase",
     categorie: "Thuis Batterij 3-fase",
     doelgroep: "Installateur",
     specs: "2.5 kWh | Losse batterij unit",
   },
-  {
+   {
     artikelcode: "TBHV-BMS-I",
     productId: "AS-2.56HD-GL1-Hbox",
-    productnaam: "AS-2.56HD-GL1-Hbox",
-    categorie: "Systeem accessoires",
-    doelgroep: "Installateur",
-    specs: "",
+    productnaam: "BMS voor TBHV-2.5-I",
+    categorie: "Thuis Batterij 3-fase",
   },
-  {
+    {
     artikelcode: "HO3-8-I",
     productId: "AH-8KTH-G1",
-    productnaam: "AH-8KTH-G1",
-    categorie: "Hybride Omvormer 3 fase",
-    doelgroep: "Installateur",
+    productnaam: "Hybride Omvormer 8 kW 3 fase",
+    categorie: "Thuis Batterij 3-fase",
     specs: "8 kW",
   },
   {
     artikelcode: "HO3-10-I",
     productId: "AH-10KTH-G1",
-    productnaam: "AH-10KTH-G1",
-    categorie: "Hybride Omvormer 3 fase",
-    doelgroep: "Installateur",
+    productnaam: "Hybride Omvormer 10 kW 3 fase",
+    categorie: "Thuis Batterij 3-fase",
     specs: "10 kW",
-  },
-  {
-    artikelcode: "ZBA1TC-261-I",
-    productId: "ES261/125K-AEU",
-    productnaam: "ES261/125K-AEU",
-    categorie: "All-in One Cabinet",
-    doelgroep: "Installateur",
-    specs: "261 kWh",
-  },
-
-  {
-    artikelcode: "ZBSPCE-64-I",
-    productId: "ES64/30K-AEU",
-    productnaam: "ES64/30K-AEU",
-    categorie: "Smart PV ESS Cabinet",
-    doelgroep: "Installateur",
-    specs: "64 kWh",
-  },
-  {
-    artikelcode: "ZBSPCE-96-I",
-    productId: "ES96/48K-AEU",
-    productnaam: "ES96/48K-AEU",
-    categorie: "Smart PV ESS Cabinet",
-    doelgroep: "Installateur",
-    specs: "96 kWh",
-  },
-  {
-    artikelcode: "CCE-1250K-I",
-    productId: "ES1250K/40VAC",
-    productnaam: "ES1250K/40VAC",
-    categorie: "Combiner Cabinet voor ESS",
-    doelgroep: "Installateur",
-    specs: "400 VAC",
-  },
-  {
-    artikelcode: "CCE-400(-)I",
-    productId: "ES1250K/400VAC",
-    productnaam: "ES1250K/400VAC",
-    categorie: "Combiner Cabinet voor ESS",
-    doelgroep: "Installateur",
-    specs: "400 VAC",
-  },
-  {
-    artikelcode: "ZBA1ICE-2090-I",
-    productId: "ES2090/1200K-AEU",
-    productnaam: "ES2090/1200K-AEU",
-    categorie: "All-in One ESS",
-    doelgroep: "Installateur",
-    specs: "2090 kWh",
-  },
-  {
-    artikelcode: "ZBA1ICE-5015-I",
-    productId: "ES5009/2580K-C/EU",
-    productnaam: "ES5009/2580K-C/EU",
-    categorie: "All-in-One ESS",
-    doelgroep: "Installateur",
-    specs: "5015 kWh",
   },
   {
     artikelcode: "TBHV-CB-I",
     productId: "ATS1200K-I",
-    productnaam: "ATS1200K-I",
+    productnaam: "Combinerbox voor thuisbatterij 3-fase",
     categorie: "Thuis Batterij 3-fase",
     doelgroep: "Installateur",
     specs: "",
   },
-
-  {
+   {
     artikelcode: "TBLV-PS-I",
     productId: "Power Sensor 3-fase",
     productnaam: "Power Sensor 3-fase",
@@ -159,6 +65,74 @@ const PRODUCTEN = [
     doelgroep: "Installateur",
     specs: "",
   },
+  {
+    artikelcode: "TBLV-05-I",
+    productId: "AS-5.12LDL-GL1",
+    productnaam: "Losse batterij unit 5 kWh 1 fase",
+    categorie: "Thuis Batterij 1-fase",
+    specs: "5 kWh",
+  },
+  {
+    artikelcode: "AS-system accesoires-I",
+    productId: "AS-system accesoires",
+    productnaam: "AS-system accesoires",
+    categorie: "Thuisbatterij 1-fase",
+  },
+  {
+    artikelcode: "HO1-4.6-I",
+    productId: "AH-4.6KSL-G2",
+    productnaam: "Hybride Omvormer 4.6 kW 1 fase",
+    categorie: "Thuisbatterij 1-fase",
+    specs: "4.6 kW",
+  },
+
+  {
+    artikelcode: "HO1-6-I",
+    productId: "AH-6KSL-G2",
+    productnaam: "Hybride omvormer 6 kW 1 fase",
+    categorie: "Thuisbatterij 1-fase",
+    specs: "6 kW",
+  },
+
+    {
+    artikelcode: "ES64/30K-A/EU",
+    productId: "ES64/30K-A/EU",
+    productnaam: "Smart PV ESS Cabinet 64 kWh",
+    categorie: "Zakelijke baterij",
+    doelgroep: "Installateur",
+    specs: "64 kWh",
+  },
+  {
+    artikelcode: "ES96/48K-A/EU",
+    productId: "ES96/48K-A/EU",
+    productnaam: "Smart PV ESS Cabinet 96 kWh",
+    categorie: "Zakelijke baterij",
+    specs: "96 kWh",
+  },
+  {
+    artikelcode: "ES261/125K-A/EU",
+    productId: "ES261/125K-A/EU",
+    productnaam: "ESS All-in-one 261 kWh",
+    categorie: "Zakelijke baterij",
+    doelgroep: "Installateur",
+    specs: "261 kWh",
+  },
+
+  {
+    artikelcode: "ES2090/1200K-A/EU",
+    productId: "ES2090/1200K-A/EU",
+    productnaam: "ESS All-in-one 2.090 MWh",
+    categorie: "Zakelijke baterij",
+    specs: "2090 kWh",
+  },
+  {
+    artikelcode: "ES5009/2580K-C/EU",
+    productId: "ES5009/2580K-C/EU",
+    productnaam: "ESS All-in-one 5.015 MWh",
+    categorie: "Zakelijke baterij",
+    specs: "5015 kWh",
+  },
+
   {
     artikelcode: "TBLV-PS-I",
     productId: "Power Sensor 1-fase",
@@ -214,7 +188,7 @@ function ProductenScreen({ navigation }) {
         p.categorie,
         p.specs,
         p.productId,
-        p.doelgroep,
+     
       ]
         .filter(Boolean)
         .join(" ")
@@ -296,7 +270,6 @@ function ProductenScreen({ navigation }) {
         artikelcode: product.artikelcode,
         productnaam: product.productnaam,
         categorie: product.categorie,
-        doelgroep: product.doelgroep,
         specs: product.specs || "",
         qty,
         requesterUid: requester.uid,
@@ -343,7 +316,6 @@ function ProductenScreen({ navigation }) {
       artikelcode: p.artikelcode,
       productnaam: p.productnaam,
       categorie: p.categorie,
-      doelgroep: p.doelgroep,
       specs: p.specs || "",
       qty: Math.max(1, quantities[key] || 1),
     }));
@@ -564,9 +536,6 @@ function ProductenScreen({ navigation }) {
                       </Text>
                       <Text style={styles.productMeta}>
                         Categorie: {product.categorie}
-                      </Text>
-                      <Text style={styles.productMeta}>
-                        Doelgroep: {product.doelgroep}
                       </Text>
                       {product.specs ? (
                         <Text style={styles.productMeta}>

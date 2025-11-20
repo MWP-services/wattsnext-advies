@@ -70,6 +70,7 @@ import ProductenScreen from './screens/ProductenScreen';
 import Toast from 'react-native-toast-message';
 import { imageAssets } from './assets/assetManifest';
 import OffertesScreen from "./screens/OffertesScreen";
+import ChangePasswordScreen from "./screens/ChangePasswordScreen";
 
 
 const Stack = createNativeStackNavigator();
@@ -175,6 +176,8 @@ export default function App() {
         <Stack.Screen name="ProductenScreen" component={ProductenScreen} />
         <Stack.Screen name="Offertes" component={OffertesScreen} />
         <Stack.Screen name="Producten" component={ProductenScreen} />
+        <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} options={{ title: "Wachtwoord wijzigen" }}
+/>
 
       </Stack.Navigator>
       <Toast />
