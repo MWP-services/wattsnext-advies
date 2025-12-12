@@ -7,9 +7,12 @@ const EMAIL_ENDPOINT = "https://api.emailjs.com/api/v1.0/email/send";
 
 // Environment config (Expo leest EXPO_PUBLIC_* op runtime)
 const SERVICE_ID = process.env.EXPO_PUBLIC_EMAILJS_SERVICE_ID?.trim();
-const TEMPLATE_ID_CLIENT = process.env.EXPO_PUBLIC_EMAILJS_TEMPLATE_ID_CLIENT?.trim();
-const TEMPLATE_ID_TEAM = process.env.EXPO_PUBLIC_EMAILJS_TEMPLATE_ID_TEAM?.trim();
-const TEMPLATE_ID_OFFERTE = process.env.EXPO_PUBLIC_EMAILJS_TEMPLATE_ID_OFFERTE?.trim();
+const TEMPLATE_ID_CLIENT =
+  process.env.EXPO_PUBLIC_EMAILJS_TEMPLATE_ID_CLIENT?.trim();
+const TEMPLATE_ID_TEAM =
+  process.env.EXPO_PUBLIC_EMAILJS_TEMPLATE_ID_TEAM?.trim();
+const TEMPLATE_ID_OFFERTE =
+  process.env.EXPO_PUBLIC_EMAILJS_TEMPLATE_ID_OFFERTE?.trim();
 const PUBLIC_KEY = process.env.EXPO_PUBLIC_EMAILJS_PUBLIC_KEY?.trim();
 
 const TEAM_EMAIL =
@@ -17,7 +20,7 @@ const TEAM_EMAIL =
   "r.oskam@wattsnext.energy";
 
 // Deze e-mail is waar offerte-aanvragen heen moeten
-const SALES_EMAIL = "micha.honkoop@gmail.com";
+const SALES_EMAIL = "sales@wattsnext.energy";
 
 //
 // Hulpfunctie om te checken of de basis EmailJS-config gezet is
@@ -47,7 +50,7 @@ function _toIntOr(defaultVal, v) {
 
 /**
  * Normaliseert inkomende argumenten zodat sendProductQuoteEmail
- * zowel de NIEUWE payload als de LEGACY-aanroep ondersteunt.
+ * zowel de NIEUWE payload als de LEGACY-aanroep ondersteunt (single item).
  *
  * Ondersteunt:
  *  1) sendProductQuoteEmail({ type:"single", product|item, requester })
@@ -62,8 +65,7 @@ function _normalizeQuoteArg(arg) {
     typeof arg === "object" &&
     (arg.type || arg.product || arg.item || arg.requester)
   ) {
-    const type = arg.type || "single";
-    // ⬇️ Belangrijk: pak product óf item (voor backwards-compat)
+    const type = arg.type || "multi";
     const product = arg.product || arg.item || {};
     const requester = arg.requester || {};
 
@@ -94,7 +96,7 @@ function _normalizeQuoteArg(arg) {
   const aantal = _toIntOr(1, p.qty ?? p.aantal);
 
   return {
-    type: "single",
+    type: "multi",
     productnaam: _safe(p.productnaam),
     artikelcode: _safe(p.artikelcode),
     categorie: _safe(p.categorie),
@@ -110,13 +112,18 @@ function _normalizeQuoteArg(arg) {
 
 // -------------------- Offerte e-mail --------------------
 /**
- * Offerte-aanvraag (single of batch-item of legacy)
+ * Offerte-aanvraag (single of multi)
  * Gebruikt TEMPLATE_ID_OFFERTE en stuurt naar SALES_EMAIL.
  *
  * Voorbeelden:
- * sendProductQuoteEmail({ type:"single", product, requester })
- * sendProductQuoteEmail({ type:"single", item, requester }) // ook ok
- * sendProductQuoteEmail(product) // legacy
+ *  - Single:
+ *      sendProductQuoteEmail({ type:"single", product, requester })
+ *      sendProductQuoteEmail(product) // legacy
+ *
+ *  - Multi (winkelmandje):
+ *      sendProductQuoteEmail({ items, requester })
+ *      sendProductQuoteEmail({ type:"multi", items, requester })
+ *      // items = [{ productnaam, artikelcode, categorie, specs, doelgroep, qty }, ...]
  */
 export async function sendProductQuoteEmail(arg) {
   if (!isEmailConfigured()) {
@@ -126,22 +133,111 @@ export async function sendProductQuoteEmail(arg) {
     return { success: false, reason: "missing-configuration" };
   }
 
-  // Normaliseer inkomend argument
+  console.log("▶ sendProductQuoteEmail arg:", JSON.stringify(arg));
+
+  // 🧺 Speciaal pad voor multi-product offerte (winkelmandje)
+  const isMulti =
+    arg && typeof arg === "object" && Array.isArray(arg.items) && arg.items.length > 0;
+
+  if (isMulti) {
+    console.log("▶ MULTI-OFFERTE detected, items:", arg.items.length);
+
+    const requester = arg.requester || {};
+    const requester_name =
+      _safe(requester.displayName) ||
+      _safe(arg.requester_name, "Onbekende installateur");
+    const requester_email =
+      _safe(requester.email) || _safe(arg.requester_email, "onbekend");
+    const requester_uid =
+      _safe(requester.uid) || _safe(arg.requester_uid, "onbekend");
+
+    const items = arg.items.map((p) => {
+      const aantal = _toIntOr(1, p.qty ?? p.aantal);
+      return {
+        aantal,
+        productnaam: _safe(p.productnaam, "Product"),
+        artikelcode: _safe(p.artikelcode, "-"),
+        categorie: _safe(p.categorie),
+        specs: _safe(p.specs, "-"),
+        doelgroep: _safe(p.doelgroep),
+      };
+    });
+
+    // Voor in de e-mail: nette lijst
+    const productListLines = items.map((item, index) => {
+      const parts = [
+        `${item.aantal}× ${item.productnaam}`,
+        `(${item.artikelcode})`,
+      ];
+      if (item.categorie) parts.push(`– ${item.categorie}`);
+      if (item.specs) parts.push(`– ${item.specs}`);
+      return `${index + 1}. ${parts.join(" ")}`;
+    });
+
+    const product_list = productListLines.join("\n");
+
+    // Optioneel: eerste product blijft ingevuld voor bestaande templates
+    const first = items[0] || {};
+    const subject = `[Offerte] ${items.length} product(en)`;
+
+    const payload = {
+      service_id: SERVICE_ID,
+      template_id: TEMPLATE_ID_OFFERTE,
+      user_id: PUBLIC_KEY,
+      template_params: {
+        to_email: SALES_EMAIL,
+
+        // Eerste product (voor backwards-compat)
+        product_naam: first.productnaam,
+        artikelcode: first.artikelcode,
+        categorie: first.categorie,
+        specificaties: first.specs,
+        doelgroep: first.doelgroep,
+        aantal: String(first.aantal || 1),
+
+        // Nieuw: volledige lijst van producten
+        product_list,
+
+        requester_name,
+        requester_email,
+        requester_uid,
+
+        subject,
+      },
+    };
+
+    console.log("▶ MULTI-OFFERTE payload:", payload.template_params);
+
+    try {
+      const response = await fetch(EMAIL_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.warn("❌ EmailJS multi response not ok:", errorText);
+        return { success: false, error: errorText };
+      }
+
+      return { success: true };
+    } catch (err) {
+      console.warn("❌ EmailJS multi error:", err);
+      return { success: false, error: err?.message || "Onbekende fout" };
+    }
+  }
+
+  // 🔹 Standaard: single-product offerte
   const n = _normalizeQuoteArg(arg);
 
-  // Subject (optioneel als je dit in EmailJS wilt tonen via {{subject}})
   const subjectBase = n.productnaam || "Product";
   const subjectAantal = n.aantal > 1 ? ` (${n.aantal} stuks)` : "";
   const subject =
-    n.type === "single"
+    n.type === "multi"
       ? `[Offerte] ${subjectBase}${subjectAantal} (${n.artikelcode || "-"})`
       : `[Offerte-aanvraag]${subjectAantal}`;
 
-  // Template params die aansluiten op je EmailJS-template:
-  // {{product_naam}}, {{artikelcode}}, {{categorie}}, {{doelgroep}}, {{specificaties}}
-  // + nieuw: {{aantal}}
-  // + requester-blok: {{requester_name}}, {{requester_email}}, {{requester_uid}}
-  // + optioneel: {{subject}}
   const payload = {
     service_id: SERVICE_ID,
     template_id: TEMPLATE_ID_OFFERTE,
@@ -164,8 +260,7 @@ export async function sendProductQuoteEmail(arg) {
     },
   };
 
-  // Debug eventueel even aan laten:
-  // console.log("EmailJS template_params:", payload.template_params);
+  console.log("▶ SINGLE-OFFERTE payload:", payload.template_params);
 
   try {
     const response = await fetch(EMAIL_ENDPOINT, {
@@ -176,11 +271,13 @@ export async function sendProductQuoteEmail(arg) {
 
     if (!response.ok) {
       const errorText = await response.text();
+      console.warn("❌ EmailJS single response not ok:", errorText);
       return { success: false, error: errorText };
     }
 
     return { success: true };
   } catch (err) {
+    console.warn("❌ EmailJS single error:", err);
     return { success: false, error: err?.message || "Onbekende fout" };
   }
 }

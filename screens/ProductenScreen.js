@@ -12,16 +12,12 @@ import {
   TextInput,
   KeyboardAvoidingView,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { sendProductQuoteEmail } from "../support/email";
-import { db, auth } from "../firebaseConfig";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import ScreenBackground from "../components/ScreenBackground";
 
 const PRODUCTEN = [
-    {
+  {
     artikelcode: "TBHV-2.5-I",
     productId: "AS-2.56HD-GL1",
     productnaam: "Losse batterij unit 2.5 kWh 3 fase",
@@ -29,13 +25,13 @@ const PRODUCTEN = [
     doelgroep: "Installateur",
     specs: "2.5 kWh | Losse batterij unit",
   },
-   {
+  {
     artikelcode: "TBHV-BMS-I",
     productId: "AS-2.56HD-GL1-Hbox",
     productnaam: "BMS voor TBHV-2.5-I",
     categorie: "Thuis Batterij 3-fase",
   },
-    {
+  {
     artikelcode: "HO3-8-I",
     productId: "AH-8KTH-G1",
     productnaam: "Hybride Omvormer 8 kW 3 fase",
@@ -57,7 +53,7 @@ const PRODUCTEN = [
     doelgroep: "Installateur",
     specs: "",
   },
-   {
+  {
     artikelcode: "TBLV-PS-I",
     productId: "Power Sensor 3-fase",
     productnaam: "Power Sensor 3-fase",
@@ -94,7 +90,7 @@ const PRODUCTEN = [
     specs: "6 kW",
   },
 
-    {
+  {
     artikelcode: "ES64/30K-A/EU",
     productId: "ES64/30K-A/EU",
     productnaam: "Smart PV ESS Cabinet 64 kWh",
@@ -155,12 +151,12 @@ const THUISBATTERIJ_RELATED_IDS = new Set([
 
 function ProductenScreen({ navigation }) {
   const { width } = useWindowDimensions();
-  const [sendingId, setSendingId] = useState(null);
-  const insets = useSafeAreaInsets();  
+  const insets = useSafeAreaInsets();
   const [query, setQuery] = useState("");
   const [activeTab, setActiveTab] = useState("zakelijk");
 
-  const [selected, setSelected] = useState(new Map());
+  // 🛒 Winkelmandje
+  const [cart, setCart] = useState(new Map());
   const [quantities, setQuantities] = useState({});
 
   const getUniqueKey = (p) => `${p.artikelcode}__${p.productId}`;
@@ -188,7 +184,6 @@ function ProductenScreen({ navigation }) {
         p.categorie,
         p.specs,
         p.productId,
-     
       ]
         .filter(Boolean)
         .join(" ")
@@ -211,10 +206,11 @@ function ProductenScreen({ navigation }) {
       [key]: Math.max(1, (prev[key] || 1) - 1),
     }));
 
-  const toggleSelect = (product) => {
+  // 🛒 Toevoegen/verwijderen in winkelmandje (checkbox)
+  const toggleCartItem = (product) => {
     const key = getUniqueKey(product);
 
-    setSelected((prev) => {
+    setCart((prev) => {
       const next = new Map(prev);
 
       if (next.has(key)) {
@@ -232,146 +228,48 @@ function ProductenScreen({ navigation }) {
     });
   };
 
-  const clearSelection = () => {
-    setSelected(new Map());
+  const clearCart = () => {
+    setCart(new Map());
     setQuantities({});
   };
 
-  const handleQuoteRequest = async (product) => {
-    if (sendingId) return;
+  // ✅ FIX: niet meer +1 erbij doen, maar bestaande qty respecteren
+  const handleAddToCart = (product) => {
+    const key = getUniqueKey(product);
 
-    const user = auth.currentUser;
-    if (!user) {
-      Alert.alert("Inloggen vereist", "Log eerst in om een offerte aan te vragen.");
-      return;
-    }
+    setCart((prev) => {
+      const next = new Map(prev);
+      if (!next.has(key)) {
+        next.set(key, product);
+      }
+      return next;
+    });
 
-    const requester = {
-      uid: user.uid,
-      email: user.email || "",
-      displayName: user.displayName || "",
-    };
-
-    const uniqueKey = getUniqueKey(product);
-    const qty = Math.max(1, quantities[uniqueKey] || 1);
-
-    setSendingId(product.artikelcode);
-
-    try {
-      const result = await sendProductQuoteEmail({
-        type: "single",
-        product: { ...product, qty },
-        requester,
-      });
-
-      await addDoc(collection(db, "quotes"), {
-        uid: user.uid,
-        type: "single",
-        artikelcode: product.artikelcode,
-        productnaam: product.productnaam,
-        categorie: product.categorie,
-        specs: product.specs || "",
-        qty,
-        requesterUid: requester.uid,
-        requesterEmail: requester.email,
-        requesterName: requester.displayName,
-        status: "open",
-        createdAt: serverTimestamp(),
-      });
-
-      Alert.alert(
-        "Offerte aangevraagd",
-        `Je aanvraag voor ${qty}× ${product.productnaam} is verstuurd.`
-      );
-    } catch (err) {
-      console.error("❌ Offerte-aanvraag fout:", err);
-      Alert.alert("Fout", "De offerte kon niet worden opgeslagen of verzonden.");
-    } finally {
-      setSendingId(null);
-    }
-  };
-  // batch aanvraag (multi)
-  const handleBatchQuoteRequest = async () => {
-    if (selected.size === 0) {
-      Alert.alert("Geen selectie", "Vink eerst één of meer producten aan.");
-      return;
-    }
-
-    const user = auth.currentUser;
-    if (!user) {
-      Alert.alert(
-        "Inloggen vereist",
-        "Je moet ingelogd zijn om een offerte aan te vragen."
-      );
-      return;
-    }
-
-    const requester = {
-      uid: user.uid,
-      email: user.email || "",
-      displayName: user.displayName || user.email?.split("@")[0] || "",
-    };
-
-    const items = Array.from(selected.entries()).map(([key, p]) => ({
-      artikelcode: p.artikelcode,
-      productnaam: p.productnaam,
-      categorie: p.categorie,
-      specs: p.specs || "",
-      qty: Math.max(1, quantities[key] || 1),
+    setQuantities((prev) => ({
+      ...prev,
+      [key]: Math.max(1, prev[key] || 1), // geen +1 meer
     }));
 
-    try {
-      await addDoc(collection(db, "quotes"), {
-        uid: user.uid,
-        type: "multi",
-        items,
-        requesterUid: requester.uid,
-        requesterEmail: requester.email,
-        requesterName: requester.displayName,
-        status: "open",
-        createdAt: serverTimestamp(),
-      });
+    Alert.alert(
+      "Toegevoegd",
+      `${product.productnaam} is toegevoegd aan je winkelmandje.`
+    );
+  };
 
-      let mailFailures = 0;
-      for (const item of items) {
-        try {
-          await sendProductQuoteEmail({
-            type: "single",
-            product: item,
-            requester,
-          });
-        } catch (e) {
-          mailFailures += 1;
-          console.warn("Mailfail voor item", item?.productnaam, e);
-        }
-      }
-
-      if (mailFailures === 0) {
-        Alert.alert(
-          "Offerte aangevraagd",
-          `Aanvraag voor ${items.length} producttypen is verstuurd.`
-        );
-      } else if (mailFailures < items.length) {
-        Alert.alert(
-          "Gedeeltelijke mailfout",
-          `Aanvraag opgeslagen. ${mailFailures} e-mails zijn niet verstuurd.`
-        );
-      } else {
-        Alert.alert(
-          "Offerte opgeslagen",
-          "Aanvraag opgeslagen, maar e-mails konden niet worden verstuurd."
-        );
-      }
-
-      clearSelection();
-      navigation.navigate("Offertes");
-    } catch (error) {
-      console.error("❌ Batch-offerte fout:", error);
-      Alert.alert(
-        "Fout",
-        "Het is niet gelukt om de batch-aanvraag op te slaan."
-      );
+  // 👉 Naar Winkelmandje-scherm
+  const handleOpenCart = () => {
+    if (cart.size === 0) {
+      Alert.alert("Winkelmandje is leeg", "Voeg eerst één of meer producten toe.");
+      return;
     }
+
+    const items = Array.from(cart.entries()).map(([key, p]) => ({
+      ...p,
+      qty: Math.max(1, quantities[key] || 1),
+      key,
+    }));
+
+    navigation.navigate("Winkelmandje", { items, clearCart });
   };
 
   const getCardWidth = () => {
@@ -380,7 +278,7 @@ function ProductenScreen({ navigation }) {
     return "100%";
   };
 
-  const selectedCount = selected.size;
+  const cartCount = cart.size;
 
   const titleText =
     activeTab === "zakelijk"
@@ -464,30 +362,27 @@ function ProductenScreen({ navigation }) {
                 )}
               </View>
 
-              {/* Batch-actieknoppen */}
+              {/* Winkelmandje-balk */}
               <View style={styles.batchBar}>
                 <Text style={styles.batchInfo}>
-                  Geselecteerd: {selectedCount}
+                  In winkelmandje: {cartCount}
                 </Text>
                 <TouchableOpacity
                   style={[
                     styles.batchBtn,
-                    selectedCount === 0 && { opacity: 0.5 },
+                    cartCount === 0 && { opacity: 0.5 },
                   ]}
-                  onPress={handleBatchQuoteRequest}
-                  disabled={selectedCount === 0}
+                  onPress={handleOpenCart}
+                  disabled={cartCount === 0}
                 >
-                  <Text style={styles.batchBtnText}>
-                    Vraag {selectedCount > 0 ? `${selectedCount} ` : ""}offertes
-                    aan
-                  </Text>
+                  <Text style={styles.batchBtnText}>Ga naar winkelmandje</Text>
                 </TouchableOpacity>
-                {selectedCount > 0 && (
+                {cartCount > 0 && (
                   <TouchableOpacity
                     style={styles.batchClearBtn}
-                    onPress={clearSelection}
+                    onPress={clearCart}
                   >
-                    <Text style={styles.batchClearBtnText}>Reset selectie</Text>
+                    <Text style={styles.batchClearBtnText}>Leeg winkelmandje</Text>
                   </TouchableOpacity>
                 )}
               </View>
@@ -501,8 +396,7 @@ function ProductenScreen({ navigation }) {
               >
                 {filteredProducts.map((product) => {
                   const uniqueKey = getUniqueKey(product);
-                  const isSending = sendingId === product.artikelcode;
-                  const isSelected = selected.has(uniqueKey);
+                  const inCart = cart.has(uniqueKey);
                   const qty = Math.max(1, quantities[uniqueKey] || 1);
 
                   return (
@@ -511,17 +405,17 @@ function ProductenScreen({ navigation }) {
                       style={[styles.productCard, { width: getCardWidth() }]}
                     >
                       <View style={styles.cardHeaderRow}>
-                        {/* checkbox */}
+                        {/* checkbox als visuele indicatie winkelmandje */}
                         <TouchableOpacity
                           style={[
                             styles.checkbox,
-                            isSelected && styles.checkboxChecked,
+                            inCart && styles.checkboxChecked,
                           ]}
-                          onPress={() => toggleSelect(product)}
+                          onPress={() => toggleCartItem(product)}
                           accessibilityRole="checkbox"
-                          accessibilityState={{ checked: isSelected }}
+                          accessibilityState={{ checked: inCart }}
                         >
-                          {isSelected ? (
+                          {inCart ? (
                             <Text style={styles.checkboxTick}>✓</Text>
                           ) : null}
                         </TouchableOpacity>
@@ -543,8 +437,8 @@ function ProductenScreen({ navigation }) {
                         </Text>
                       ) : null}
 
-                      {/* Aantal-selector bij selectie */}
-                      {isSelected && (
+                      {/* Aantal-selector bij producten in winkelmandje */}
+                      {inCart && (
                         <View style={styles.qtyRow}>
                           <Text style={styles.qtyLabel}>Aantal:</Text>
                           <View style={styles.qtyControls}>
@@ -568,35 +462,32 @@ function ProductenScreen({ navigation }) {
                       )}
 
                       <View style={styles.cardActions}>
+                        {/* knop: Voeg toe aan winkelmandje */}
                         <TouchableOpacity
-                          style={[
-                            styles.quoteButton,
-                            isSending && styles.quoteButtonDisabled,
-                          ]}
-                          onPress={() => handleQuoteRequest(product)}
-                          disabled={isSending}
+                          style={styles.quoteButton}
+                          onPress={() => handleAddToCart(product)}
                         >
                           <Text style={styles.quoteButtonText}>
-                            {isSending ? "Bezig..." : "Vraag offerte aan"}
+                            Voeg toe aan winkelmandje
                           </Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity
                           style={[
                             styles.selectToggleBtn,
-                            isSelected && styles.selectToggleBtnActive,
+                            inCart && styles.selectToggleBtnActive,
                           ]}
-                          onPress={() => toggleSelect(product)}
+                          onPress={() => toggleCartItem(product)}
                         >
                           <Text
                             style={[
                               styles.selectToggleText,
-                              isSelected && styles.selectToggleTextActive,
+                              inCart && styles.selectToggleTextActive,
                             ]}
                           >
-                            {isSelected
-                              ? "Verwijder uit selectie"
-                              : "Selecteer"}
+                            {inCart
+                              ? "Verwijder uit winkelmandje"
+                              : "Markeer in winkelmandje"}
                           </Text>
                         </TouchableOpacity>
                       </View>
@@ -604,16 +495,6 @@ function ProductenScreen({ navigation }) {
                   );
                 })}
               </View>
-
-              {/* Mijn offerte-aanvragen ONDERAAN */}
-              <TouchableOpacity
-                style={[styles.overviewButton, { marginTop: 24 }]}
-                onPress={() => navigation.navigate("Offertes")}
-              >
-                <Text style={styles.overviewButtonText}>
-                  Mijn offerte-aanvragen →
-                </Text>
-              </TouchableOpacity>
             </ScrollView>
           </KeyboardAvoidingView>
         </SafeAreaView>
@@ -624,7 +505,7 @@ function ProductenScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, position: "relative" },
-  safeArea: { flex: 1, },
+  safeArea: { flex: 1 },
   backgroundImage: { flex: 1 },
   scrollContent: {
     flexGrow: 1,
@@ -700,26 +581,7 @@ const styles = StyleSheet.create({
   },
   clearBtnText: { fontSize: 18, color: "#444" },
 
-  // Offertes overzicht knop (nu onderaan)
-  overviewButton: {
-    backgroundColor: "#f7941e",
-    borderRadius: 10,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.2,
-    shadowRadius: 12,
-    elevation: 6,
-  },
-  overviewButtonText: {
-    color: "#fff",
-    fontWeight: "700",
-    fontSize: 16,
-    textAlign: "center",
-  },
-
-  // Batch balk
+  // Winkelmandje balk
   batchBar: {
     width: "100%",
     maxWidth: 960,
@@ -842,7 +704,6 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 6,
   },
-  quoteButtonDisabled: { opacity: 0.5 },
   quoteButtonText: { color: "#fff", fontWeight: "700", fontSize: 16 },
 
   selectToggleBtn: {

@@ -25,7 +25,6 @@ export default function HomeScreen({ navigation }) {
     <View style={styles.container}>
       <ScreenBackground>
         <SafeAreaView style={styles.safeArea}>
-
           {/* TERUGKNOP — verplaatst onder de notch */}
           <TouchableOpacity
             onPress={() => navigation.replace("LoginScreen")}
@@ -45,7 +44,6 @@ export default function HomeScreen({ navigation }) {
             showsVerticalScrollIndicator={false}
           >
             <View style={[styles.content, { maxWidth: isWide ? 600 : 480 }]}>
-
               {/* LOGO */}
               <Image
                 source={require("../assets/logo.png")}
@@ -120,12 +118,27 @@ export default function HomeScreen({ navigation }) {
                   ]}
                   onPress={() => navigation.navigate("ProductenScreen")}
                 >
-                  <Text style={styles.tileButtonText}>Producten</Text>
+                  <Text style={styles.tileButtonText}>Bestellen</Text>
+                </TouchableOpacity>
+
+                {/* ✅ NIEUWE TEKSTTEGEL: Mijn offerte-aanvragen */}
+                <TouchableOpacity
+                  style={[
+                    styles.tileButton,
+                    {
+                      flexBasis: isWide ? "48%" : "100%",
+                      minHeight: 200,
+                    },
+                  ]}
+                  onPress={() => navigation.navigate("Offertes")}
+                >
+                  <Text style={styles.tileButtonText}>
+                    Mijn offerte-aanvragen
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
           </ScrollView>
-
         </SafeAreaView>
       </ScreenBackground>
     </View>
