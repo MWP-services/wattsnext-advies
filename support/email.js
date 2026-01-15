@@ -3,14 +3,16 @@
 // EmailJS helpers voor offertes en afspraken
 // ----------------------------------------------------
 
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../firebaseConfig";
+
 const EMAIL_ENDPOINT = "https://api.emailjs.com/api/v1.0/email/send";
 
 // Environment config (Expo leest EXPO_PUBLIC_* op runtime)
 const SERVICE_ID = process.env.EXPO_PUBLIC_EMAILJS_SERVICE_ID?.trim();
 const TEMPLATE_ID_CLIENT =
   process.env.EXPO_PUBLIC_EMAILJS_TEMPLATE_ID_CLIENT?.trim();
-const TEMPLATE_ID_TEAM =
-  process.env.EXPO_PUBLIC_EMAILJS_TEMPLATE_ID_TEAM?.trim();
+const TEMPLATE_ID_TEAM = process.env.EXPO_PUBLIC_EMAILJS_TEMPLATE_ID_TEAM?.trim();
 const TEMPLATE_ID_OFFERTE =
   process.env.EXPO_PUBLIC_EMAILJS_TEMPLATE_ID_OFFERTE?.trim();
 const PUBLIC_KEY = process.env.EXPO_PUBLIC_EMAILJS_PUBLIC_KEY?.trim();
@@ -43,9 +45,46 @@ function _safe(v, fb = "") {
 }
 
 function _toIntOr(defaultVal, v) {
-  // accepteert "10", 10 etc. en geeft minimaal defaultVal terug
   const n = Number(v);
   return Number.isFinite(n) && n > 0 ? Math.floor(n) : defaultVal;
+}
+
+/**
+ * Probeert altijd een betrouwbare requester te krijgen:
+ * 1) payload requester / args
+ * 2) auth.currentUser
+ * 3) Firestore users/{uid}
+ */
+async function resolveRequester({ requester, arg } = {}) {
+  const u = auth.currentUser;
+
+  const uidFromArg =
+    _safe(requester?.uid) || _safe(arg?.requester_uid) || _safe(u?.uid);
+  const emailFromArg =
+    _safe(requester?.email) || _safe(arg?.requester_email) || _safe(u?.email);
+  let nameFromArg =
+    _safe(requester?.displayName) ||
+    _safe(arg?.requester_name) ||
+    _safe(u?.displayName);
+
+  // Firestore fallback als naam leeg is
+  if (!nameFromArg && uidFromArg) {
+    try {
+      const snap = await getDoc(doc(db, "users", uidFromArg));
+      if (snap.exists()) {
+        const data = snap.data() || {};
+        nameFromArg = _safe(data.naam) || _safe(data.bedrijf);
+      }
+    } catch (e) {
+      console.log("resolveRequester Firestore fout:", e?.message);
+    }
+  }
+
+  return {
+    requester_uid: uidFromArg || "onbekend",
+    requester_email: emailFromArg || "onbekend",
+    requester_name: nameFromArg || "Onbekende installateur",
+  };
 }
 
 /**
@@ -69,7 +108,6 @@ function _normalizeQuoteArg(arg) {
     const product = arg.product || arg.item || {};
     const requester = arg.requester || {};
 
-    // qty → aantal (fallback op 1)
     const aantal = _toIntOr(1, product.qty ?? product.aantal);
 
     return {
@@ -81,13 +119,12 @@ function _normalizeQuoteArg(arg) {
       doelgroep: _safe(product.doelgroep),
       aantal,
 
+      // Let op: deze waarden kunnen later worden overschreven door resolveRequester()
       requester_name:
         _safe(requester.displayName) ||
         _safe(arg.requester_name, "Onbekende installateur"),
-      requester_email:
-        _safe(requester.email) || _safe(arg.requester_email, "onbekend"),
-      requester_uid:
-        _safe(requester.uid) || _safe(arg.requester_uid, "onbekend"),
+      requester_email: _safe(requester.email) || _safe(arg.requester_email, "onbekend"),
+      requester_uid: _safe(requester.uid) || _safe(arg.requester_uid, "onbekend"),
     };
   }
 
@@ -137,19 +174,16 @@ export async function sendProductQuoteEmail(arg) {
 
   // 🧺 Speciaal pad voor multi-product offerte (winkelmandje)
   const isMulti =
-    arg && typeof arg === "object" && Array.isArray(arg.items) && arg.items.length > 0;
+    arg &&
+    typeof arg === "object" &&
+    Array.isArray(arg.items) &&
+    arg.items.length > 0;
 
   if (isMulti) {
     console.log("▶ MULTI-OFFERTE detected, items:", arg.items.length);
 
     const requester = arg.requester || {};
-    const requester_name =
-      _safe(requester.displayName) ||
-      _safe(arg.requester_name, "Onbekende installateur");
-    const requester_email =
-      _safe(requester.email) || _safe(arg.requester_email, "onbekend");
-    const requester_uid =
-      _safe(requester.uid) || _safe(arg.requester_uid, "onbekend");
+    const resolved = await resolveRequester({ requester, arg });
 
     const items = arg.items.map((p) => {
       const aantal = _toIntOr(1, p.qty ?? p.aantal);
@@ -198,9 +232,10 @@ export async function sendProductQuoteEmail(arg) {
         // Nieuw: volledige lijst van producten
         product_list,
 
-        requester_name,
-        requester_email,
-        requester_uid,
+        // ✅ altijd correct ingevuld
+        requester_name: resolved.requester_name,
+        requester_email: resolved.requester_email,
+        requester_uid: resolved.requester_uid,
 
         subject,
       },
@@ -231,6 +266,12 @@ export async function sendProductQuoteEmail(arg) {
   // 🔹 Standaard: single-product offerte
   const n = _normalizeQuoteArg(arg);
 
+  // ✅ forceer requester via resolveRequester (ook bij legacy calls)
+  const resolved = await resolveRequester({
+    requester: arg?.requester,
+    arg,
+  });
+
   const subjectBase = n.productnaam || "Product";
   const subjectAantal = n.aantal > 1 ? ` (${n.aantal} stuks)` : "";
   const subject =
@@ -252,9 +293,10 @@ export async function sendProductQuoteEmail(arg) {
       doelgroep: n.doelgroep,
       aantal: String(n.aantal || 1),
 
-      requester_name: n.requester_name,
-      requester_email: n.requester_email,
-      requester_uid: n.requester_uid,
+      // ✅ altijd correct ingevuld
+      requester_name: resolved.requester_name,
+      requester_email: resolved.requester_email,
+      requester_uid: resolved.requester_uid,
 
       subject,
     },

@@ -20,6 +20,8 @@ import Toast from "react-native-toast-message";
 import { auth, db } from "../firebaseConfig";
 import ScreenBackground from "../components/ScreenBackground";
 
+const PLACEHOLDER_COLOR = "#6b7280"; // goed zichtbaar op wit (iOS + Android)
+
 export default function RegisterScreen({ navigation }) {
   const [naam, setNaam] = useState("");
   const [bedrijf, setBedrijf] = useState("");
@@ -47,7 +49,7 @@ export default function RegisterScreen({ navigation }) {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email.trim(),
-        password,
+        password
       );
       const user = userCredential.user;
 
@@ -64,7 +66,7 @@ export default function RegisterScreen({ navigation }) {
         telefoonnummer: phoneTrimmed,
         aangemaaktOp: new Date(),
       }).catch((e) =>
-        console.log("Profiel write (background) fout:", e?.message),
+        console.log("Profiel write (background) fout:", e?.message)
       );
 
       setLoading(false);
@@ -86,7 +88,7 @@ export default function RegisterScreen({ navigation }) {
         setTimeout(
           () =>
             navigation.replace("LoginScreen", { prefillEmail: email.trim() }),
-          900,
+          900
         );
       } else {
         Toast.show({
@@ -96,6 +98,14 @@ export default function RegisterScreen({ navigation }) {
         });
       }
     }
+  };
+
+  // Kleine helper zodat je niet overal dezelfde props hoeft te herhalen
+  const commonInputProps = {
+    style: styles.input,
+    placeholderTextColor: PLACEHOLDER_COLOR,
+    underlineColorAndroid: "transparent",
+    autoCorrect: false,
   };
 
   return (
@@ -130,57 +140,80 @@ export default function RegisterScreen({ navigation }) {
                   ]}
                   resizeMode="contain"
                 />
-                <Text
-                  style={[styles.title, { fontSize: width > 768 ? 32 : 24 }]}
-                >
+
+                <Text style={[styles.title, { fontSize: width > 768 ? 32 : 24 }]}>
                   Account aanmaken
                 </Text>
 
                 <TextInput
+                  {...commonInputProps}
                   placeholder="Naam"
                   value={naam}
                   onChangeText={setNaam}
-                  style={styles.input}
+                  textContentType="name"
+                  autoCapitalize="words"
+                  returnKeyType="next"
                 />
+
                 <TextInput
+                  {...commonInputProps}
                   placeholder="Bedrijf"
                   value={bedrijf}
                   onChangeText={setBedrijf}
-                  style={styles.input}
+                  textContentType="organizationName"
+                  autoCapitalize="words"
+                  returnKeyType="next"
                 />
+
                 <TextInput
+                  {...commonInputProps}
                   placeholder="Adres"
                   value={adres}
                   onChangeText={setAdres}
-                  style={styles.input}
+                  textContentType="fullStreetAddress"
+                  autoCapitalize="words"
+                  returnKeyType="next"
                 />
+
                 <TextInput
+                  {...commonInputProps}
                   placeholder="Functietitel"
                   value={functietitel}
                   onChangeText={setFunctietitel}
-                  style={styles.input}
+                  autoCapitalize="words"
+                  returnKeyType="next"
                 />
+
                 <TextInput
+                  {...commonInputProps}
                   placeholder="E-mail"
                   value={email}
                   onChangeText={setEmail}
                   keyboardType="email-address"
                   autoCapitalize="none"
-                  style={styles.input}
+                  textContentType="emailAddress"
+                  returnKeyType="next"
                 />
+
                 <TextInput
+                  {...commonInputProps}
                   placeholder="Telefoonnummer"
                   value={telefoonnummer}
                   onChangeText={setTelefoonnummer}
                   keyboardType="phone-pad"
-                  style={styles.input}
+                  textContentType="telephoneNumber"
+                  returnKeyType="next"
                 />
+
                 <TextInput
+                  {...commonInputProps}
                   placeholder="Wachtwoord"
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry
-                  style={styles.input}
+                  textContentType="newPassword"
+                  autoCapitalize="none"
+                  returnKeyType="done"
                   onSubmitEditing={handleRegister}
                 />
 
@@ -249,6 +282,7 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 10,
     backgroundColor: "#fff",
+    color: "#111827", // tekstkleur (ook belangrijk voor contrast)
   },
   button: {
     backgroundColor: "#f7941e",

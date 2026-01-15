@@ -13,12 +13,12 @@ import ScreenBackground from "../components/ScreenBackground";
 
 import { sendProductQuoteEmail } from "../support/email";
 import { auth, db } from "../firebaseConfig";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { addDoc, collection, serverTimestamp, doc, getDoc } from "firebase/firestore";
 
 export default function WinkelmandjeScreen({ navigation, route }) {
   const params = route?.params || {};
   const initialItems = Array.isArray(params.items) ? params.items : [];
-  const clearCart = params.clearCart; // optioneel callback uit ProductenScreen
+  const clearCart = params.clearCart;
 
   const [cartItems, setCartItems] = useState(
     initialItems.map((item) => ({
@@ -46,33 +46,57 @@ export default function WinkelmandjeScreen({ navigation, route }) {
     setCartItems((prev) => prev.filter((item) => item.key !== key));
   };
 
+  // ✅ Haal "naam" betrouwbaar uit Firestore als displayName leeg is
+  const resolveRequesterName = async (user) => {
+    const fromAuth =
+      (user?.displayName || "").trim();
+
+    if (fromAuth) return fromAuth;
+
+    const uid = user?.uid;
+    if (!uid) return "";
+
+    try {
+      const snap = await getDoc(doc(db, "users", uid));
+      if (snap.exists()) {
+        const data = snap.data() || {};
+        const fromDb = (data.naam || "").trim();
+        if (fromDb) return fromDb;
+      }
+    } catch (e) {
+      console.warn("resolveRequesterName Firestore fout:", e?.message);
+    }
+
+    // laatste fallback: email prefix
+    const email = (user?.email || "").trim();
+    if (email.includes("@")) return email.split("@")[0];
+
+    return "";
+  };
+
   const handleSendCartQuote = async () => {
     if (!hasItems) {
-      Alert.alert(
-        "Winkelmandje is leeg",
-        "Voeg eerst één of meer producten toe."
-      );
+      Alert.alert("Winkelmandje is leeg", "Voeg eerst één of meer producten toe.");
       return;
     }
 
     const user = auth.currentUser;
     if (!user) {
-      Alert.alert(
-        "Inloggen vereist",
-        "Log eerst in om een offerte aan te vragen."
-      );
+      Alert.alert("Inloggen vereist", "Log eerst in om een offerte aan te vragen.");
       return;
     }
 
     setSending(true);
 
-    const requester = {
-      uid: user.uid,
-      email: user.email || "",
-      displayName: user.displayName || user.email?.split("@")[0] || "",
-    };
-
     try {
+      const requesterName = (await resolveRequesterName(user)) || "Onbekende installateur";
+
+      const requester = {
+        uid: user.uid,
+        email: user.email || "onbekend",
+        displayName: requesterName,
+      };
+
       const itemsForMailAndDb = cartItems.map((item) => ({
         artikelcode: item.artikelcode,
         productnaam: item.productnaam,
@@ -86,7 +110,7 @@ export default function WinkelmandjeScreen({ navigation, route }) {
       const emailResult = await sendProductQuoteEmail({
         type: "multi",
         items: itemsForMailAndDb,
-        requester,
+        requester, // ✅ nu altijd met betrouwbare naam
       });
 
       if (!emailResult.success) {
@@ -100,7 +124,7 @@ export default function WinkelmandjeScreen({ navigation, route }) {
         items: itemsForMailAndDb,
         requesterUid: requester.uid,
         requesterEmail: requester.email,
-        requesterName: requester.displayName,
+        requesterName: requester.displayName, // ✅ nu consistent
         status: "open",
         createdAt: serverTimestamp(),
       });
@@ -117,9 +141,7 @@ export default function WinkelmandjeScreen({ navigation, route }) {
         );
       }
 
-      if (typeof clearCart === "function") {
-        clearCart();
-      }
+      if (typeof clearCart === "function") clearCart();
 
       setCartItems([]);
       navigation.goBack();
@@ -139,7 +161,6 @@ export default function WinkelmandjeScreen({ navigation, route }) {
       <ScreenBackground>
         <SafeAreaView style={styles.safeArea}>
           <View style={styles.inner}>
-            {/* Titel */}
             <Text style={styles.title}>Je winkelmandje</Text>
 
             {!hasItems ? (
@@ -156,7 +177,6 @@ export default function WinkelmandjeScreen({ navigation, route }) {
               </View>
             ) : (
               <>
-                {/* Productlijst */}
                 <ScrollView
                   style={styles.list}
                   contentContainerStyle={styles.listContent}
@@ -177,7 +197,6 @@ export default function WinkelmandjeScreen({ navigation, route }) {
                         </Text>
                       ) : null}
 
-                      {/* Aantal + verwijderen */}
                       <View style={styles.cardFooterRow}>
                         <View style={styles.qtyRow}>
                           <Text style={styles.qtyLabel}>Aantal:</Text>
@@ -189,7 +208,9 @@ export default function WinkelmandjeScreen({ navigation, route }) {
                             >
                               <Text style={styles.qtyBtnText}>−</Text>
                             </TouchableOpacity>
+
                             <Text style={styles.qtyValue}>{item.qty}</Text>
+
                             <TouchableOpacity
                               style={styles.qtyBtn}
                               onPress={() => updateQty(item.key, +1)}
@@ -212,11 +233,11 @@ export default function WinkelmandjeScreen({ navigation, route }) {
                   ))}
                 </ScrollView>
 
-                {/* Onderbalk met totaal & CTA */}
                 <View style={styles.bottomBar}>
                   <Text style={styles.summaryText}>
                     Producten in winkelmandje: {cartItems.length}
                   </Text>
+
                   <TouchableOpacity
                     style={[
                       styles.ctaButton,
