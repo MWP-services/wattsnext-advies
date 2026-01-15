@@ -23,6 +23,7 @@ export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [wachtwoord, setWachtwoord] = useState("");
   const [resetLoading, setResetLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // ✅ nieuw
   const { width } = useWindowDimensions();
 
   const handleLogin = async () => {
@@ -123,14 +124,27 @@ export default function LoginScreen({ navigation }) {
                 keyboardType="email-address"
               />
 
-              <TextInput
-                placeholder="Wachtwoord"
-                placeholderTextColor="#aaa"
-                value={wachtwoord}
-                onChangeText={setWachtwoord}
-                style={styles.input}
-                secureTextEntry
-              />
+              {/* ✅ Wachtwoord + oogje */}
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  placeholder="Wachtwoord"
+                  placeholderTextColor="#aaa"
+                  value={wachtwoord}
+                  onChangeText={setWachtwoord}
+                  style={styles.passwordInput}
+                  secureTextEntry={!showPassword}
+                />
+
+                <TouchableOpacity
+                  onPress={() => setShowPassword((prev) => !prev)}
+                  style={styles.eyeButton}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.eyeText}>
+                    {showPassword ? "🙈" : "👁️"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
 
               <TouchableOpacity style={styles.button} onPress={handleLogin}>
                 <Text style={styles.buttonText}>Log in</Text>
@@ -203,6 +217,31 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     backgroundColor: "#fff",
   },
+
+  // ✅ nieuw: wachtwoordveld met oogje
+  passwordContainer: {
+    width: "80%",
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    marginBottom: 12,
+    backgroundColor: "#fff",
+    paddingRight: 12,
+  },
+  passwordInput: {
+    flex: 1,
+    padding: 16,
+  },
+  eyeButton: {
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+  },
+  eyeText: {
+    fontSize: 18,
+  },
+
   button: {
     backgroundColor: "#f7941e",
     padding: 16,
